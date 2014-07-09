@@ -8,6 +8,12 @@
 
   <include package="Products.CMFCore"/>
 
+  <adapter
+    for="plone.dexterity.interfaces.IDexterityContent"
+    provides="borg.localrole.interfaces.ILocalRoleProvider"
+    factory=".adapter.LocalRoleAdapter"
+    />
+
   <include package=".browser"/>
 
 </configure>
