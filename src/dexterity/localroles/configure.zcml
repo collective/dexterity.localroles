@@ -6,8 +6,8 @@
 
   <five:registerPackage package="." initialize=".initialize" />
 
-  <includeDependencies package="." />
+  <include package="Products.CMFCore"/>
 
-  <!-- -*- extra stuff goes here -*- -->
+  <include package=".browser"/>
 
 </configure>
