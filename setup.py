@@ -42,6 +42,7 @@ setup(
     install_requires=[
         'Plone',
         'borg.localrole',
+        'collective.z3cform.datagridfield',
         'five.grok',
         'plone.app.dexterity',
         'setuptools',
