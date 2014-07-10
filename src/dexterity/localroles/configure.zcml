@@ -5,6 +5,7 @@
     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
     i18n_domain="dexterity.localroles">
 
+  <i18n:registerTranslations directory="locales" />
   <five:registerPackage package="." initialize=".initialize" />
 
   <include package="Products.CMFCore" />
