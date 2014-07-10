@@ -3,6 +3,7 @@
 from zope.i18nmessageid import MessageFactory
 
 _ = MessageFactory('dexterity.localroles')
+PMF = MessageFactory('plone')
 
 
 def initialize(context):
