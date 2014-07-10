@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 from Products.CMFPlone.utils import base_hasattr
-from collective.z3cform.datagridfield import DataGridFieldFactory
+from collective.z3cform.datagridfield import DataGridField
 from collective.z3cform.datagridfield import DictRow
 from copy import deepcopy
 from five import grok
@@ -22,9 +22,12 @@ from zope.interface import Interface
 
 from dexterity.localroles import _
 from dexterity.localroles import PMF
+from dexterity.localroles.browser.exceptions import DuplicateEntryError
+from dexterity.localroles.browser.exceptions import UnknownPrincipalError
 from dexterity.localroles.browser.interfaces import IPrincipal
 from dexterity.localroles.browser.interfaces import IRole
 from dexterity.localroles.browser.interfaces import IWorkflowState
+from dexterity.localroles.browser.interfaces import ILocalRoleList
 from dexterity.localroles.browser.overrides import CustomTypeFormLayout
 from dexterity.localroles.browser.vocabulary import plone_role_generator
 
@@ -57,17 +60,47 @@ class RoleFieldValidator(grok.MultiAdapter, SimpleFieldValidator):
         IPrincipal,
         Interface)
 
-    def validate(self, value, *args, **kwargs):
-        if value is not None:
+    def validate(self, value, force=False):
+        if value is not None and force is True:
             if api.user.get(username=value) is None and \
                api.group.get(groupname=value) is None:
-                raise ValueError(_(u'Unknown principal'))
+                raise UnknownPrincipalError
 
 
 @grok.adapter(IRole, IFormLayer)
 @grok.implementer(IFieldWidget)
 def role_widget(field, request):
     return FieldWidget(field, CheckBoxWidget(request))
+
+
+class LocalRoleList(schema.List):
+    grok.implements(ILocalRoleList)
+
+
+class LocalRoleListValidator(grok.MultiAdapter, SimpleFieldValidator):
+    grok.provides(IValidator)
+    grok.adapts(
+        Interface,
+        Interface,
+        Interface,
+        ILocalRoleList,
+        Interface)
+
+    def validate(self, value, force=False):
+        for subform in [widget.subform for widget in self.widget.widgets]:
+            for widget in subform.widgets.values():
+                if hasattr(widget, 'error') and widget.error:
+                    raise ValueError(widget.label)
+        if value is not None:
+            vset = set([(s, v) for s, r, v in [l.values() for l in value]])
+            if len(vset) < len(value):
+                raise DuplicateEntryError
+
+
+@grok.adapter(ILocalRoleList, IFormLayer)
+@grok.implementer(IFieldWidget)
+def localrolelist_widget(field, request):
+    return FieldWidget(field, DataGridField(request))
 
 
 class ILocalRole(Interface):
@@ -147,7 +180,7 @@ class LocalRoleConfigurationForm(form.EditForm):
     @property
     def fields(self):
         fields = [
-            schema.List(
+            LocalRoleList(
                 __name__='localroleconfig',
                 title=_(u'Local role configuration'),
                 description=u'',
@@ -156,8 +189,6 @@ class LocalRoleConfigurationForm(form.EditForm):
         fields = sorted(fields, key=lambda x: x.title)
         fields = field.Fields(*fields)
 
-        for f in fields.values():
-            f.widgetFactory = DataGridFieldFactory
         return fields
 
 

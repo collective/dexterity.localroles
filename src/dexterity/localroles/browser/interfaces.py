@@ -13,3 +13,7 @@ class IRole(Interface):
 
 class IPrincipal(Interface):
     pass
+
+
+class ILocalRoleList(Interface):
+    pass
