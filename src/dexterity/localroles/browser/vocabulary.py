@@ -12,7 +12,7 @@ from zope.schema.interfaces import IContextSourceBinder
 from zope.schema.vocabulary import SimpleVocabulary
 
 from dexterity.localroles import PMF
-from dexterity.localroles.browser.interfaces import IStateField
+from dexterity.localroles.browser.interfaces import IWorkflowState
 
 
 def list_2_vocabulary(elements):
@@ -30,7 +30,7 @@ class StateTerms(ChoiceTermsVocabulary, grok.MultiAdapter):
     grok.adapts(Interface,
                 IFormLayer,
                 Interface,
-                IStateField,
+                IWorkflowState,
                 IWidget)
 
     def __init__(self, context, request, form, field, widget):

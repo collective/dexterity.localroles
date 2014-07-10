@@ -3,9 +3,13 @@
 from zope.interface import Interface
 
 
-class IStateField(Interface):
+class IWorkflowState(Interface):
     pass
 
 
-class IRoleField(Interface):
+class IRole(Interface):
+    pass
+
+
+class IPrincipal(Interface):
     pass

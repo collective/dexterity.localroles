@@ -12,6 +12,8 @@ from z3c.form import form
 from z3c.form.browser.checkbox import CheckBoxWidget
 from z3c.form.interfaces import IFieldWidget
 from z3c.form.interfaces import IFormLayer
+from z3c.form.interfaces import IValidator
+from z3c.form.validator import SimpleFieldValidator
 from z3c.form.widget import FieldWidget
 from zope import schema
 from zope.browserpage.viewpagetemplatefile import ViewPageTemplateFile
@@ -20,42 +22,62 @@ from zope.interface import Interface
 
 from dexterity.localroles import _
 from dexterity.localroles import PMF
-from dexterity.localroles import logger
-from dexterity.localroles.browser.interfaces import IStateField
-from dexterity.localroles.browser.interfaces import IRoleField
+from dexterity.localroles.browser.interfaces import IPrincipal
+from dexterity.localroles.browser.interfaces import IRole
+from dexterity.localroles.browser.interfaces import IWorkflowState
 from dexterity.localroles.browser.overrides import CustomTypeFormLayout
 from dexterity.localroles.browser.vocabulary import plone_role_generator
 
 
-class StateField(schema.Choice):
-    grok.implements(IStateField)
+class WorkflowState(schema.Choice):
+    grok.implements(IWorkflowState)
 
     def __init__(self, *args, **kwargs):
         kwargs['vocabulary'] = u''
-        super(StateField, self).__init__(*args, **kwargs)
+        super(WorkflowState, self).__init__(*args, **kwargs)
 
     def bind(self, object):
         return super(schema.Choice, self).bind(object)
 
 
-class RoleField(schema.List):
-    grok.implements(IRoleField)
+class Role(schema.List):
+    grok.implements(IRole)
 
 
-@grok.adapter(IRoleField, IFormLayer)
+class Principal(schema.TextLine):
+    grok.implements(IPrincipal)
+
+
+class RoleFieldValidator(grok.MultiAdapter, SimpleFieldValidator):
+    grok.provides(IValidator)
+    grok.adapts(
+        Interface,
+        Interface,
+        Interface,
+        IPrincipal,
+        Interface)
+
+    def validate(self, value, *args, **kwargs):
+        if value is not None:
+            if api.user.get(username=value) is None and \
+               api.group.get(groupname=value) is None:
+                raise ValueError(_(u'Unknown principal'))
+
+
+@grok.adapter(IRole, IFormLayer)
 @grok.implementer(IFieldWidget)
 def role_widget(field, request):
     return FieldWidget(field, CheckBoxWidget(request))
 
 
-class IFieldRole(Interface):
-    state = StateField(title=_(u'state'), required=True)
+class ILocalRole(Interface):
+    state = WorkflowState(title=_(u'state'), required=True)
 
-    value = schema.TextLine(title=_(u'value'))
+    value = Principal(title=_(u'value'))
 
-    roles = RoleField(title=_(u'roles'),
-                      value_type=schema.Choice(source=plone_role_generator),
-                      required=True)
+    roles = Role(title=_(u'roles'),
+                 value_type=schema.Choice(source=plone_role_generator),
+                 required=True)
 
 
 class LocalRoleConfigurationAdapter(object):
@@ -129,7 +151,7 @@ class LocalRoleConfigurationForm(form.EditForm):
                 __name__='localroleconfig',
                 title=_(u'Local role configuration'),
                 description=u'',
-                value_type=DictRow(title=u"fieldconfig", schema=IFieldRole))
+                value_type=DictRow(title=u"fieldconfig", schema=ILocalRole))
         ]
         fields = sorted(fields, key=lambda x: x.title)
         fields = field.Fields(*fields)
