@@ -14,6 +14,18 @@
     factory=".adapter.LocalRoleAdapter"
     />
 
+  <subscriber
+    for="plone.dexterity.interfaces.IDexterityContent
+         Products.DCWorkflow.interfaces.IAfterTransitionEvent"
+    handler=".subscriber.update_security"
+    />
+
+  <subscriber
+    for="plone.dexterity.interfaces.IDexterityContent
+         zope.lifecycleevent.IObjectAddedEvent"
+    handler=".subscriber.update_security"
+    />
+
   <include package=".browser"/>
 
 </configure>
