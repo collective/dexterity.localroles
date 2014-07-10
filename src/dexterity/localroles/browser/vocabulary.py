@@ -7,6 +7,7 @@ from z3c.form.interfaces import ITerms
 from z3c.form.term import ChoiceTermsVocabulary
 from z3c.form.interfaces import IFormLayer
 from z3c.form.interfaces import IWidget
+from zope.i18n import translate
 from zope.schema.interfaces import IContextSourceBinder
 from zope.schema.vocabulary import SimpleVocabulary
 
@@ -43,7 +44,11 @@ class StateTerms(ChoiceTermsVocabulary, grok.MultiAdapter):
         portal_workflow = portal_type.portal_workflow
         workflow = portal_workflow.getWorkflowsFor(portal_type.__name__)[0]
 
-        self.terms = list_2_vocabulary([(s, s) for s in workflow.states])
+        states = []
+        for key, state in workflow.states.items():
+            title = translate(PMF(state.title), context=self.request)
+            states.append((key, title))
+        self.terms = list_2_vocabulary(states)
         field.vocabulary = self.terms
 
 
