@@ -40,8 +40,11 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=[
-        'setuptools',
         'Plone',
+        'borg.localrole',
+        'five.grok',
+        'plone.app.dexterity',
+        'setuptools',
     ],
     extras_require={'test': ['plone.app.testing']},
     entry_points="""
