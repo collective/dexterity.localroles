@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2014-07-10 15:20+0000\n"
+"POT-Creation-Date: 2014-07-10 15:47+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,3 +14,45 @@ msgstr ""
 "Preferred-Encodings: utf-8 latin1\n"
 "Domain: dexterity.localroles\n"
 "Language: \n"
+
+#: ./browser/settings.py:165
+msgid "Local Role configuration"
+msgstr ""
+
+#: ./browser/settings.py:185
+msgid "Local role configuration"
+msgstr ""
+
+#: ./browser/settings.py:166
+msgid "Local role configurations successfully updated."
+msgstr ""
+
+#: ./browser/overrides.py:16
+#: ./browser/settings.py:197
+msgid "Local roles"
+msgstr ""
+
+#: ./browser/settings.py:167
+msgid "No changes were made."
+msgstr ""
+
+#: ./browser/exceptions.py:13
+msgid "There is duplicate entries"
+msgstr ""
+
+#: ./browser/exceptions.py:9
+msgid "Unknown principal"
+msgstr ""
+
+#: ./browser/settings.py:111
+msgid "roles"
+msgstr ""
+
+#: ./browser/settings.py:107
+msgid "state"
+msgstr ""
+
+#: ./browser/settings.py:109
+msgid "value"
+msgstr ""
+
