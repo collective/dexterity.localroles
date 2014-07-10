@@ -6,7 +6,6 @@ from collective.z3cform.datagridfield import DictRow
 from copy import deepcopy
 from five import grok
 from plone import api
-from plone.app.dexterity.browser.layout import TypeFormLayout
 from plone.app.dexterity.interfaces import ITypeSchemaContext
 from z3c.form import field
 from z3c.form import form
@@ -23,6 +22,7 @@ from dexterity.localroles import _
 from dexterity.localroles import PMF
 from dexterity.localroles.browser.interfaces import IStateField
 from dexterity.localroles.browser.interfaces import IRoleField
+from dexterity.localroles.browser.overrides import CustomTypeFormLayout
 from dexterity.localroles.browser.vocabulary import plone_role_generator
 
 
@@ -138,6 +138,6 @@ class RoleFieldConfigurationForm(form.EditForm):
         return fields
 
 
-class RoleConfigurationPage(TypeFormLayout):
+class RoleConfigurationPage(CustomTypeFormLayout):
     form = RoleFieldConfigurationForm
-    label = _(u'Role field configuration')
+    label = _(u'Local roles')
