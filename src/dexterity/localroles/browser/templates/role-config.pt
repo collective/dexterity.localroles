@@ -4,19 +4,19 @@
 </div>
 
 <style media="screen" type="text/css">
-.template-localrole-config .cell-1 { width: 200px; }
-.template-localrole-config .cell-2 { width: 300px; }
-.template-localrole-config .cell-3 { width: auto; }
+.template-localroles .cell-1 { width: 200px; }
+.template-localroles .cell-2 { width: 300px; }
+.template-localroles .cell-3 { width: auto; }
 
-.template-localrole-config td.datagridwidget-cell {
+.template-localroles td.datagridwidget-cell {
     vertical-align: middle;
 }
 
-.template-localrole-config tr:nth-child(even) {
+.template-localroles tr:nth-child(even) {
     background: #EEEEEE;
 }
 
-.template-localrole-config tr:nth-child(odd) {
+.template-localroles tr:nth-child(odd) {
     background: #F9F9F9;
 }
 </style>
