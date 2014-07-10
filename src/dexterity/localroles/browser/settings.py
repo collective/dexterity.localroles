@@ -20,6 +20,7 @@ from zope.interface import Interface
 
 from dexterity.localroles import _
 from dexterity.localroles import PMF
+from dexterity.localroles import logger
 from dexterity.localroles.browser.interfaces import IStateField
 from dexterity.localroles.browser.interfaces import IRoleField
 from dexterity.localroles.browser.overrides import CustomTypeFormLayout
@@ -57,7 +58,7 @@ class IFieldRole(Interface):
                       required=True)
 
 
-class RoleFieldConfigurationAdapter(object):
+class LocalRoleConfigurationAdapter(object):
     adapts(ITypeSchemaContext)
 
     def __init__(self, context):
@@ -104,22 +105,22 @@ class RoleFieldConfigurationAdapter(object):
         return value_list
 
 
-class RoleFieldConfigurationForm(form.EditForm):
+class LocalRoleConfigurationForm(form.EditForm):
     template = ViewPageTemplateFile('templates/role-config.pt')
-    label = _(u'Role field configuration')
-    successMessage = _(u'Role fields configurations successfully updated.')
+    label = _(u'Local Role configuration')
+    successMessage = _(u'Local role configurations successfully updated.')
     noChangesMessage = _(u'No changes were made.')
     buttons = deepcopy(form.EditForm.buttons)
     buttons['apply'].title = PMF(u'Save')
 
     def update(self):
-        super(RoleFieldConfigurationForm, self).update()
+        super(LocalRoleConfigurationForm, self).update()
 
     def updateWidgets(self):
-        super(RoleFieldConfigurationForm, self).updateWidgets()
+        super(LocalRoleConfigurationForm, self).updateWidgets()
 
     def getContent(self):
-        return RoleFieldConfigurationAdapter(self.context)
+        return LocalRoleConfigurationAdapter(self.context)
 
     @property
     def fields(self):
@@ -138,6 +139,6 @@ class RoleFieldConfigurationForm(form.EditForm):
         return fields
 
 
-class RoleConfigurationPage(CustomTypeFormLayout):
-    form = RoleFieldConfigurationForm
+class LocalRoleConfigurationPage(CustomTypeFormLayout):
+    form = LocalRoleConfigurationForm
     label = _(u'Local roles')

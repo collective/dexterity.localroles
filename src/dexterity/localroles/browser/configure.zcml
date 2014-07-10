@@ -11,7 +11,7 @@
   <browser:page
       name="localroles"
       for="plone.app.dexterity.interfaces.ITypeSchemaContext"
-      class=".settings.RoleConfigurationPage"
+      class=".settings.LocalRoleConfigurationPage"
       permission="plone.schemaeditor.ManageSchemata" />
 
   <browser:page

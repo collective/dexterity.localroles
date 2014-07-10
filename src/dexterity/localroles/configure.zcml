@@ -34,6 +34,12 @@
     handler=".subscriber.update_security"
     />
 
+  <subscriber
+    for=".browser.settings.LocalRoleConfigurationAdapter
+         zope.lifecycleevent.IObjectModifiedEvent"
+    handler=".subscriber.local_role_configuration_updated"
+    />
+
   <include package=".browser"/>
 
 </configure>
