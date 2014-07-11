@@ -16,10 +16,12 @@ class LocalRoleAdapter(object):
     def getRoles(self, principal):
         """Grant permission for principal"""
         state_config = self.config.get(self.current_state)
+        if not state_config:
+            return []
         if self.is_user(principal):
-            return tuple(state_config['users'].get(principal) or [])
+            return tuple(state_config['users'].get(principal, []))
         else:
-            return tuple(state_config['groups'].get(principal) or [])
+            return tuple(state_config['groups'].get(principal, []))
 
     @staticmethod
     def is_user(principal):
