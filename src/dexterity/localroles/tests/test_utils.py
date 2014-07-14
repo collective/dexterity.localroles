@@ -5,8 +5,8 @@ from plone.app.testing import login, TEST_USER_NAME, setRoles, TEST_USER_ID
 from ..testing import DLR_PROFILE_FUNCTIONAL
 from ..utils import add_fti_configuration
 localroles_config = {
-    u'private': {'hunter': ('Editor', 'Contributor'), 'cavemans': ('Reader', )},
-    u'published': {'hunters': ('Reader',), 'caveman': ('Editor',)}}
+    u'private': {'raptor': ('Editor', 'Contributor'), 'cavemans': ('Reader', )},
+    u'published': {'hunters': ('Reader',), 'dina': ('Editor',)}}
 
 
 class TestUtils(unittest.TestCase):

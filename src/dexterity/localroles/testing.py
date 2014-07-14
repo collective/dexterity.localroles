@@ -28,7 +28,7 @@ class DLRFunctionalTesting(FunctionalTesting):
         super(DLRFunctionalTesting, self).setUp()
         with ploneSite() as portal:
             groups_tool = portal.portal_groups
-            groups = {'hunters': ('hunter', 't-rex'), 'cavemans': ('caveman',)}
+            groups = {'hunters': ('raptor', 't-rex'), 'cavemans': ('fred', 'wilma')}
             for group_id in groups:
                 if group_id not in groups_tool.getGroupIds():
                     groups_tool.addGroup(group_id)
