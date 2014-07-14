@@ -140,23 +140,17 @@ class LocalRoleConfigurationAdapter(object):
         for row in value:
             state, roles, principal = row.values()
             if state not in value_dict:
-                value_dict[state] = {'users': {}, 'groups': {}}
-            if api.user.get(username=principal) is not None:
-                value_dict[state]['users'][principal] = roles
-            elif api.group.get(groupname=principal) is not None:
-                value_dict[state]['groups'][principal] = roles
+                value_dict[state] = {}
+            value_dict[state][principal] = roles
         return value_dict
 
     @staticmethod
     def convert_to_list(value):
         value_list = []
         for state_key, state in sorted(value.items()):
-            for username, roles in sorted(state.get('users').items()):
+            for principal, roles in sorted(state.items()):
                 value_list.append({'state': state_key, 'roles': roles,
-                                   'value': username})
-            for groupname, roles in sorted(state.get('groups').items()):
-                value_list.append({'state': state_key, 'roles': roles,
-                                   'value': groupname})
+                                   'value': principal})
         return value_list
 
 
