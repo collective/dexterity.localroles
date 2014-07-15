@@ -73,8 +73,19 @@ class TestAdapter(unittest.TestCase, BaseSearchTest):
         item = self.portal['test']
         self.assertCanFind(item)
         ctool = self.portal.portal_catalog
-        indexes = ctool.getIndexDataForUID('/'.join(item.getPhysicalPath()))
-        allowedRolesAndUsers = indexes['allowedRolesAndUsers']
+        allowedRolesAndUsers = ctool.getIndexDataForUID('/'.join(item.getPhysicalPath()))['allowedRolesAndUsers']
+        self.assertIn('user:cavemans', allowedRolesAndUsers)
+        self.assertNotIn('user:hunters', allowedRolesAndUsers)
+        self.assertNotIn('user:fred', allowedRolesAndUsers)
+        self.assertIn('user:raptor', allowedRolesAndUsers)
+        self.assertNotIn('user:t-rex', allowedRolesAndUsers)
+        self.assertNotIn('user:basic-user', allowedRolesAndUsers)
+        workflow = getToolByName(self.portal, 'portal_workflow')
+        workflow.doActionFor(item, 'publish')
+        allowedRolesAndUsers = ctool.getIndexDataForUID('/'.join(item.getPhysicalPath()))['allowedRolesAndUsers']
+        self.assertEqual(allowedRolesAndUsers, ['Anonymous'])
+        workflow.doActionFor(item, 'retract')
+        allowedRolesAndUsers = ctool.getIndexDataForUID('/'.join(item.getPhysicalPath()))['allowedRolesAndUsers']
         self.assertIn('user:cavemans', allowedRolesAndUsers)
         self.assertNotIn('user:hunters', allowedRolesAndUsers)
         self.assertNotIn('user:fred', allowedRolesAndUsers)
