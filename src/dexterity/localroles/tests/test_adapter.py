@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import unittest2 as unittest
-from mock import Mock
 
 from Products.CMFCore.utils import getToolByName
 from plone import api
@@ -24,7 +23,6 @@ class TestAdapter(unittest.TestCase, BaseTest):
         self.portal = self.layer['portal']
         setRoles(self.portal, TEST_USER_ID, ['Manager'])
         login(self.portal, TEST_USER_NAME)
-        api.content.get_state = Mock(return_value='private')
         add_fti_configuration('testingtype', localroles_config)
 
     def test_localroles_change_on_statechange(self):
@@ -44,4 +42,28 @@ class TestAdapter(unittest.TestCase, BaseTest):
                                 ['Authenticated', 'Member'])
         workflow = getToolByName(self.portal, 'portal_workflow')
         workflow.doActionFor(item, 'publish')
+        self.assertContainsSame(api.group.get_roles(groupname='cavemans', obj=item), ['Authenticated'])
+        self.assertContainsSame(api.group.get_roles(groupname='hunters', obj=item), ['Authenticated', 'Reader'])
+        self.assertContainsSame(api.user.get_roles(username='fred', obj=item),
+                                ['Authenticated', 'Member'])
+        self.assertContainsSame(api.user.get_roles(username='wilma', obj=item),
+                                ['Authenticated', 'Member', 'Editor'])
+        self.assertContainsSame(api.user.get_roles(username='raptor', obj=item),
+                                ['Authenticated', 'Member', 'Reader'])
+        self.assertContainsSame(api.user.get_roles(username='t-rex', obj=item),
+                                ['Authenticated', 'Member', 'Reader'])
+        self.assertContainsSame(api.user.get_roles(username='basic-user', obj=item),
+                                ['Authenticated', 'Member'])
         workflow.doActionFor(item, 'retract')
+        self.assertContainsSame(api.group.get_roles(groupname='cavemans', obj=item), ['Authenticated', 'Reader'])
+        self.assertContainsSame(api.group.get_roles(groupname='hunters', obj=item), ['Authenticated'])
+        self.assertContainsSame(api.user.get_roles(username='fred', obj=item),
+                                ['Authenticated', 'Member', 'Reader'])
+        self.assertContainsSame(api.user.get_roles(username='wilma', obj=item),
+                                ['Authenticated', 'Member', 'Reader'])
+        self.assertContainsSame(api.user.get_roles(username='raptor', obj=item),
+                                ['Authenticated', 'Member', 'Contributor', 'Editor'])
+        self.assertContainsSame(api.user.get_roles(username='t-rex', obj=item),
+                                ['Authenticated', 'Member'])
+        self.assertContainsSame(api.user.get_roles(username='basic-user', obj=item),
+                                ['Authenticated', 'Member'])
