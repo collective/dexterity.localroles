@@ -4,7 +4,7 @@ import unittest2 as unittest
 from Products.CMFCore.utils import getToolByName
 from plone import api
 from plone.app.testing import login, TEST_USER_NAME, setRoles, TEST_USER_ID
-from ecreall.helpers.testing.base import BaseTest
+from ecreall.helpers.testing.search import BaseSearchTest
 
 from ..testing import DLR_PROFILE_FUNCTIONAL
 from ..utils import add_fti_configuration
@@ -14,7 +14,7 @@ localroles_config = {
     u'published': {'hunters': ('Reader',), 'wilma': ('Editor',)}}
 
 
-class TestAdapter(unittest.TestCase, BaseTest):
+class TestAdapter(unittest.TestCase, BaseSearchTest):
     """Tests adapters"""
     layer = DLR_PROFILE_FUNCTIONAL
 
@@ -67,3 +67,17 @@ class TestAdapter(unittest.TestCase, BaseTest):
                                 ['Authenticated', 'Member'])
         self.assertContainsSame(api.user.get_roles(username='basic-user', obj=item),
                                 ['Authenticated', 'Member'])
+
+    def test_catalog(self):
+        self.portal.invokeFactory('testingtype', 'test')
+        item = self.portal['test']
+        self.assertCanFind(item)
+        ctool = self.portal.portal_catalog
+        indexes = ctool.getIndexDataForUID('/'.join(item.getPhysicalPath()))
+        allowedRolesAndUsers = indexes['allowedRolesAndUsers']
+        self.assertIn('user:cavemans', allowedRolesAndUsers)
+        self.assertNotIn('user:hunters', allowedRolesAndUsers)
+        self.assertNotIn('user:fred', allowedRolesAndUsers)
+        self.assertIn('user:raptor', allowedRolesAndUsers)
+        self.assertNotIn('user:t-rex', allowedRolesAndUsers)
+        self.assertNotIn('user:basic-user', allowedRolesAndUsers)

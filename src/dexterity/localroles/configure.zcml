@@ -30,12 +30,6 @@
     />
 
   <subscriber
-    for="plone.dexterity.interfaces.IDexterityContent
-         zope.lifecycleevent.IObjectAddedEvent"
-    handler=".subscriber.update_security"
-    />
-
-  <subscriber
     for=".browser.settings.LocalRoleConfigurationAdapter
          zope.lifecycleevent.IObjectModifiedEvent"
     handler=".subscriber.local_role_configuration_updated"
