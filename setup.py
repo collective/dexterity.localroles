@@ -49,7 +49,7 @@ setup(
         'setuptools',
     ],
     extras_require={'test': [
-        'plone.app.testing'
+        'plone.app.testing',
         'ecreall.helpers',
     ]},
     entry_points="""
