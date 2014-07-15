@@ -48,7 +48,10 @@ setup(
         'plone.app.dexterity',
         'setuptools',
     ],
-    extras_require={'test': ['plone.app.testing']},
+    extras_require={'test': [
+        'plone.app.testing'
+        'ecreall.helpers',
+    ]},
     entry_points="""
     # -*- Entry points: -*-
     """,
