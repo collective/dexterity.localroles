@@ -26,9 +26,8 @@ class LocalRoleAdapter(object):
         if not state_config:
             yield ('', ('', ))
             raise StopIteration
-        for key in ('users', 'groups'):
-            for principal, roles in state_config.get(key).items():
-                yield (principal, tuple(roles))
+        for principal, roles in state_config.items():
+            yield (principal, tuple(roles))
 
     @property
     def current_state(self):
