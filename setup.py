@@ -50,7 +50,7 @@ setup(
     ],
     extras_require={'test': [
         'plone.app.testing',
-        'ecreall.helpers',
+        'ecreall.helpers.testing',
     ]},
     entry_points="""
     # -*- Entry points: -*-
