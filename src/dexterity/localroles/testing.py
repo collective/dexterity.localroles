@@ -35,6 +35,7 @@ class DLRFunctionalTesting(FunctionalTesting):
                 for user in groups[group_id]:
                     api.user.create(username=user, email='flint@stone.be')
                     api.group.add_user(groupname=group_id, username=user)
+            api.user.create(username='basic-user', email='flint@stone.be')
 
 
 DLR_PROFILE_FUNCTIONAL = DLRFunctionalTesting(

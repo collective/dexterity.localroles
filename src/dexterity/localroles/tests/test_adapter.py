@@ -12,7 +12,7 @@ from ..utils import add_fti_configuration
 
 localroles_config = {
     u'private': {'raptor': ('Editor', 'Contributor'), 'cavemans': ('Reader', )},
-    u'published': {'hunters': ('Reader',), 'dina': ('Editor',)}}
+    u'published': {'hunters': ('Reader',), 'wilma': ('Editor',)}}
 
 
 class TestAdapter(unittest.TestCase, BaseTest):
@@ -31,12 +31,17 @@ class TestAdapter(unittest.TestCase, BaseTest):
         self.portal.invokeFactory('testingtype', 'test')
         item = self.portal['test']
         self.assertContainsSame(api.group.get_roles(groupname='cavemans', obj=item), ['Authenticated', 'Reader'])
+        self.assertContainsSame(api.group.get_roles(groupname='hunters', obj=item), ['Authenticated'])
+        self.assertContainsSame(api.user.get_roles(username='fred', obj=item),
+                                ['Authenticated', 'Member', 'Reader'])
+        self.assertContainsSame(api.user.get_roles(username='wilma', obj=item),
+                                ['Authenticated', 'Member', 'Reader'])
         self.assertContainsSame(api.user.get_roles(username='raptor', obj=item),
-                                ['Authenticated', 'Contributor', 'Editor', 'Member'])
+                                ['Authenticated', 'Member', 'Contributor', 'Editor'])
         self.assertContainsSame(api.user.get_roles(username='t-rex', obj=item),
                                 ['Authenticated', 'Member'])
-        #to be continued
+        self.assertContainsSame(api.user.get_roles(username='basic-user', obj=item),
+                                ['Authenticated', 'Member'])
         workflow = getToolByName(self.portal, 'portal_workflow')
         workflow.doActionFor(item, 'publish')
-
         workflow.doActionFor(item, 'retract')
