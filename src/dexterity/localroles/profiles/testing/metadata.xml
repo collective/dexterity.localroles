@@ -2,6 +2,7 @@
 <metadata>
   <version>0001</version>
   <dependencies>
+    <dependency>profile-dexterity.localroles:default</dependency>
     <dependency>profile-plone.api:testfixture</dependency>
     <dependency>profile-plone.app.dexterity:default</dependency>
   </dependencies>

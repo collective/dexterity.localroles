@@ -3,6 +3,7 @@ from plone.testing import z2, zca
 from plone.app.testing import PloneWithPackageLayer
 from plone.app.testing import FunctionalTesting
 from plone.app.testing import ploneSite
+from plone.app.robotframework.testing import REMOTE_LIBRARY_BUNDLE_FIXTURE
 from plone import api
 import dexterity.localroles
 
@@ -33,10 +34,21 @@ class DLRFunctionalTesting(FunctionalTesting):
                 if group_id not in groups_tool.getGroupIds():
                     groups_tool.addGroup(group_id)
                 for user in groups[group_id]:
-                    api.user.create(username=user, email='flint@stone.be')
+                    if not api.user.get(username=user):
+                        api.user.create(username=user, email='flint@stone.be')
                     api.group.add_user(groupname=group_id, username=user)
-            api.user.create(username='basic-user', email='flint@stone.be')
+            if not api.user.get(username='basic-user'):
+                api.user.create(username='basic-user', email='flint@stone.be')
 
 
 DLR_PROFILE_FUNCTIONAL = DLRFunctionalTesting(
     bases=(DLR, ), name="DLR_PROFILE_FUNCTIONAL")
+
+DLR_ROBOT_TESTING = DLRFunctionalTesting(
+    bases=(
+        DLR,
+        REMOTE_LIBRARY_BUNDLE_FIXTURE,
+        z2.ZSERVER_FIXTURE,
+    ),
+    name="DLR_ROBOT_TESTING",
+)
