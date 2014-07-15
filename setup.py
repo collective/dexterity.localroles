@@ -41,6 +41,7 @@ setup(
     zip_safe=False,
     install_requires=[
         'Plone',
+        'plone.api',
         'borg.localrole',
         'collective.z3cform.datagridfield',
         'five.grok',
