@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2014-07-10 15:47+0000\n"
+"POT-Creation-Date: 2014-07-17 09:53+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,24 +14,24 @@ msgstr ""
 "Preferred-Encodings: utf-8 latin1\n"
 "Domain: DOMAIN\n"
 
-#: ./browser/settings.py:165
+#: ./browser/settings.py:159
 msgid "Local Role configuration"
 msgstr ""
 
-#: ./browser/settings.py:185
+#: ./browser/settings.py:179
 msgid "Local role configuration"
 msgstr ""
 
-#: ./browser/settings.py:166
+#: ./browser/settings.py:160
 msgid "Local role configurations successfully updated."
 msgstr ""
 
 #: ./browser/overrides.py:16
-#: ./browser/settings.py:197
+#: ./browser/settings.py:191
 msgid "Local roles"
 msgstr ""
 
-#: ./browser/settings.py:167
+#: ./browser/settings.py:161
 msgid "No changes were made."
 msgstr ""
 
