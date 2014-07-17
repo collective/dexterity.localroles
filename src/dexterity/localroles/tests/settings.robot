@@ -2,7 +2,6 @@
 Resource  plone/app/robotframework/keywords.robot
 Resource  plone/app/robotframework/selenium.robot
 Resource  plone/app/robotframework/saucelabs.robot
-Resource  Products/PasswordStrength/tests/common.robot
 
 Library  Remote  ${PLONE_URL}/RobotRemote
 Library  plone.app.robotframework.keywords.Debugging
