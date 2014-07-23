@@ -9,6 +9,7 @@
   <five:registerPackage package="." initialize=".initialize" />
 
   <include package="Products.CMFCore" />
+  <include package="collective.z3cform.datagridfield" />
 
   <genericsetup:registerProfile
       name="default"
