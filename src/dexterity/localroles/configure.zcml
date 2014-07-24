@@ -10,6 +10,9 @@
 
   <include package="Products.CMFCore" />
   <include package="collective.z3cform.datagridfield" />
+  <include package="five.grok" />
+  <include package="plone.app.dexterity" />
+  <include package="plone.schemaeditor" />
 
   <genericsetup:registerProfile
       name="default"

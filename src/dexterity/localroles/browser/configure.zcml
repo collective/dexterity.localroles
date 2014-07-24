@@ -5,11 +5,9 @@
     xmlns:i18n="http://namespaces.zope.org/i18n"
     i18n_domain="dexterity.localroles">
 
-  <include package="five.grok" />
   <grok:grok package=".vocabulary" />
   <grok:grok package=".settings" />
 
-  <include package="plone.schemaeditor" />
   <browser:page
       name="localroles"
       for="plone.app.dexterity.interfaces.ITypeSchemaContext"
