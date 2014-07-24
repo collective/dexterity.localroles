@@ -2,6 +2,7 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:five="http://namespaces.zope.org/five"
     xmlns:grok="http://namespaces.zope.org/grok"
+    xmlns:browser="http://namespaces.zope.org/browser"
     xmlns:i18n="http://namespaces.zope.org/i18n"
     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
     i18n_domain="dexterity.localroles">
@@ -39,6 +40,10 @@
          zope.lifecycleevent.IObjectModifiedEvent"
     handler=".subscriber.local_role_configuration_updated"
     />
+
+  <browser:resourceDirectory
+    name="dexterity.localroles"
+    directory="static" />
 
   <grok:grok package=".vocabulary" />
   <include package=".browser"/>

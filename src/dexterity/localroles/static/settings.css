@@ -1,0 +1,15 @@
+.template-localroles .cell-1 { width: 200px; }
+.template-localroles .cell-2 { width: 300px; }
+.template-localroles .cell-3 { width: auto; }
+
+.template-localroles td.datagridwidget-cell {
+    vertical-align: middle;
+}
+
+.template-localroles tr:nth-child(even) {
+    background: #EEEEEE;
+}
+
+.template-localroles tr:nth-child(odd) {
+    background: #F9F9F9;
+}
