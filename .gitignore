@@ -6,6 +6,11 @@
 .project
 .pydevproject
 .settings/
+log.html
+output.xml
+report.html
+selenium-screenshot-*
+htmlcov/
 bin/
 devel/
 develop-eggs/
