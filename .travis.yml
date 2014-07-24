@@ -10,3 +10,5 @@ before_script:
   - "sh -e /etc/init.d/xvfb start"
 script:
   - bin/test
+  - bin/coverage.sh
+  - bin/code-analysis
