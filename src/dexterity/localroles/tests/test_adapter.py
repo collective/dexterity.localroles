@@ -11,7 +11,7 @@ from ..utils import add_fti_configuration
 
 localroles_config = {
     u'private': {'raptor': ('Editor', 'Contributor'), 'cavemans': ('Reader', )},
-    u'published': {'hunters': ('Reader',), 'wilma': ('Editor',)}}
+    u'published': {'hunters': ('Reader', ), 'wilma': ('Editor', )}}
 
 
 class TestAdapter(unittest.TestCase, BaseSearchTest):
