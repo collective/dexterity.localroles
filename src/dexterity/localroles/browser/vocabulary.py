@@ -41,15 +41,20 @@ class StateTerms(ChoiceTermsVocabulary, grok.MultiAdapter):
         self.widget = widget
 
         portal_type = self.form.parentForm.context
-        portal_workflow = portal_type.portal_workflow
-        workflow = portal_workflow.getWorkflowsFor(portal_type.__name__)[0]
-
-        states = []
-        for key, state in workflow.states.items():
-            title = translate(PMF(state.title), context=self.request)
-            states.append((key, title))
+        states = self.get_workflow_states(portal_type)
         self.terms = list_2_vocabulary(states)
         field.vocabulary = self.terms
+
+    def get_workflow_states(self, portal_type):
+        portal_workflow = portal_type.portal_workflow
+        workflow = portal_workflow.getWorkflowsFor(portal_type.__name__)
+        if not workflow:
+            return []
+        states = []
+        for key, state in workflow[0].states.items():
+            title = translate(PMF(state.title), context=self.request)
+            states.append((key, title))
+        return states
 
 
 @grok.provider(IContextSourceBinder)
