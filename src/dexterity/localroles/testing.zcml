@@ -3,17 +3,16 @@
     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
     i18n_domain="dexterity.localroles">
 
-	<include package="plone.api"/>
-    <include package="plone.app.dexterity"/>
+  <include package="plone.api"/>
 
-    <include file="configure.zcml" />
+  <include file="configure.zcml" />
 
-    <genericsetup:registerProfile
-        name="testing"
-        title="dexterity.localroles testing profile"
-        directory="profiles/testing"
-        for="Products.CMFPlone.interfaces.ITestCasePloneSiteRoot"
-        provides="Products.GenericSetup.interfaces.EXTENSION"
-        />
+  <genericsetup:registerProfile
+      name="testing"
+      title="dexterity.localroles testing profile"
+      directory="profiles/testing"
+      for="Products.CMFPlone.interfaces.ITestCasePloneSiteRoot"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
 
 </configure>
