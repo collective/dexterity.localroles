@@ -29,7 +29,7 @@ from dexterity.localroles.browser.interfaces import IRole
 from dexterity.localroles.browser.interfaces import IWorkflowState
 from dexterity.localroles.browser.interfaces import ILocalRoleList
 from dexterity.localroles.browser.overrides import CustomTypeFormLayout
-from dexterity.localroles.browser.vocabulary import plone_role_generator
+from dexterity.localroles.vocabulary import plone_role_generator
 
 
 class WorkflowState(schema.Choice):
