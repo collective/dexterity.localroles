@@ -21,4 +21,3 @@ def add_fti_configuration(portal_type, configuration, keyname='localroleconfig',
         logger.warn("The '%s' configuration on type '%s' is already set" % (keyname, portal_type))
         return "The '%s' configuration on type '%s' is already set" % (keyname, portal_type)
     setattr(fti, keyname, configuration)
-
