@@ -5,6 +5,7 @@ from plone import api
 from plone.dexterity.interfaces import IDexterityFTI
 from zope.component import getUtility
 from zope.interface import implements
+from Products.CMFCore.WorkflowCore import WorkflowException
 
 
 class LocalRoleAdapter(object):
@@ -32,7 +33,10 @@ class LocalRoleAdapter(object):
     @property
     def current_state(self):
         """Return the state of the current object"""
-        return api.content.get_state(obj=self.context)
+        try:
+            return api.content.get_state(obj=self.context)
+        except WorkflowException:
+            return None
 
     @property
     def config(self):
