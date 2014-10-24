@@ -1,7 +1,19 @@
 dexterity.localroles
 ====================
 
-Define local roles settings by dexterity type
+Allow to define local roles settings by dexterity type.
+
+A new configuration page is added as a new tab on a dexterity type configuration.
+
+You can now define for each state which principal will receive some local roles automatically.
+
+By example:
+
+* on the "pending" state, the "stephen" user will receive the following role: Reviewer.
+* on the "published" state, the 'editors' group will receive the following roles: Editor, Reviewer.
+
+Those automaticaly given roles cannot be removed by the "sharing" tab (read only, as inherited roles).
+
 
 Tests
 =====
