@@ -1,8 +1,8 @@
 Changelog
 =========
 
-0.1-dev (unreleased)
---------------------
+0.1 (2014-10-24)
+----------------
 
 - Various improvements
   [mpeeters, sgeulette]
