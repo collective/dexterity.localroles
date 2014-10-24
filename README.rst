@@ -1,5 +1,7 @@
-dexterity.localroles
-====================
+.. contents::
+
+Introduction
+============
 
 Allow to define local roles settings by dexterity type.
 
@@ -13,6 +15,20 @@ By example:
 * on the "published" state, the 'editors' group will receive the following roles: Editor, Reviewer.
 
 Those automaticaly given roles cannot be removed by the "sharing" tab (read only, as inherited roles).
+
+Installation
+============
+
+* Add dexterity.localroles to your eggs.
+* Re-run buildout.
+* Done.
+
+Credits
+=======
+
+Have an idea? Found a bug? Let us know by `opening a ticket`_.
+
+.. _`opening a ticket`: https://github.com/IMIO/dexterity.localroles/issues
 
 
 Tests
