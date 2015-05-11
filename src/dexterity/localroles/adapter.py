@@ -3,7 +3,7 @@
 from borg.localrole.interfaces import ILocalRoleProvider
 from plone import api
 from plone.dexterity.interfaces import IDexterityFTI
-from zope.component import getUtility
+from zope.component import getUtility, ComponentLookupError
 from zope.interface import implements
 from Products.CMFCore.WorkflowCore import WorkflowException
 
@@ -35,10 +35,14 @@ class LocalRoleAdapter(object):
         """Return the state of the current object"""
         try:
             return api.content.get_state(obj=self.context)
-        except WorkflowException:
+        except (WorkflowException, api.portal.CannotGetPortalError):
             return None
 
     @property
     def config(self):
-        fti = getUtility(IDexterityFTI, name=self.context.portal_type)
+        try:
+            fti = getUtility(IDexterityFTI, name=self.context.portal_type)
+        except ComponentLookupError:
+            # when deleting site
+            return {}
         return getattr(fti, 'localroleconfig', {})

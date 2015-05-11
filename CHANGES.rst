@@ -4,7 +4,8 @@ Changelog
 0.2 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Avoid exception on site deletion
+  [sgeulette]
 
 
 0.1 (2014-10-24)
