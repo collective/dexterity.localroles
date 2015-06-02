@@ -14,7 +14,9 @@ By example:
 * on the "pending" state, the "stephen" user will receive the following role: Reviewer.
 * on the "published" state, the 'editors' group will receive the following roles: Editor, Reviewer.
 
-Those automaticaly given roles cannot be removed by the "sharing" tab (read only, as inherited roles).
+Those automaticaly given roles cannot be manually removed by the "sharing" tab (read only, as inherited roles).
+
+This package can be extended with dexterity.localrolesfield to define the principal in a content field.
 
 Installation
 ============
