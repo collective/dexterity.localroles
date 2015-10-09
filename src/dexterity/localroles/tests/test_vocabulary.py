@@ -40,5 +40,5 @@ class TestVocabulary(unittest.TestCase):
 
     def test_plone_role_generator(self):
         voc = vocabulary.plone_role_generator(None)
-        roles = ['Contributor', 'Editor', 'Owner', 'Reader', 'Reviewer']
+        roles = [u'Contributor', u'Editor', u'Reader', u'Reviewer']
         self.assertListEqual(roles, [t.value for t in voc])

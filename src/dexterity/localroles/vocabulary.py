@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 from five import grok
-from plone import api
+from zope.component import getUtilitiesFor
 from zope.interface import Interface
 from z3c.form.interfaces import ITerms
 from z3c.form.term import ChoiceTermsVocabulary
@@ -11,11 +11,14 @@ from zope.i18n import translate
 from zope.schema.interfaces import IContextSourceBinder
 from zope.schema.vocabulary import SimpleVocabulary
 
+from plone.app.workflow.interfaces import ISharingPageRole
+
 from dexterity.localroles import PMF
 from dexterity.localroles.browser.interfaces import IWorkflowState
 
 
 def list_2_vocabulary(elements):
+    """ Return vocabulary from list of tuples """
     terms = []
     for item in elements:
         term = SimpleVocabulary.createTerm(item[0],
@@ -59,11 +62,5 @@ class StateTerms(ChoiceTermsVocabulary, grok.MultiAdapter):
 
 @grok.provider(IContextSourceBinder)
 def plone_role_generator(context):
-    portal = api.portal.getSite()
-    roles = []
-    filtered_roles = ['Anonymous', 'Authenticated', 'Manager', 'Member',
-                      'Site Administrator']
-    for role in portal.__ac_roles__:
-        if role not in filtered_roles:
-            roles.append((role, PMF(role)))
-    return list_2_vocabulary(sorted(roles))
+    """ Return local roles vocabulary """
+    return list_2_vocabulary(sorted([(i[0], PMF(i[0])) for i in getUtilitiesFor(ISharingPageRole)]))
