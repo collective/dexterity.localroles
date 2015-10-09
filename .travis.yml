@@ -12,3 +12,10 @@ script:
   - bin/test
   - bin/coverage.sh
   - bin/code-analysis
+notifications:
+  email:
+    recipients:
+      - devs@imio.be
+    on_success: change
+    on_failure: change
+
