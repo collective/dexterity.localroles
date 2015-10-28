@@ -47,5 +47,6 @@
 
   <grok:grok package=".vocabulary" />
   <include package=".browser"/>
+  <include package=".upgrades"/>
 
 </configure>
