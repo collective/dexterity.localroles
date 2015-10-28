@@ -49,4 +49,4 @@ class LocalRoleAdapter(object):
             return {}
         if not base_hasattr(fti, 'localroles'):
             return {}
-        return fti.localroles['static_config']
+        return fti.localroles.get('static_config', {})
