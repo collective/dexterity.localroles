@@ -122,7 +122,7 @@ class LocalRoleConfigurationAdapter(object):
 
     def __getattr__(self, name):
         if not base_hasattr(self.context.fti, 'localroles') \
-                or not name in self.context.fti.localroles \
+                or name not in self.context.fti.localroles \
                 or not isinstance(self.context.fti.localroles[name], dict):
             raise AttributeError
         value = self.context.fti.localroles[name]
