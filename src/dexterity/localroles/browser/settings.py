@@ -121,18 +121,21 @@ class LocalRoleConfigurationAdapter(object):
         self.__dict__['fti'] = self.context.fti
 
     def __getattr__(self, name):
-        if not base_hasattr(self.context.fti, name) \
-           or not isinstance(getattr(self.context.fti, name), dict):
+        if not base_hasattr(self.context.fti, 'localroles') \
+                or not name in self.context.fti.localroles \
+                or not isinstance(self.context.fti.localroles[name], dict):
             raise AttributeError
-        value = getattr(self.context.fti, name)
+        value = self.context.fti.localroles[name]
         return self.convert_to_list(value)
 
     def __setattr__(self, name, value):
-        old_value = getattr(self.context.fti, name, {})
+        if not base_hasattr(self.context.fti, 'localroles'):
+            setattr(self.context.fti, 'localroles', {})
+        old_value = self.context.fti.localroles.get(name, {})
         new_dict = self.convert_to_dict(value)
         if old_value == new_dict:
             return
-        setattr(self.context.fti, name, new_dict)
+        self.context.fti.localroles[name] = new_dict
 
     @staticmethod
     def convert_to_dict(value):
@@ -175,7 +178,7 @@ class LocalRoleConfigurationForm(form.EditForm):
     def fields(self):
         fields = [
             LocalRoleList(
-                __name__='localroleconfig',
+                __name__='static_config',
                 title=_(u'Local role configuration'),
                 description=u'',
                 value_type=DictRow(title=u"fieldconfig", schema=ILocalRole))

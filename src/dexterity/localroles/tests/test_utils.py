@@ -21,9 +21,9 @@ class TestUtils(unittest.TestCase):
 
     def test_add_fti_configuration(self):
         add_fti_configuration('testingtype', localroles_config)
-        self.assertEqual(self.portal.portal_types.testingtype.localroleconfig, localroles_config)
+        self.assertEqual(self.portal.portal_types.testingtype.localroles['static_config'], localroles_config)
         add_fti_configuration('testingtype', {})
-        self.assertEqual(self.portal.portal_types.testingtype.localroleconfig, localroles_config)
+        self.assertEqual(self.portal.portal_types.testingtype.localroles['static_config'], localroles_config)
         add_fti_configuration('testingtype', {}, force=True)
-        self.assertEqual(self.portal.portal_types.testingtype.localroleconfig, {})
+        self.assertEqual(self.portal.portal_types.testingtype.localroles['static_config'], {})
         self.assertEqual(add_fti_configuration('unknown', {}), "The portal type 'unknown' doesn't exist")

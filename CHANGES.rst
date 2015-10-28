@@ -6,6 +6,9 @@ Changelog
 
 - Use only local roles in vocabulary.
   [sgeulette]
+- Store all configuration in one fti attribute 'localroles'.
+  Useful for dexterity.localrolesfield to avoid a field name is an existing attribute
+  [sgeulette]
 
 
 0.2 (2015-06-02)

@@ -8,7 +8,7 @@ from plone.dexterity.interfaces import IDexterityFTI
 from . import logger
 
 
-def add_fti_configuration(portal_type, configuration, keyname='localroleconfig', force=False):
+def add_fti_configuration(portal_type, configuration, keyname='static_config', force=False):
     """
         Add in fti a specific localroles configuration
     """
@@ -17,7 +17,9 @@ def add_fti_configuration(portal_type, configuration, keyname='localroleconfig',
     except ComponentLookupError:
         logger.error("The portal type '%s' doesn't exist" % portal_type)
         return "The portal type '%s' doesn't exist" % portal_type
-    if base_hasattr(fti, keyname) and not force:
+    if not base_hasattr(fti, 'localroles'):
+        setattr(fti, 'localroles', {})
+    if keyname in fti.localroles and not force:
         logger.warn("The '%s' configuration on type '%s' is already set" % (keyname, portal_type))
         return "The '%s' configuration on type '%s' is already set" % (keyname, portal_type)
-    setattr(fti, keyname, configuration)
+    fti.localroles[keyname] = configuration

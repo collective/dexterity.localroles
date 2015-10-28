@@ -32,11 +32,11 @@ class TestLocalRoles(unittest.TestCase):
             u'published': {
                 'hunters': ('Reader', ),
                 'wilma': ('Editor', )}}
-        setattr(self.test_fti, 'localroleconfig', config)
+        setattr(self.test_fti, 'localroles', {'static_config': config})
 
     def tearDown(self):
         api.content.delete(obj=self.content)
-        setattr(self.test_fti, 'localroleconfig', {})
+        setattr(self.test_fti, 'localroles', {})
         logout()
 
     @property

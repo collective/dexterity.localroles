@@ -1,11 +1,13 @@
 # encoding: utf-8
 
+from zope.component import getUtility, ComponentLookupError
+from zope.interface import implements
+
+from Products.CMFCore.WorkflowCore import WorkflowException
+from Products.CMFPlone.utils import base_hasattr
 from borg.localrole.interfaces import ILocalRoleProvider
 from plone import api
 from plone.dexterity.interfaces import IDexterityFTI
-from zope.component import getUtility, ComponentLookupError
-from zope.interface import implements
-from Products.CMFCore.WorkflowCore import WorkflowException
 
 
 class LocalRoleAdapter(object):
@@ -45,4 +47,6 @@ class LocalRoleAdapter(object):
         except ComponentLookupError:
             # when deleting site
             return {}
-        return getattr(fti, 'localroleconfig', {})
+        if not base_hasattr(fti, 'localroles'):
+            return {}
+        return fti.localroles['static_config']
