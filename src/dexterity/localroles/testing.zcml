@@ -3,7 +3,7 @@
     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
     i18n_domain="dexterity.localroles">
 
-  <include package="plone.api"/>
+  <include package="plone.api" file="testing.zcml"/>
 
   <include file="configure.zcml" />
 
