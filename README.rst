@@ -16,7 +16,7 @@ By example:
 
 Those automaticaly given roles cannot be manually removed by the "sharing" tab (read only, as inherited roles).
 
-This package can be extended with dexterity.localrolesfield to define the principal in a content field.
+This package is a base for dexterity.localrolesfield that adds a field to define the principal.
 
 Installation
 ============
@@ -30,7 +30,7 @@ Credits
 
 Have an idea? Found a bug? Let us know by `opening a ticket`_.
 
-.. _`opening a ticket`: https://github.com/IMIO/dexterity.localroles/issues
+.. _`opening a ticket`: https://github.com/collective/dexterity.localroles/issues
 
 
 Tests
@@ -38,5 +38,7 @@ Tests
 
 This package is tested using Travis CI. The current status of the add-on is :
 
-.. image:: https://api.travis-ci.org/IMIO/dexterity.localroles.png
-    :target: https://travis-ci.org/IMIO/dexterity.localroles
+.. image:: https://api.travis-ci.org/collective/dexterity.localroles.png
+    :target: https://travis-ci.org/collective/dexterity.localroles
+.. image:: https://coveralls.io/repos/collective/dexterity.localroles/badge.svg?branch=master&service=github
+  :target: https://coveralls.io/github/collective/dexterity.localroles?branch=master

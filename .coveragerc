@@ -1,7 +1,6 @@
 [report]
+ignore_errors = True
+include =
+    src/dexterity/*
 omit =
-    */.buildout/eggs/*
-    parts/*
-    eggs/*
     */test*
-    buildout-cache/*
