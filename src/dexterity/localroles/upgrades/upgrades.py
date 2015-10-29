@@ -13,7 +13,7 @@ def v2(context):
     for (name, fti) in getUtilitiesFor(IDexterityFTI):
         if not base_hasattr(fti, 'localroleconfig'):
             continue
-        logger.info("Copying old config to static_config: '%s'" % fti.localroleconfig)
+        logger.info("FTI '%s' => Copying static_config: '%s'" % (name, fti.localroleconfig))
         if not base_hasattr(fti, 'localroles'):
             setattr(fti, 'localroles', {})
         fti.localroles['static_config'] = fti.localroleconfig
