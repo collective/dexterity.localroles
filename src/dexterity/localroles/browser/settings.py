@@ -92,7 +92,7 @@ class LocalRoleListValidator(grok.MultiAdapter, SimpleFieldValidator):
                 if hasattr(widget, 'error') and widget.error:
                     raise ValueError(widget.label)
         if value is not None:
-            vset = set([(s, v) for s, r, v in [l.values() for l in value]])
+            vset = set([(l['state'], l['value']) for l in value])
             if len(vset) < len(value):
                 raise DuplicateEntryError
 

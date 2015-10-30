@@ -9,7 +9,8 @@ Changelog
 - Store all configuration in one fti attribute 'localroles'.
   Useful for dexterity.localrolesfield to avoid a field name is an existing attribute
   [sgeulette]
-
+- Simplify code
+  [sgeulette]
 
 0.2 (2015-06-02)
 ----------------
