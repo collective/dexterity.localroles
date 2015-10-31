@@ -9,6 +9,8 @@ Changelog
 - Store all configuration in one fti attribute 'localroles'.
   Useful for dexterity.localrolesfield to avoid a field name is an existing attribute
   [sgeulette]
+- Add a related field to store a text configuration that will be used to set related objects local roles.
+  [sgeulette]
 - Simplify code
   [sgeulette]
 

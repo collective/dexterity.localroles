@@ -21,7 +21,9 @@ class LocalRoleAdapter(object):
         state_config = self.config.get(self.current_state)
         if not state_config:
             return []
-        return tuple(state_config.get(principal, []))
+        if not state_config.get(principal, []):
+            return ()
+        return tuple(state_config.get(principal)['roles'])
 
     def getAllRoles(self):
         """Grant permissions"""
@@ -29,8 +31,8 @@ class LocalRoleAdapter(object):
         if not state_config:
             yield ('', ('', ))
             raise StopIteration
-        for principal, roles in state_config.items():
-            yield (principal, tuple(roles))
+        for principal, roles_dic in state_config.items():
+            yield (principal, tuple(roles_dic['roles']))
 
     @property
     def current_state(self):

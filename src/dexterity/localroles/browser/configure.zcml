@@ -34,4 +34,6 @@
       permission="plone.schemaeditor.ManageSchemata"
       layer="dexterity.localroles.interfaces.IDexterityLocalRoles" />
 
+  <adapter factory=".settings.RelatedFormatValidator" />
+
 </configure>

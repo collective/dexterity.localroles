@@ -11,3 +11,15 @@ class UnknownPrincipalError(ValidationError):
 
 class DuplicateEntryError(ValidationError):
     __doc__ = _(u'There is duplicate entries')
+
+
+class RelatedFormatError(ValidationError):
+    __doc__ = _(u"Format is [{'utility':'', 'roles': ['Reader', 'Reviewer']},]")
+
+
+class RoleNameError(ValidationError):
+    __doc__ = _(u"A specified local role doesn't exist")
+
+
+class UtilityNameError(ValidationError):
+    __doc__ = _(u"A specified utility doesn't exist")

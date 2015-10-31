@@ -7,8 +7,9 @@ from copy import deepcopy
 from five import grok
 from plone import api
 from plone.app.dexterity.interfaces import ITypeSchemaContext
+from plone.app.workflow.interfaces import ISharingPageRole
 from z3c.form import field
-from z3c.form import form
+from z3c.form import form, validator
 from z3c.form.browser.checkbox import CheckBoxWidget
 from z3c.form.interfaces import IFieldWidget
 from z3c.form.interfaces import IFormLayer
@@ -17,13 +18,13 @@ from z3c.form.validator import SimpleFieldValidator
 from z3c.form.widget import FieldWidget
 from zope import schema
 from zope.browserpage.viewpagetemplatefile import ViewPageTemplateFile
-from zope.component import adapts
+from zope.component import adapts, getUtilitiesFor
 from zope.interface import Interface
 
 from dexterity.localroles import _
 from dexterity.localroles import PMF
-from dexterity.localroles.browser.exceptions import DuplicateEntryError
-from dexterity.localroles.browser.exceptions import UnknownPrincipalError
+from dexterity.localroles.browser.exceptions import (RelatedFormatError, DuplicateEntryError, RoleNameError,
+                                                     UnknownPrincipalError, UtilityNameError)
 from dexterity.localroles.browser.interfaces import IPrincipal
 from dexterity.localroles.browser.interfaces import IRole
 from dexterity.localroles.browser.interfaces import IWorkflowState
@@ -103,6 +104,34 @@ def localrolelist_widget(field, request):
     return FieldWidget(field, DataGridField(request))
 
 
+class RelatedFormatValidator(validator.SimpleFieldValidator):
+    def validate(self, value, force=False):
+        #we call the already defined validators
+        #super(RelatedFormatValidator, self).validate(value)
+        if not value or not value.strip():
+            return
+        try:
+            var = eval(value)
+        except:
+            raise RelatedFormatError
+        if not isinstance(var, (list, tuple)):
+            raise RelatedFormatError
+        valid_roles = [i[0] for i in getUtilitiesFor(ISharingPageRole)]
+        for dic in var:
+            if not isinstance(dic, dict):
+                raise RelatedFormatError
+            if not dic:
+                continue
+            if 'utility' not in dic:
+                raise RelatedFormatError
+            # Need to check utility existence: raise UtilityNameError
+            if 'roles' not in dic or not isinstance(dic['roles'], (list, tuple)):
+                raise RelatedFormatError
+            for role in dic['roles']:
+                if role not in valid_roles:
+                    raise RoleNameError
+
+
 class ILocalRole(Interface):
     state = WorkflowState(title=_(u'state'), required=True)
 
@@ -111,6 +140,11 @@ class ILocalRole(Interface):
     roles = Role(title=_(u'roles'),
                  value_type=schema.Choice(source=plone_role_generator),
                  required=True)
+
+    related = schema.Text(title=_(u'related role configuration'),
+                          required=False)
+
+validator.WidgetValidatorDiscriminators(RelatedFormatValidator, field=ILocalRole['related'])
 
 
 class LocalRoleConfigurationAdapter(object):
@@ -141,19 +175,20 @@ class LocalRoleConfigurationAdapter(object):
     def convert_to_dict(value):
         value_dict = {}
         for row in value:
-            state, roles, principal = row.values()
+            state, roles, principal = row['state'], row['roles'], row['value']
+            related = row['related'] is not None and row['related'].strip() or ''
             if state not in value_dict:
                 value_dict[state] = {}
-            value_dict[state][principal] = roles
+            value_dict[state][principal] = {'roles': roles, 'rel': related}
         return value_dict
 
     @staticmethod
     def convert_to_list(value):
         value_list = []
-        for state_key, state in sorted(value.items()):
-            for principal, roles in sorted(state.items()):
-                value_list.append({'state': state_key, 'roles': roles,
-                                   'value': principal})
+        for state_key, state_dic in sorted(value.items()):
+            for principal, roles_dic in sorted(state_dic.items()):
+                value_list.append({'state': state_key, 'roles': roles_dic['roles'],
+                                   'value': principal, 'related': roles_dic.get('rel', '')})
         return value_list
 
 
