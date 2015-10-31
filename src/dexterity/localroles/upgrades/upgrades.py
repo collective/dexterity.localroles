@@ -16,5 +16,9 @@ def v2(context):
         logger.info("FTI '%s' => Copying static_config: '%s'" % (name, fti.localroleconfig))
         if not base_hasattr(fti, 'localroles'):
             setattr(fti, 'localroles', {})
-        fti.localroles['static_config'] = fti.localroleconfig
+        fti.localroles['static_config'] = {}
+        for state_key, state_dic in fti.localroleconfig.items():
+            fti.localroles['static_config'][state_key] = {}
+            for principal, roles in state_dic.items():
+                fti.localroles['static_config'][state_key][principal] = {'roles': roles}
         delattr(fti, 'localroleconfig')
