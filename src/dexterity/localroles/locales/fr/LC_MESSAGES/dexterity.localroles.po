@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2014-07-17 09:53+0000\n"
+"POT-Creation-Date: 2015-10-31 19:58+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,24 +16,36 @@ msgstr ""
 "Language: \n"
 "X-Is-Fallback-For: fr-be fr-ca fr-lu fr-mc fr-ch fr-fr\n"
 
-#: ./browser/settings.py:159
+#: ./browser/exceptions.py:21
+msgid "A specified local role doesn't exist"
+msgstr "Un rôle local indiqué n'existe pas"
+
+#: ./browser/exceptions.py:25
+msgid "A specified utility doesn't exist"
+msgstr "Un utilitaire indiqué n'existe pas"
+
+#: ./browser/exceptions.py:17
+msgid "Format must be as [{'utility':'', 'roles': ['Reader', 'Reviewer']},]"
+msgstr "Le format doit être de la forme [{'utility':'', 'roles': ['Reader', 'Reviewer']},]"
+
+#: ./browser/settings.py:199
 msgid "Local Role configuration"
 msgstr "Configuration des rôles locaux"
 
-#: ./browser/settings.py:179
+#: ./browser/settings.py:219
 msgid "Local role configuration"
 msgstr "Configuration des rôles locaux"
 
-#: ./browser/settings.py:160
+#: ./browser/settings.py:200
 msgid "Local role configurations successfully updated."
 msgstr "Rôles locaux mis à jour avec succès."
 
 #: ./browser/overrides.py:16
-#: ./browser/settings.py:191
+#: ./browser/settings.py:231
 msgid "Local roles"
 msgstr "Rôles locaux"
 
-#: ./browser/settings.py:161
+#: ./browser/settings.py:201
 msgid "No changes were made."
 msgstr "Aucun changement effectué."
 
@@ -45,15 +57,19 @@ msgstr "Il y a des entrées en double"
 msgid "Unknown principal"
 msgstr "Utilisateur ou groupe inconnu"
 
-#: ./browser/settings.py:111
+#: ./browser/settings.py:146
+msgid "related role configuration"
+msgstr "Configuration annexe de rôles locaux"
+
+#: ./browser/settings.py:142
 msgid "roles"
 msgstr "Rôles"
 
-#: ./browser/settings.py:107
+#: ./browser/settings.py:138
 msgid "state"
 msgstr "État"
 
-#: ./browser/settings.py:109
+#: ./browser/settings.py:140
 msgid "value"
 msgstr "Utilisateur ou groupe"
 

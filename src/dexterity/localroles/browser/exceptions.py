@@ -14,7 +14,7 @@ class DuplicateEntryError(ValidationError):
 
 
 class RelatedFormatError(ValidationError):
-    __doc__ = _(u"Format is [{'utility':'', 'roles': ['Reader', 'Reviewer']},]")
+    __doc__ = _(u"Format must be as [{'utility':'', 'roles': ['Reader', 'Reviewer']},]")
 
 
 class RoleNameError(ValidationError):
