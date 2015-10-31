@@ -106,8 +106,8 @@ def localrolelist_widget(field, request):
 
 class RelatedFormatValidator(validator.SimpleFieldValidator):
     def validate(self, value, force=False):
-        #we call the already defined validators
-        #super(RelatedFormatValidator, self).validate(value)
+        # we call the already defined validators
+        # super(RelatedFormatValidator, self).validate(value)
         if not value or not value.strip():
             return
         try:
@@ -124,7 +124,9 @@ class RelatedFormatValidator(validator.SimpleFieldValidator):
                 continue
             if 'utility' not in dic:
                 raise RelatedFormatError
-            # Need to check utility existence: raise UtilityNameError
+            # Need to check utility existence
+            if False:
+                raise UtilityNameError
             if 'roles' not in dic or not isinstance(dic['roles'], (list, tuple)):
                 raise RelatedFormatError
             for role in dic['roles']:

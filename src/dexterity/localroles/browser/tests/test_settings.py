@@ -1,6 +1,5 @@
 # encoding: utf-8
 
-from zope.interface import Interface
 from zope.schema.interfaces import IText
 from z3c.form.interfaces import ITextWidget
 from dexterity.localroles import testing
