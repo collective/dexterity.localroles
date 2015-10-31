@@ -59,7 +59,7 @@ msgstr "Utilisateur ou groupe inconnu"
 
 #: ./browser/settings.py:146
 msgid "related role configuration"
-msgstr "Configuration annexe de rôles locaux"
+msgstr "Configuration annexe"
 
 #: ./browser/settings.py:142
 msgid "roles"
