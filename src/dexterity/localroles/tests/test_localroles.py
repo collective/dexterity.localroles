@@ -27,11 +27,11 @@ class TestLocalRoles(unittest.TestCase):
                                           title='TestLocalRoles')
         config = {
             u'private': {
-                'raptor': ('Editor', 'Contributor'),
-                'cavemans': ('Reader', )},
+                'raptor': {'roles': ('Editor', 'Contributor')},
+                'cavemans': {'roles': ('Reader', )}},
             u'published': {
-                'hunters': ('Reader', ),
-                'wilma': ('Editor', )}}
+                'hunters': {'roles': ('Reader', )},
+                'wilma': {'roles': ('Editor', )}}}
         setattr(self.test_fti, 'localroles', {'static_config': config})
 
     def tearDown(self):

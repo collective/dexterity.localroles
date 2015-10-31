@@ -10,8 +10,8 @@ from ..testing import DLR_PROFILE_FUNCTIONAL
 from ..utils import add_fti_configuration
 
 localroles_config = {
-    u'private': {'raptor': ('Editor', 'Contributor'), 'cavemans': ('Reader', )},
-    u'published': {'hunters': ('Reader', ), 'wilma': ('Editor', )}}
+    u'private': {'raptor': {'roles': ('Editor', 'Contributor')}, 'cavemans': {'roles': ('Reader', )}},
+    u'published': {'hunters': {'roles': ('Reader', )}, 'wilma': {'roles': ('Editor', )}}}
 
 
 class TestAdapter(unittest.TestCase, BaseSearchTest):
