@@ -3,7 +3,8 @@
 from zope.schema.interfaces import IText
 from z3c.form.interfaces import ITextWidget
 from dexterity.localroles import testing
-from dexterity.localroles.browser.exceptions import RelatedFormatError, RoleNameError, UnknownPrincipalError
+from ..exceptions import RelatedFormatError, RoleNameError
+from ..exceptions import UnknownPrincipalError, UtilityNameError
 from dexterity.localroles.browser import settings
 
 import unittest
@@ -34,15 +35,19 @@ class TestSettings(unittest.TestCase):
         self.assertIsNone(validator.validate('[{}]'))
         # test first if dict contains key 'utility'
         self.assertRaises(RelatedFormatError, validator.validate, "[{'utilityy':''}]")
+        self.assertRaises(UtilityNameError, validator.validate, "[{'utility':'dexterity.localroles.related_parentt'}]")
         # test after if dict contains key 'roles'
-        self.assertRaises(RelatedFormatError, validator.validate, "[{'utility':'','roless':[]}]")
-        self.assertRaises(RelatedFormatError, validator.validate, "[{'utility':'','roles':''}]")
+        self.assertRaises(RelatedFormatError, validator.validate,
+                          "[{'utility':'dexterity.localroles.related_parent','roless':[]}]")
+        self.assertRaises(RelatedFormatError, validator.validate,
+                          "[{'utility':'dexterity.localroles.related_parent','roles':''}]")
         # empty role list is ok
-        self.assertIsNone(validator.validate("[{'utility':'','roles':[]}]"))
+        self.assertIsNone(validator.validate("[{'utility':'dexterity.localroles.related_parent','roles':[]}]"))
         # test roles
-        self.assertRaises(RoleNameError, validator.validate, "[{'utility':'','roles':['ReaderR']}]")
+        self.assertRaises(RoleNameError, validator.validate,
+                          "[{'utility':'dexterity.localroles.related_parent','roles':['ReaderR']}]")
         # all is ok
-        self.assertIsNone(validator.validate("[{'utility':'','roles':['Reader']}]"))
+        self.assertIsNone(validator.validate("[{'utility':'dexterity.localroles.related_parent','roles':['Reader']}]"))
 
     def test_localroleconfigurationadapter(self):
 

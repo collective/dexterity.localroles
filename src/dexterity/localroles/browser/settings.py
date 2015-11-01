@@ -18,7 +18,7 @@ from z3c.form.validator import SimpleFieldValidator
 from z3c.form.widget import FieldWidget
 from zope import schema
 from zope.browserpage.viewpagetemplatefile import ViewPageTemplateFile
-from zope.component import adapts, getUtilitiesFor
+from zope.component import adapts, getUtility, getUtilitiesFor
 from zope.interface import Interface
 
 from dexterity.localroles import _
@@ -31,6 +31,7 @@ from dexterity.localroles.browser.interfaces import IWorkflowState
 from dexterity.localroles.browser.interfaces import ILocalRoleList
 from dexterity.localroles.browser.overrides import CustomTypeFormLayout
 from dexterity.localroles.vocabulary import plone_role_generator
+from ..interfaces import ILocalRolesRelatedSearchUtility
 
 
 class WorkflowState(schema.Choice):
@@ -124,8 +125,9 @@ class RelatedFormatValidator(validator.SimpleFieldValidator):
                 continue
             if 'utility' not in dic:
                 raise RelatedFormatError
-            # Need to check utility existence
-            if False:
+            try:
+                getUtility(ILocalRolesRelatedSearchUtility, dic['utility'])
+            except:
                 raise UtilityNameError
             if 'roles' not in dic or not isinstance(dic['roles'], (list, tuple)):
                 raise RelatedFormatError
