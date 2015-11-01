@@ -44,8 +44,26 @@ class TestSettings(unittest.TestCase):
         # all is ok
         self.assertIsNone(validator.validate("[{'utility':'','roles':['Reader']}]"))
 
-    def test_localroleconfigurationadapter_convert(self):
-        cls = settings.LocalRoleConfigurationAdapter
+    def test_localroleconfigurationadapter(self):
+
+        class dummy(object):
+            def __init__(self, fti):
+                self.fti = fti
+                self.context = self
+
+        fti = self.layer['portal'].portal_types.get('testingtype')
+        dum = dummy(fti)
+        cls = settings.LocalRoleConfigurationAdapter(dum)
+        self.assertRaises(AttributeError, getattr, fti, 'localroles')
+        self.assertRaises(AttributeError, getattr, cls, 'static_config')
+        setattr(cls, 'static_config', [])
+        setattr(cls, 'static_config', [{'state': 'private', 'value': 'raptor',
+                                        'roles': ('Reader',), 'related': ''}])
+        self.assertIsInstance(getattr(cls, 'static_config'), list)
+        self.assertEqual(len(getattr(cls, 'static_config')), 1)
+        self.assertDictEqual(getattr(cls, 'static_config')[0],
+                             {'related': '', 'state': 'private', 'value': 'raptor', 'roles': ('Reader',)})
+
         values = [{'state': 'private', 'value': 'raptor',
                    'roles': ('Reader', 'Contributor'), 'related': ''},
                   {'state': 'private', 'value': 'caveman',
