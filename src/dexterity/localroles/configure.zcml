@@ -45,6 +45,12 @@
     name="dexterity.localroles"
     directory="static" />
 
+  <utility
+      name="dexterity.localroles.related_parent"
+      provides=".interfaces.ILocalRolesRelatedSearchUtility"
+      factory=".utility.ParentRelatedSearch"
+      />
+
   <grok:grok package=".vocabulary" />
   <include package=".browser"/>
   <include package=".upgrades"/>

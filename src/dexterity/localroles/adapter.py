@@ -11,6 +11,9 @@ from plone.dexterity.interfaces import IDexterityFTI
 
 
 class LocalRoleAdapter(object):
+    """
+        borg.localrole adapter to set localrole following type and state configuration
+    """
     implements(ILocalRoleProvider)
 
     def __init__(self, context):

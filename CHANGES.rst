@@ -11,6 +11,8 @@ Changelog
   [sgeulette]
 - Add a related field to store a text configuration that will be used to set related objects local roles.
   [sgeulette]
+- Add related search utility
+  [sgeulette]
 - Simplify code
   [sgeulette]
 
