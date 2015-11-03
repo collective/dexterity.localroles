@@ -8,6 +8,17 @@ from plone.dexterity.interfaces import IDexterityFTI
 from . import logger
 
 
+def fti_configuration(context):
+    """ Return the localroles fti configuration """
+    try:
+        fti = getUtility(IDexterityFTI, name=context.portal_type)
+    except ComponentLookupError:
+        return {}
+    if not base_hasattr(fti, 'localroles'):
+        return {}
+    return fti.localroles
+
+
 def add_fti_configuration(portal_type, configuration, keyname='static_config', force=False):
     """
         Add in fti a specific localroles configuration

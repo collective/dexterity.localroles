@@ -3,7 +3,7 @@ import unittest2 as unittest
 from plone.app.testing import login, TEST_USER_NAME, setRoles, TEST_USER_ID
 
 from ..testing import DLR_PROFILE_FUNCTIONAL
-from ..utils import add_fti_configuration
+from ..utils import add_fti_configuration, fti_configuration
 localroles_config = {
     u'private': {'raptor': {'roles': ('Editor', 'Contributor')}, 'cavemans': {'roles': ('Reader', )}},
     u'published': {'hunters': {'roles': ('Reader',)}, 'dina': {'roles': ('Editor',)}}}
@@ -18,6 +18,16 @@ class TestUtils(unittest.TestCase):
         self.portal = self.layer['portal']
         setRoles(self.portal, TEST_USER_ID, ['Manager'])
         login(self.portal, TEST_USER_NAME)
+
+    def test_fti_configuration(self):
+        self.portal.invokeFactory('Document', 'doc')
+        item = self.portal['doc']
+        self.assertEqual(fti_configuration(item), {})
+        self.portal.invokeFactory('testingtype', 'test')
+        item = self.portal['test']
+        self.assertEqual(fti_configuration(item), {})
+        add_fti_configuration('testingtype', localroles_config)
+        self.assertEqual(fti_configuration(item)['static_config'], localroles_config)
 
     def test_add_fti_configuration(self):
         add_fti_configuration('testingtype', localroles_config)
