@@ -13,6 +13,8 @@ Changelog
   [sgeulette]
 - Add related search utility
   [sgeulette]
+- Change related local roles on transition
+  [sgeulette]
 - Simplify code
   [sgeulette]
 

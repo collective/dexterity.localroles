@@ -29,18 +29,6 @@
     factory=".adapter.LocalRoleAdapter"
     />
 
-  <subscriber
-    for="plone.dexterity.interfaces.IDexterityContent
-         Products.DCWorkflow.interfaces.IAfterTransitionEvent"
-    handler=".subscriber.update_security"
-    />
-
-  <subscriber
-    for=".browser.settings.LocalRoleConfigurationAdapter
-         zope.lifecycleevent.IObjectModifiedEvent"
-    handler=".subscriber.local_role_configuration_updated"
-    />
-
   <browser:resourceDirectory
     name="dexterity.localroles"
     directory="static" />
@@ -54,5 +42,6 @@
   <grok:grok package=".vocabulary" />
   <include package=".browser"/>
   <include package=".upgrades"/>
+  <include file="subscribers.zcml" />
 
 </configure>

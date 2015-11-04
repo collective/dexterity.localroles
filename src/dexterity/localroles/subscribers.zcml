@@ -1,0 +1,25 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:five="http://namespaces.zope.org/five"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="dexterity.localroles">
+
+  <subscriber
+    for="plone.dexterity.interfaces.IDexterityContent
+         Products.DCWorkflow.interfaces.IAfterTransitionEvent"
+    handler=".subscriber.update_security"
+    />
+
+  <subscriber
+    for="plone.dexterity.interfaces.IDexterityContent
+         Products.DCWorkflow.interfaces.IAfterTransitionEvent"
+    handler=".subscriber.related_change_on_transition"
+    />
+
+  <subscriber
+    for=".browser.settings.LocalRoleConfigurationAdapter
+         zope.lifecycleevent.IObjectModifiedEvent"
+    handler=".subscriber.local_role_configuration_updated"
+    />
+
+</configure>

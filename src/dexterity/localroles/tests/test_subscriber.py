@@ -2,14 +2,19 @@
 import unittest2 as unittest
 from zope import event
 from zope.lifecycleevent import ObjectModifiedEvent
+from plone import api
 from plone.app.testing import login, TEST_USER_NAME, setRoles, TEST_USER_ID
 
 from ..browser.settings import LocalRoleConfigurationAdapter
 from ..testing import DLR_PROFILE_FUNCTIONAL
-from ..utils import add_fti_configuration
+from ..utils import add_fti_configuration, get_related_roles
 
 localroles_config = {
-    u'private': {'raptor': {'roles': ('Editor',)}, 'cavemans': {'roles': ('Reader', )}},
+    u'private': {'raptor': {'roles': ('Editor',),
+                            'rel': "[{'utility':'dexterity.localroles.related_parent','roles':['Editor']}]"},
+                 'cavemans': {'roles': ('Reader', )}},
+    u'published': {'raptor': {'roles': ('Reviewer',),
+                              'rel': "[{'utility':'dexterity.localroles.related_parent','roles':['Reviewer']}]"}},
 }
 
 
@@ -46,3 +51,13 @@ class TestSubscriber(unittest.TestCase):
         allowedRolesAndUsers = ctool.getIndexDataForUID('/'.join(item.getPhysicalPath()))['allowedRolesAndUsers']
         self.assertNotIn('user:cavemans', allowedRolesAndUsers)
         self.assertIn('user:raptor', allowedRolesAndUsers)
+
+    def test_related_change_on_transition(self):
+        add_fti_configuration('testingtype', localroles_config)
+        self.portal.invokeFactory('testingtype', 'test')
+        item = self.portal['test']
+        # The parent is set
+        self.assertDictEqual(get_related_roles(self.portal, item.UID()), {'raptor': set(['Editor'])})
+        api.content.transition(obj=item, transition='publish')
+        # The parent is changed
+        self.assertDictEqual(get_related_roles(self.portal, item.UID()), {'raptor': set(['Reviewer'])})

@@ -2,7 +2,9 @@
 
 from plone import api
 
-from dexterity.localroles import logger
+from . import logger
+from .utility import runRelatedSearch
+from .utils import add_related_roles, del_related_roles, fti_configuration
 
 
 def update_security(context, event):
@@ -10,9 +12,35 @@ def update_security(context, event):
 
 
 def local_role_configuration_updated(context, event):
-    """Reindex security for objects"""
+    """ Reindex security for objects """
     portal = api.portal.getSite()
     logger.info('Objects security update')
     for brain in portal.portal_catalog(portal_type=context.fti.__name__):
         obj = brain.getObject()
         obj.reindexObjectSecurity()
+
+
+def related_change_on_transition(context, event):
+    """ Set local roles on related objects after transition """
+    fti_config = fti_configuration(context)
+    if 'static_config' not in fti_config:
+        return
+    uid = context.UID()
+    # We have to remove the configuration linked to old state
+    if event.old_state.id != event.new_state.id and event.old_state.id in fti_config['static_config']:
+        dic = fti_config['static_config'][event.old_state.id]
+        for princ in dic:
+            if dic[princ].get('rel', ''):
+                related = eval(dic[princ]['rel'])
+                for rel_dic in related:
+                    for obj in runRelatedSearch(rel_dic['utility'], context):
+                        del_related_roles(obj, uid)
+    # We have to add the configuration linked to new state
+    if event.new_state.id in fti_config['static_config']:
+        dic = fti_config['static_config'][event.new_state.id]
+        for princ in dic:
+            if dic[princ].get('rel', ''):
+                related = eval(dic[princ]['rel'])
+                for rel_dic in related:
+                    for obj in runRelatedSearch(rel_dic['utility'], context):
+                        add_related_roles(obj, uid, princ, rel_dic['roles'])
