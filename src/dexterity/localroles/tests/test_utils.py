@@ -23,6 +23,9 @@ class TestUtils(unittest.TestCase):
 
     def test_add_related_roles(self):
         # nothing already stored
+        add_related_roles(self.portal, 'fakeuid', 'raptor', [])
+        self.assertDictEqual(get_related_roles(self.portal, 'fakeuid'), {})
+        # nothing already stored
         add_related_roles(self.portal, 'fakeuid', 'raptor', ['Reader'])
         self.assertDictEqual(get_related_roles(self.portal, 'fakeuid'), {'raptor': set(['Reader'])})
         # adding to existing

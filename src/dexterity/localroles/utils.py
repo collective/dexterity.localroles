@@ -14,6 +14,8 @@ rel_key = 'd.lr.related'
 def add_related_roles(context, uid, principal, roles):
     """ Add related roles on context for uid. """
     annot = IAnnotations(context)
+    if not roles:
+        return
     if rel_key not in annot:
         annot[rel_key] = {}
     if uid not in annot[rel_key]:
