@@ -3,7 +3,9 @@ from zope.component import getUtility
 from zope.component.interfaces import ComponentLookupError
 from zope.annotation.interfaces import IAnnotations
 
+from Products.CMFCore.WorkflowCore import WorkflowException
 from Products.CMFPlone.utils import base_hasattr
+from plone import api
 from plone.dexterity.interfaces import IDexterityFTI
 
 from . import logger
@@ -81,3 +83,11 @@ def add_fti_configuration(portal_type, configuration, keyname='static_config', f
         logger.warn("The '%s' configuration on type '%s' is already set" % (keyname, portal_type))
         return "The '%s' configuration on type '%s' is already set" % (keyname, portal_type)
     fti.localroles[keyname] = configuration
+
+
+def get_state(obj):
+    """ Return the state of the current object """
+    try:
+        return api.content.get_state(obj=obj)
+    except (WorkflowException, api.portal.CannotGetPortalError):
+        return None

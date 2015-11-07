@@ -2,11 +2,10 @@
 
 from zope.interface import implements
 
-from Products.CMFCore.WorkflowCore import WorkflowException
 from borg.localrole.interfaces import ILocalRoleProvider
 from plone import api
 
-from utils import fti_configuration
+from utils import fti_configuration, get_state
 
 
 class LocalRoleAdapter(object):
@@ -39,10 +38,7 @@ class LocalRoleAdapter(object):
     @property
     def current_state(self):
         """Return the state of the current object"""
-        try:
-            return api.content.get_state(obj=self.context)
-        except (WorkflowException, api.portal.CannotGetPortalError):
-            return None
+        return get_state(self.context)
 
     @property
     def config(self):
