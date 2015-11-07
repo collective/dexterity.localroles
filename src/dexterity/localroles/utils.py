@@ -33,7 +33,11 @@ def del_related_roles(context, uid):
     annot = IAnnotations(context)
     if rel_key not in annot or uid not in annot[rel_key]:
         return {}
-    return annot[rel_key].pop(uid)
+    ret = annot[rel_key].pop(uid)
+    # We remove the key from annotation
+    if not annot[rel_key]:
+        del annot[rel_key]
+    return ret
 
 
 def get_related_roles(context, uid):
