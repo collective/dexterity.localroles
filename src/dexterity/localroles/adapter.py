@@ -3,7 +3,6 @@
 from zope.interface import implements
 
 from borg.localrole.interfaces import ILocalRoleProvider
-from plone import api
 
 from utils import fti_configuration, get_state
 
