@@ -13,15 +13,15 @@ class ParentRelatedSearch(object):
 
     implements(ILocalRolesRelatedSearchUtility)
 
-    def get_objects(self, context):
+    def get_objects(self, obj):
         """ Return the parent. """
-        return [aq_parent(aq_inner(context))]
+        return [aq_parent(aq_inner(obj))]
 
 
-def runRelatedSearch(utility, context):
+def runRelatedSearch(utility, obj):
     """ Run the related search and return the result """
     try:
         util = getUtility(ILocalRolesRelatedSearchUtility, utility)
     except ComponentLookupError:
         return []
-    return util.get_objects(context)
+    return util.get_objects(obj)

@@ -13,9 +13,9 @@ from . import logger
 rel_key = 'd.lr.related'
 
 
-def add_related_roles(context, uid, principal, roles):
-    """ Add related roles on context for uid. """
-    annot = IAnnotations(context)
+def add_related_roles(obj, uid, principal, roles):
+    """ Add related roles on obj for uid. """
+    annot = IAnnotations(obj)
     if not roles:
         return
     if rel_key not in annot:
@@ -28,9 +28,9 @@ def add_related_roles(context, uid, principal, roles):
         annot[rel_key][uid][principal] |= set(roles)
 
 
-def del_related_roles(context, uid):
-    """ Delete uid related roles on context """
-    annot = IAnnotations(context)
+def del_related_roles(obj, uid):
+    """ Delete uid related roles on obj """
+    annot = IAnnotations(obj)
     if rel_key not in annot or uid not in annot[rel_key]:
         return {}
     ret = annot[rel_key].pop(uid)
@@ -40,29 +40,29 @@ def del_related_roles(context, uid):
     return ret
 
 
-def get_related_roles(context, uid):
-    """ Get related roles on context for uid """
-    annot = IAnnotations(context)
+def get_related_roles(obj, uid):
+    """ Get related roles on obj for uid """
+    annot = IAnnotations(obj)
     if rel_key not in annot or uid not in annot[rel_key]:
         return {}
     return annot[rel_key][uid]
 
 
-def set_related_roles(context, uid, dic):
+def set_related_roles(obj, uid, dic):
     """
-        Set related roles on context for uid.
+        Set related roles on obj for uid.
         Param dic is {'principal': set([roles])}
     """
-    annot = IAnnotations(context)
+    annot = IAnnotations(obj)
     if rel_key not in annot:
         annot[rel_key] = {}
     annot[rel_key][uid] = dic
 
 
-def fti_configuration(context):
+def fti_configuration(obj):
     """ Return the localroles fti configuration """
     try:
-        fti = getUtility(IDexterityFTI, name=context.portal_type)
+        fti = getUtility(IDexterityFTI, name=obj.portal_type)
     except ComponentLookupError:
         return {}
     if not base_hasattr(fti, 'localroles'):
