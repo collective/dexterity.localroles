@@ -53,11 +53,11 @@ def related_change_on_transition(context, event):
     fti_config = fti_configuration(context)
     if 'static_config' not in fti_config:
         return
-    # We have to remove the configuration linked to old state
-    if event.old_state.id != event.new_state.id:
+    if event.old_state.id != event.new_state.id:  # escape creation
+        # We have to remove the configuration linked to old state
         related_role_removal(context, event.old_state.id, fti_config)
-    # We have to add the configuration linked to new state
-    related_role_addition(context, event.new_state.id, fti_config)
+        # We have to add the configuration linked to new state
+        related_role_addition(context, event.new_state.id, fti_config)
 
 
 def related_change_on_removal(context, event):
