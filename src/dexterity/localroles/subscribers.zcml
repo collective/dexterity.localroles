@@ -19,7 +19,7 @@
   <subscriber
     for="plone.dexterity.interfaces.IDexterityContent
          zope.lifecycleevent.interfaces.IObjectRemovedEvent"
-    handler=".subscriber.related_change_on_delete"
+    handler=".subscriber.related_change_on_removal"
     />
 
   <subscriber

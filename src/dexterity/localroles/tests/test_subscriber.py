@@ -62,7 +62,7 @@ class TestSubscriber(unittest.TestCase):
         # The parent is changed
         self.assertDictEqual(get_related_roles(self.portal, item.UID()), {'raptor': set(['Reviewer'])})
 
-    def test_related_change_on_delete(self):
+    def test_related_change_on_removal(self):
         add_fti_configuration('testingtype', localroles_config)
         self.portal.invokeFactory('testingtype', 'test')
         item = self.portal['test']

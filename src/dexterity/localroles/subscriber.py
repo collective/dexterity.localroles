@@ -50,7 +50,7 @@ def related_change_on_transition(context, event):
                         obj.reindexObjectSecurity()
 
 
-def related_change_on_delete(context, event):
+def related_change_on_removal(context, event):
     """ Set local roles on related objects after deletion """
     fti_config = fti_configuration(context)
     if 'static_config' not in fti_config:
