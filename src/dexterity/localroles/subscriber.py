@@ -33,18 +33,10 @@ def related_role_removal(context, state, fti_config):
                             obj.reindexObjectSecurity()
 
 
-def related_change_on_transition(context, event):
-    """ Set local roles on related objects after transition """
-    fti_config = fti_configuration(context)
-    if 'static_config' not in fti_config:
-        return
-    # We have to remove the configuration linked to old state
-    if event.old_state.id != event.new_state.id:
-        related_role_removal(context, event.old_state.id, fti_config)
-    # We have to add the configuration linked to new state
-    if event.new_state.id in fti_config['static_config']:
+def related_role_addition(context, state, fti_config):
+    if state in fti_config['static_config']:
+        dic = fti_config['static_config'][state]
         uid = context.UID()
-        dic = fti_config['static_config'][event.new_state.id]
         for princ in dic:
             if dic[princ].get('rel', ''):
                 related = eval(dic[princ]['rel'])
@@ -56,8 +48,20 @@ def related_change_on_transition(context, event):
                         obj.reindexObjectSecurity()
 
 
+def related_change_on_transition(context, event):
+    """ Set local roles on related objects after transition """
+    fti_config = fti_configuration(context)
+    if 'static_config' not in fti_config:
+        return
+    # We have to remove the configuration linked to old state
+    if event.old_state.id != event.new_state.id:
+        related_role_removal(context, event.old_state.id, fti_config)
+    # We have to add the configuration linked to new state
+    related_role_addition(context, event.new_state.id, fti_config)
+
+
 def related_change_on_removal(context, event):
-    """ Set local roles on related objects after deletion """
+    """ Set local roles on related objects after removal """
     fti_config = fti_configuration(context)
     if 'static_config' not in fti_config:
         return
@@ -66,3 +70,11 @@ def related_change_on_removal(context, event):
     # The action could be cancelled: we can't know this !! Resolved in Plone 5...
     # We choose to update related objects anyway !!
     related_role_removal(context, get_state(context), fti_config)
+
+
+def related_change_on_addition(context, event):
+    """ Set local roles on related objects after addition """
+    fti_config = fti_configuration(context)
+    if 'static_config' not in fti_config:
+        return
+    related_role_addition(context, get_state(context), fti_config)

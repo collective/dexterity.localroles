@@ -56,7 +56,7 @@ class TestSubscriber(unittest.TestCase):
         add_fti_configuration('testingtype', localroles_config)
         self.portal.invokeFactory('testingtype', 'test')
         item = self.portal['test']
-        # The parent is set
+        # The parent is set by addition subscriber
         self.assertDictEqual(get_related_roles(self.portal, item.UID()), {'raptor': set(['Editor'])})
         api.content.transition(obj=item, transition='publish')
         # The parent is changed
@@ -66,9 +66,16 @@ class TestSubscriber(unittest.TestCase):
         add_fti_configuration('testingtype', localroles_config)
         self.portal.invokeFactory('testingtype', 'test')
         item = self.portal['test']
-        # The parent is set
+        # The parent is set by addition subscriber
         self.assertDictEqual(get_related_roles(self.portal, item.UID()), {'raptor': set(['Editor'])})
         api.content.transition(obj=item, transition='publish')
         api.content.delete(obj=item)
         # The parent is changed
         self.assertDictEqual(get_related_roles(self.portal, item.UID()), {})
+
+    def test_related_change_on_addition(self):
+        add_fti_configuration('testingtype', localroles_config)
+        self.portal.invokeFactory('testingtype', 'test')
+        item = self.portal['test']
+        # The parent is set
+        self.assertDictEqual(get_related_roles(self.portal, item.UID()), {'raptor': set(['Editor'])})

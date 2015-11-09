@@ -23,6 +23,12 @@
     />
 
   <subscriber
+    for="plone.dexterity.interfaces.IDexterityContent
+         zope.lifecycleevent.interfaces.IObjectAddedEvent"
+    handler=".subscriber.related_change_on_addition"
+    />
+
+  <subscriber
     for=".browser.settings.LocalRoleConfigurationAdapter
          zope.lifecycleevent.IObjectModifiedEvent"
     handler=".subscriber.local_role_configuration_updated"
