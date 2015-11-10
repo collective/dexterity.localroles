@@ -29,6 +29,18 @@
     />
 
   <subscriber
+    for="plone.dexterity.interfaces.IDexterityContent
+         OFS.interfaces.IObjectWillBeMovedEvent"
+    handler=".subscriber.related_change_on_moving"
+    />
+
+  <subscriber
+    for="plone.dexterity.interfaces.IDexterityContent
+         zope.lifecycleevent.interfaces.IObjectMovedEvent"
+    handler=".subscriber.related_change_on_moved"
+    />
+
+  <subscriber
     for=".browser.settings.LocalRoleConfigurationAdapter
          zope.lifecycleevent.IObjectModifiedEvent"
     handler=".subscriber.local_role_configuration_updated"
