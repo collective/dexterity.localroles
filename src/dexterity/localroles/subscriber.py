@@ -79,30 +79,28 @@ def related_change_on_addition(obj, event):
     fti_config = fti_configuration(obj)
     if 'static_config' not in fti_config:
         return
-    if event.oldParent and event.newParent and event.oldParent == event.newParent:  # rename
-        return
     related_role_addition(obj, get_state(obj), fti_config)
 
 
 def related_change_on_moving(obj, event):
-    """ Set local roles on related objects after removal """
+    """ Set local roles on related objects before moving """
     if IObjectWillBeAddedEvent.providedBy(event) or IObjectWillBeRemovedEvent.providedBy(event):  # not move
+        return
+    if event.oldParent and event.newParent and event.oldParent == event.newParent:  # rename
         return
     fti_config = fti_configuration(obj)
     if 'static_config' not in fti_config:
-        return
-    if event.oldParent and event.newParent and event.oldParent == event.newParent:  # rename
         return
     related_role_removal(obj, get_state(obj), fti_config)
 
 
 def related_change_on_moved(obj, event):
-    """ Set local roles on related objects after addition """
+    """ Set local roles on related objects after moving """
     if IObjectAddedEvent.providedBy(event) or IObjectRemovedEvent.providedBy(event):  # not move
+        return
+    if event.oldParent and event.newParent and event.oldParent == event.newParent:  # rename
         return
     fti_config = fti_configuration(obj)
     if 'static_config' not in fti_config:
-        return
-    if event.oldParent and event.newParent and event.oldParent == event.newParent:  # rename
         return
     related_role_addition(obj, get_state(obj), fti_config)

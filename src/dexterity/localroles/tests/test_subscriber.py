@@ -99,3 +99,5 @@ class TestSubscriber(unittest.TestCase):
         self.assertDictEqual(get_related_roles(self.portal, item.UID()), {})
         # The new parent is changed
         self.assertDictEqual(get_related_roles(folder, item.UID()), {'raptor': set(['Editor'])})
+        item = folder['test']
+        api.content.rename(obj=item, new_id='test1')
