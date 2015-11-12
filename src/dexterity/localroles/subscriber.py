@@ -20,9 +20,11 @@ def related_role_removal(obj, state, fti_config):
         for princ in dic:
             if dic[princ].get('rel', ''):
                 related = eval(dic[princ]['rel'])
-                for rel_dic in related:
-                    for rel in runRelatedSearch(rel_dic['utility'], obj):
-                        if del_related_roles(rel, uid, princ, rel_dic['roles']):
+                for utility in related:
+                    if not related[utility]:
+                        continue
+                    for rel in runRelatedSearch(utility, obj):
+                        if del_related_roles(rel, uid, princ, related[utility]):
                             rel.reindexObjectSecurity()
 
 
@@ -33,11 +35,11 @@ def related_role_addition(obj, state, fti_config):
         for princ in dic:
             if dic[princ].get('rel', ''):
                 related = eval(dic[princ]['rel'])
-                for rel_dic in related:
-                    if not rel_dic['roles']:
+                for utility in related:
+                    if not related[utility]:
                         continue
-                    for rel in runRelatedSearch(rel_dic['utility'], obj):
-                        add_related_roles(rel, uid, princ, rel_dic['roles'])
+                    for rel in runRelatedSearch(utility, obj):
+                        add_related_roles(rel, uid, princ, related[utility])
                         rel.reindexObjectSecurity()
 
 
@@ -100,8 +102,8 @@ def related_change_on_moved(obj, event):
 def local_role_related_configuration_updated(event):
     """
         Local roles configuration modification: we have to compare old and new values.
-        event.old_value is like : {'private': {'raptor': {'rel': "[{'utility':'dexterity.localroles.related_parent',
-                                                          'roles':['Editor']}]", 'roles': ('Reader',)}}}
+        event.old_value is like : {'private': {'raptor': {'rel': "{'dexterity.localroles.related_parent': ['Editor']}",
+                                                          'roles': ('Reader',)}}}
     """
     def compare_lists(old, new):
         """ Compare lists and return set of common items, added items and removed items """

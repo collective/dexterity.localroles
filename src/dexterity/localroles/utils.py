@@ -79,7 +79,7 @@ def add_fti_configuration(portal_type, configuration, keyname='static_config', f
     """
         Add in fti a specific localroles configuration.
         Param configuration is like:
-        {state: {principal: {'roles': [roles], 'rel': "[{'utility': utility,'roles':[roles]}]"}}}
+        {state: {principal: {'roles': [roles], 'rel': "{'utility name':[roles]}"}}}
     """
     try:
         fti = getUtility(IDexterityFTI, name=portal_type)

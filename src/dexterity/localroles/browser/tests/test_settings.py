@@ -25,29 +25,22 @@ class TestSettings(unittest.TestCase):
         self.assertIsNone(validator.validate(' '))
         # eval exception
         self.assertRaises(RelatedFormatError, validator.validate, 'abcd')
-        # test list type
-        self.assertRaises(RelatedFormatError, validator.validate, '{}')
-        # empty list is ok
-        self.assertIsNone(validator.validate('[]'))
-        # test content of list: must be a dict
-        self.assertRaises(RelatedFormatError, validator.validate, "['aa']")
-        # empty dic in list is ok
-        self.assertIsNone(validator.validate('[{}]'))
-        # test first if dict contains key 'utility'
-        self.assertRaises(RelatedFormatError, validator.validate, "[{'utilityy':''}]")
-        self.assertRaises(UtilityNameError, validator.validate, "[{'utility':'dexterity.localroles.related_parentt'}]")
-        # test after if dict contains key 'roles'
+        # test dict type
+        self.assertRaises(RelatedFormatError, validator.validate, '[]')
+        # empty dict is ok
+        self.assertIsNone(validator.validate('{}'))
+        # test key as utility
+        self.assertRaises(UtilityNameError, validator.validate, "{'dexterity.localroles.related_parentt':[]}")
+        # test value format
         self.assertRaises(RelatedFormatError, validator.validate,
-                          "[{'utility':'dexterity.localroles.related_parent','roless':[]}]")
-        self.assertRaises(RelatedFormatError, validator.validate,
-                          "[{'utility':'dexterity.localroles.related_parent','roles':''}]")
+                          "{'dexterity.localroles.related_parent':''}")
         # empty role list is ok
-        self.assertIsNone(validator.validate("[{'utility':'dexterity.localroles.related_parent','roles':[]}]"))
+        self.assertIsNone(validator.validate("{'dexterity.localroles.related_parent':[]}"))
         # test roles
         self.assertRaises(RoleNameError, validator.validate,
-                          "[{'utility':'dexterity.localroles.related_parent','roles':['ReaderR']}]")
+                          "{'dexterity.localroles.related_parent':['ReaderR']}")
         # all is ok
-        self.assertIsNone(validator.validate("[{'utility':'dexterity.localroles.related_parent','roles':['Reader']}]"))
+        self.assertIsNone(validator.validate("{'dexterity.localroles.related_parent':['Reader']}"))
 
     def test_localroleconfigurationadapter(self):
 

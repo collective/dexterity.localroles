@@ -10,10 +10,10 @@ from ..utils import add_fti_configuration, get_related_roles
 
 localroles_config = {
     u'private': {'raptor': {'roles': ('Editor',),
-                            'rel': "[{'utility':'dexterity.localroles.related_parent','roles':['Editor']}]"},
+                            'rel': "{'dexterity.localroles.related_parent':['Editor']}"},
                  'cavemans': {'roles': ('Reader', )}},
     u'published': {'raptor': {'roles': ('Reviewer',),
-                              'rel': "[{'utility':'dexterity.localroles.related_parent','roles':['Reviewer']}]"}},
+                              'rel': "{'dexterity.localroles.related_parent':['Reviewer']}"}},
 }
 
 
@@ -98,14 +98,14 @@ class TestSubscriber(unittest.TestCase):
         # Adding a state
         setattr(cls, 'static_config',
                 [{'state': 'private', 'value': 'raptor', 'roles': ('Reader',),
-                  'related': "[{'utility':'dexterity.localroles.related_parent','roles':['Editor']}]"}])
+                  'related': "{'dexterity.localroles.related_parent':['Editor']}"}])
         allowedRolesAndUsers = ctool.getIndexDataForUID('/'.join(item1.getPhysicalPath()))['allowedRolesAndUsers']
         self.assertIn('user:raptor', allowedRolesAndUsers)
         self.assertDictEqual(get_related_roles(self.portal, item1.UID()), {'raptor': set(['Editor'])})
         # Removing a state
         setattr(cls, 'static_config',
                 [{'state': 'pending', 'value': 't-rex', 'roles': ('Reader',),
-                  'related': "[{'utility':'dexterity.localroles.related_parent','roles':['Editor']}]"}])
+                  'related': "{'dexterity.localroles.related_parent':['Editor']}"}])
         allowedRolesAndUsers = ctool.getIndexDataForUID('/'.join(item1.getPhysicalPath()))['allowedRolesAndUsers']
         self.assertNotIn('user:raptor', allowedRolesAndUsers)
         self.assertDictEqual(get_related_roles(self.portal, item1.UID()), {})
@@ -115,9 +115,9 @@ class TestSubscriber(unittest.TestCase):
         # Adding principal
         setattr(cls, 'static_config',
                 [{'state': 'pending', 'value': 't-rex', 'roles': ('Reader',),
-                  'related': "[{'utility':'dexterity.localroles.related_parent','roles':['Editor']}]"},
+                  'related': "{'dexterity.localroles.related_parent':['Editor']}"},
                  {'state': 'pending', 'value': 'raptor', 'roles': ('Reader',),
-                  'related': "[{'utility':'dexterity.localroles.related_parent','roles':['Editor']}]"}])
+                  'related': "{'dexterity.localroles.related_parent':['Editor']}"}])
         allowedRolesAndUsers = ctool.getIndexDataForUID('/'.join(item.getPhysicalPath()))['allowedRolesAndUsers']
         self.assertIn('user:t-rex', allowedRolesAndUsers)
         self.assertIn('user:raptor', allowedRolesAndUsers)
@@ -126,7 +126,7 @@ class TestSubscriber(unittest.TestCase):
         # Removing principal
         setattr(cls, 'static_config',
                 [{'state': 'pending', 'value': 't-rex', 'roles': ('Reader',),
-                  'related': "[{'utility':'dexterity.localroles.related_parent','roles':['Editor']}]"}])
+                  'related': "{'dexterity.localroles.related_parent':['Editor']}"}])
         allowedRolesAndUsers = ctool.getIndexDataForUID('/'.join(item.getPhysicalPath()))['allowedRolesAndUsers']
         self.assertIn('user:t-rex', allowedRolesAndUsers)
         self.assertNotIn('user:raptor', allowedRolesAndUsers)
@@ -134,7 +134,7 @@ class TestSubscriber(unittest.TestCase):
         # Removing roles, Adding and removing rel
         setattr(cls, 'static_config',
                 [{'state': 'pending', 'value': 't-rex', 'roles': (),
-                  'related': "[{'utility':'dexterity.localroles.related_parent','roles':['Reader']}]"}])
+                  'related': "{'dexterity.localroles.related_parent':['Reader']}"}])
         allowedRolesAndUsers = ctool.getIndexDataForUID('/'.join(item.getPhysicalPath()))['allowedRolesAndUsers']
         self.assertNotIn('user:t-rex', allowedRolesAndUsers)
         self.assertDictEqual(get_related_roles(self.portal, item.UID()), {'t-rex': set(['Reader'])})

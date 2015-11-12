@@ -126,23 +126,17 @@ class RelatedFormatValidator(validator.SimpleFieldValidator):
             var = eval(value)
         except:
             raise RelatedFormatError
-        if not isinstance(var, (list, tuple)):
+        if not isinstance(var, dict):
             raise RelatedFormatError
         valid_roles = [i[0] for i in getUtilitiesFor(ISharingPageRole)]
-        for dic in var:
-            if not isinstance(dic, dict):
-                raise RelatedFormatError
-            if not dic:
-                continue
-            if 'utility' not in dic:
-                raise RelatedFormatError
+        for utility in var:
             try:
-                getUtility(ILocalRolesRelatedSearchUtility, dic['utility'])
+                getUtility(ILocalRolesRelatedSearchUtility, utility)
             except:
                 raise UtilityNameError
-            if 'roles' not in dic or not isinstance(dic['roles'], (list, tuple)):
+            if not isinstance(var[utility], (list, tuple)):
                 raise RelatedFormatError
-            for role in dic['roles']:
+            for role in var[utility]:
                 if role not in valid_roles:
                     raise RoleNameError
 
