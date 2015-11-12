@@ -28,13 +28,18 @@ def add_related_roles(obj, uid, principal, roles):
         annot[rel_key][uid][principal] |= set(roles)
 
 
-def del_related_roles(obj, uid):
+def del_related_roles(obj, uid, principal, roles):
     """ Delete uid related roles on obj """
     annot = IAnnotations(obj)
-    if rel_key not in annot or uid not in annot[rel_key]:
-        return {}
-    ret = annot[rel_key].pop(uid)
+    if rel_key not in annot or uid not in annot[rel_key] or principal not in annot[rel_key][uid]:
+        return set()
+    ret = annot[rel_key][uid][principal] & set(roles)
+    annot[rel_key][uid][principal] -= set(roles)
     # We remove the key from annotation
+    if not annot[rel_key][uid][principal]:
+        del annot[rel_key][uid][principal]
+    if not annot[rel_key][uid]:
+        del annot[rel_key][uid]
     if not annot[rel_key]:
         del annot[rel_key]
     return ret
