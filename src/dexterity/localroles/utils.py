@@ -53,6 +53,21 @@ def get_related_roles(obj, uid):
     return annot[rel_key][uid]
 
 
+def get_all_related_roles(obj):
+    """ Get related roles on obj """
+    annot = IAnnotations(obj)
+    if rel_key not in annot:
+        return {}
+    ret = {}
+    for uid in annot[rel_key]:
+        for p in annot[rel_key][uid]:
+            if p not in ret:
+                ret[p] = set(annot[rel_key][uid][p])
+            else:
+                ret[p] |= set(annot[rel_key][uid][p])
+    return ret
+
+
 def set_related_roles(obj, uid, dic):
     """
         Set related roles on obj for uid.

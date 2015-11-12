@@ -10,8 +10,12 @@ from ..testing import DLR_PROFILE_FUNCTIONAL
 from ..utils import add_fti_configuration
 
 localroles_config = {
-    u'private': {'raptor': {'roles': ('Editor', 'Contributor')}, 'cavemans': {'roles': ('Reader', )}},
-    u'published': {'hunters': {'roles': ('Reader', )}, 'wilma': {'roles': ('Editor', )}}}
+    u'private': {'raptor': {'roles': ('Editor', 'Contributor'),
+                            'rel': "{'dexterity.localroles.related_parent':['Editor']}"},
+                 'cavemans': {'roles': ('Reader', )}},
+    u'published': {'hunters': {'roles': ('Reader', ),
+                               'rel': "{'dexterity.localroles.related_parent':['Reader']}"},
+                   'wilma': {'roles': ('Editor', )}}}
 
 
 class TestAdapter(unittest.TestCase, BaseSearchTest):
@@ -92,3 +96,29 @@ class TestAdapter(unittest.TestCase, BaseSearchTest):
         self.assertIn('user:raptor', allowedRolesAndUsers)
         self.assertNotIn('user:t-rex', allowedRolesAndUsers)
         self.assertNotIn('user:basic-user', allowedRolesAndUsers)
+
+    def test_related_localroles_change_on_statechange(self):
+        self.portal.invokeFactory('Folder', 'folder')
+        folder = self.portal['folder']
+        # No related roles
+        self.assertContainsSame(api.group.get_roles(groupname='cavemans', obj=folder), ['Authenticated'])
+        self.assertContainsSame(api.group.get_roles(groupname='hunters', obj=folder), ['Authenticated'])
+        self.assertContainsSame(api.user.get_roles(username='raptor', obj=folder), ['Authenticated', 'Member'])
+        self.assertContainsSame(api.user.get_roles(username='wilma', obj=folder), ['Authenticated', 'Member'])
+        folder.invokeFactory('testingtype', 'test')
+        item = folder['test']
+        # Related roles after creation
+        self.assertContainsSame(api.group.get_roles(groupname='cavemans', obj=folder), ['Authenticated'])
+        self.assertContainsSame(api.group.get_roles(groupname='hunters', obj=folder), ['Authenticated'])
+        self.assertContainsSame(api.user.get_roles(username='raptor', obj=folder),
+                                ['Authenticated', 'Member', 'Editor'])
+        self.assertContainsSame(api.user.get_roles(username='wilma', obj=folder),
+                                ['Authenticated', 'Member'])
+        api.content.transition(obj=item, transition='publish')
+        # Related roles after publish
+        self.assertContainsSame(api.group.get_roles(groupname='cavemans', obj=folder), ['Authenticated'])
+        self.assertContainsSame(api.group.get_roles(groupname='hunters', obj=folder), ['Authenticated', 'Reader'])
+        self.assertContainsSame(api.user.get_roles(username='raptor', obj=folder),
+                                ['Authenticated', 'Member', 'Reader'])
+        self.assertContainsSame(api.user.get_roles(username='wilma', obj=folder),
+                                ['Authenticated', 'Member'])

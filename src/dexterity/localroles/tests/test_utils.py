@@ -3,7 +3,7 @@ import unittest2 as unittest
 from plone.app.testing import login, TEST_USER_NAME, setRoles, TEST_USER_ID
 
 from ..testing import DLR_PROFILE_FUNCTIONAL
-from ..utils import (add_related_roles, del_related_roles, get_related_roles, set_related_roles,
+from ..utils import (add_related_roles, del_related_roles, get_related_roles, set_related_roles, get_all_related_roles,
                      fti_configuration, add_fti_configuration)
 
 localroles_config = {
@@ -55,6 +55,17 @@ class TestUtils(unittest.TestCase):
     def test_get_related_roles(self):
         # no key or no uid stored
         self.assertDictEqual(get_related_roles(self.portal, 'fakeuid'), {})
+
+    def test_get_all_related_roles(self):
+        self.assertDictEqual(get_all_related_roles(self.portal), {})
+        add_related_roles(self.portal, 'fakeuid', 'raptor', ['Reader', 'Editor'])
+        self.assertDictEqual(get_all_related_roles(self.portal), {'raptor': set(['Editor', 'Reader'])})
+        add_related_roles(self.portal, 'fakeuid', 't-rex', ['Reader'])
+        self.assertDictEqual(get_all_related_roles(self.portal),
+                             {'raptor': set(['Editor', 'Reader']), 't-rex': set(['Reader'])})
+        add_related_roles(self.portal, 'fakeuid1', 't-rex', ['Reader'])
+        self.assertDictEqual(get_all_related_roles(self.portal),
+                             {'raptor': set(['Editor', 'Reader']), 't-rex': set(['Reader'])})
 
     def test_set_related_roles(self):
         # nothing already stored

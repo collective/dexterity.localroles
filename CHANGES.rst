@@ -15,6 +15,8 @@ Changelog
   [sgeulette]
 - Change related local roles on transition, on addition, on removal, on moving, on configuration changes
   [sgeulette]
+- Add an adapter for related local roles
+  [sgeulette]
 - Simplify code
   [sgeulette]
 

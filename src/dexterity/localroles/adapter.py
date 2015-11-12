@@ -4,7 +4,7 @@ from zope.interface import implements
 
 from borg.localrole.interfaces import ILocalRoleProvider
 
-from utils import fti_configuration, get_state
+from utils import fti_configuration, get_state, get_all_related_roles
 
 
 class LocalRoleAdapter(object):
@@ -43,3 +43,29 @@ class LocalRoleAdapter(object):
     def config(self):
         fti_config = fti_configuration(self.context)
         return fti_config.get('static_config', {})
+
+
+class RelatedLocalRoleAdapter(object):
+    """
+        borg.localrole adapter to set related localroles following annotation
+    """
+    implements(ILocalRoleProvider)
+
+    def __init__(self, context):
+        self.context = context
+
+    def getRoles(self, principal):
+        """Grant permission for principal"""
+        if not self.related_roles.get(principal, []):
+            return ()
+        return tuple(self.related_roles.get(principal))
+
+    def getAllRoles(self):
+        """Grant permissions"""
+        for principal, roles in self.related_roles.items():
+            yield (principal, tuple(roles))
+
+    @property
+    def related_roles(self):
+        """Return a dict with principals and roles """
+        return get_all_related_roles(self.context)

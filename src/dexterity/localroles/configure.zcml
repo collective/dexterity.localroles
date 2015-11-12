@@ -29,6 +29,12 @@
     factory=".adapter.LocalRoleAdapter"
     />
 
+  <adapter
+    for="Products.CMFCore.interfaces.IContentish"
+    provides="borg.localrole.interfaces.ILocalRoleProvider"
+    factory=".adapter.RelatedLocalRoleAdapter"
+    />
+
   <browser:resourceDirectory
     name="dexterity.localroles"
     directory="static" />
