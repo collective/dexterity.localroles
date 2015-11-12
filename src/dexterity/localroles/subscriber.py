@@ -30,9 +30,9 @@ def related_role_removal(obj, state, fti_config):
             if dic[princ].get('rel', ''):
                 related = eval(dic[princ]['rel'])
                 for rel_dic in related:
-                    for obj in runRelatedSearch(rel_dic['utility'], obj):
-                        if del_related_roles(obj, uid):
-                            obj.reindexObjectSecurity()
+                    for rel in runRelatedSearch(rel_dic['utility'], obj):
+                        if del_related_roles(rel, uid, princ, rel_dic['roles']):
+                            rel.reindexObjectSecurity()
 
 
 def related_role_addition(obj, state, fti_config):
@@ -45,9 +45,9 @@ def related_role_addition(obj, state, fti_config):
                 for rel_dic in related:
                     if not rel_dic['roles']:
                         continue
-                    for obj in runRelatedSearch(rel_dic['utility'], obj):
-                        add_related_roles(obj, uid, princ, rel_dic['roles'])
-                        obj.reindexObjectSecurity()
+                    for rel in runRelatedSearch(rel_dic['utility'], obj):
+                        add_related_roles(rel, uid, princ, rel_dic['roles'])
+                        rel.reindexObjectSecurity()
 
 
 def related_change_on_transition(obj, event):
