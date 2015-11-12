@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 import transaction
 import unittest2 as unittest
-from zope import event
-from zope.lifecycleevent import ObjectModifiedEvent
 from plone import api
 from plone.app.testing import login, TEST_USER_NAME, setRoles, TEST_USER_ID
 
@@ -28,30 +26,6 @@ class TestSubscriber(unittest.TestCase):
         self.portal = self.layer['portal']
         setRoles(self.portal, TEST_USER_ID, ['Manager'])
         login(self.portal, TEST_USER_NAME)
-
-    def test_local_role_configuration_updated(self):
-        add_fti_configuration('testingtype', localroles_config)
-        self.portal.invokeFactory('testingtype', 'test')
-        item = self.portal['test']
-        ctool = self.portal.portal_catalog
-        allowedRolesAndUsers = ctool.getIndexDataForUID('/'.join(item.getPhysicalPath()))['allowedRolesAndUsers']
-        self.assertIn('user:cavemans', allowedRolesAndUsers)
-        self.assertIn('user:raptor', allowedRolesAndUsers)
-
-        class dummy(object):
-            def __init__(self, fti):
-                self.fti = fti
-                self.context = self
-
-        fti = self.layer['portal'].portal_types.get('testingtype')
-        dum = dummy(fti)
-        cls = LocalRoleConfigurationAdapter(dum)
-        del localroles_config['private']['cavemans']
-        add_fti_configuration('testingtype', localroles_config)
-        event.notify(ObjectModifiedEvent(cls))
-        allowedRolesAndUsers = ctool.getIndexDataForUID('/'.join(item.getPhysicalPath()))['allowedRolesAndUsers']
-        self.assertNotIn('user:cavemans', allowedRolesAndUsers)
-        self.assertIn('user:raptor', allowedRolesAndUsers)
 
     def test_related_change_on_transition(self):
         add_fti_configuration('testingtype', localroles_config)
@@ -101,3 +75,66 @@ class TestSubscriber(unittest.TestCase):
         self.assertDictEqual(get_related_roles(folder, item.UID()), {'raptor': set(['Editor'])})
         item = folder['test']
         api.content.rename(obj=item, new_id='test1')
+
+    def test_local_role_configuration_updated(self):
+        class dummy(object):
+            def __init__(self, fti):
+                self.fti = fti
+                self.context = self
+
+        ctool = self.portal.portal_catalog
+        fti = self.layer['portal'].portal_types.get('testingtype')
+        dum = dummy(fti)
+        cls = LocalRoleConfigurationAdapter(dum)
+        self.portal.invokeFactory('testingtype', 'test')
+        item = self.portal['test']
+        api.content.transition(obj=item, transition='submit')
+        self.portal.invokeFactory('testingtype', 'test1')
+        item1 = self.portal['test1']
+        # Nothing is set !
+        allowedRolesAndUsers = ctool.getIndexDataForUID('/'.join(item1.getPhysicalPath()))['allowedRolesAndUsers']
+        self.assertNotIn('user:raptor', allowedRolesAndUsers)
+        self.assertDictEqual(get_related_roles(self.portal, item1.UID()), {})
+        # Adding a state
+        setattr(cls, 'static_config',
+                [{'state': 'private', 'value': 'raptor', 'roles': ('Reader',),
+                  'related': "[{'utility':'dexterity.localroles.related_parent','roles':['Editor']}]"}])
+        allowedRolesAndUsers = ctool.getIndexDataForUID('/'.join(item1.getPhysicalPath()))['allowedRolesAndUsers']
+        self.assertIn('user:raptor', allowedRolesAndUsers)
+        self.assertDictEqual(get_related_roles(self.portal, item1.UID()), {'raptor': set(['Editor'])})
+        # Removing a state
+        setattr(cls, 'static_config',
+                [{'state': 'pending', 'value': 't-rex', 'roles': ('Reader',),
+                  'related': "[{'utility':'dexterity.localroles.related_parent','roles':['Editor']}]"}])
+        allowedRolesAndUsers = ctool.getIndexDataForUID('/'.join(item1.getPhysicalPath()))['allowedRolesAndUsers']
+        self.assertNotIn('user:raptor', allowedRolesAndUsers)
+        self.assertDictEqual(get_related_roles(self.portal, item1.UID()), {})
+        allowedRolesAndUsers = ctool.getIndexDataForUID('/'.join(item.getPhysicalPath()))['allowedRolesAndUsers']
+        self.assertIn('user:t-rex', allowedRolesAndUsers)
+        self.assertDictEqual(get_related_roles(self.portal, item.UID()), {'t-rex': set(['Editor'])})
+        # Adding principal
+        setattr(cls, 'static_config',
+                [{'state': 'pending', 'value': 't-rex', 'roles': ('Reader',),
+                  'related': "[{'utility':'dexterity.localroles.related_parent','roles':['Editor']}]"},
+                 {'state': 'pending', 'value': 'raptor', 'roles': ('Reader',),
+                  'related': "[{'utility':'dexterity.localroles.related_parent','roles':['Editor']}]"}])
+        allowedRolesAndUsers = ctool.getIndexDataForUID('/'.join(item.getPhysicalPath()))['allowedRolesAndUsers']
+        self.assertIn('user:t-rex', allowedRolesAndUsers)
+        self.assertIn('user:raptor', allowedRolesAndUsers)
+        self.assertDictEqual(get_related_roles(self.portal, item.UID()), {'t-rex': set(['Editor']),
+                                                                          'raptor': set(['Editor'])})
+        # Removing principal
+        setattr(cls, 'static_config',
+                [{'state': 'pending', 'value': 't-rex', 'roles': ('Reader',),
+                  'related': "[{'utility':'dexterity.localroles.related_parent','roles':['Editor']}]"}])
+        allowedRolesAndUsers = ctool.getIndexDataForUID('/'.join(item.getPhysicalPath()))['allowedRolesAndUsers']
+        self.assertIn('user:t-rex', allowedRolesAndUsers)
+        self.assertNotIn('user:raptor', allowedRolesAndUsers)
+        self.assertDictEqual(get_related_roles(self.portal, item.UID()), {'t-rex': set(['Editor'])})
+        # Removing roles, Adding and removing rel
+        setattr(cls, 'static_config',
+                [{'state': 'pending', 'value': 't-rex', 'roles': (),
+                  'related': "[{'utility':'dexterity.localroles.related_parent','roles':['Reader']}]"}])
+        allowedRolesAndUsers = ctool.getIndexDataForUID('/'.join(item.getPhysicalPath()))['allowedRolesAndUsers']
+        self.assertNotIn('user:t-rex', allowedRolesAndUsers)
+        self.assertDictEqual(get_related_roles(self.portal, item.UID()), {'t-rex': set(['Reader'])})

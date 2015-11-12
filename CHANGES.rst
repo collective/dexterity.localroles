@@ -13,7 +13,7 @@ Changelog
   [sgeulette]
 - Add related search utility
   [sgeulette]
-- Change related local roles on transition, on addition, on removal, on moving
+- Change related local roles on transition, on addition, on removal, on moving, on configuration changes
   [sgeulette]
 - Simplify code
   [sgeulette]

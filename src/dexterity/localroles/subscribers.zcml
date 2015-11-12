@@ -41,9 +41,7 @@
     />
 
   <subscriber
-    for=".browser.settings.LocalRoleConfigurationAdapter
-         zope.lifecycleevent.IObjectModifiedEvent"
-    handler=".subscriber.local_role_configuration_updated"
-    />
+    for="dexterity.localroles.browser.interfaces.ILocalRoleListUpdatedEvent"
+    handler=".subscriber.local_role_related_configuration_updated" />
 
 </configure>

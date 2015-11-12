@@ -16,10 +16,10 @@ from z3c.form.interfaces import IFormLayer
 from z3c.form.interfaces import IValidator
 from z3c.form.validator import SimpleFieldValidator
 from z3c.form.widget import FieldWidget
-from zope import schema
+from zope import schema, event
 from zope.browserpage.viewpagetemplatefile import ViewPageTemplateFile
 from zope.component import adapts, getUtility, getUtilitiesFor
-from zope.interface import Interface
+from zope.interface import Interface, implements
 
 from dexterity.localroles import _
 from dexterity.localroles import PMF
@@ -32,6 +32,7 @@ from dexterity.localroles.browser.interfaces import ILocalRoleList
 from dexterity.localroles.browser.overrides import CustomTypeFormLayout
 from dexterity.localroles.vocabulary import plone_role_generator
 from ..interfaces import ILocalRolesRelatedSearchUtility
+from .interfaces import ILocalRoleListUpdatedEvent
 
 
 class WorkflowState(schema.Choice):
@@ -77,6 +78,16 @@ def role_widget(field, request):
 
 class LocalRoleList(schema.List):
     grok.implements(ILocalRoleList)
+
+
+class LocalRoleListUpdatedEvent(object):
+    implements(ILocalRoleListUpdatedEvent)
+
+    def __init__(self, fti, field, old_value, new_value):
+        self.fti = fti
+        self.field = field
+        self.old_value = old_value
+        self.new_value = new_value
 
 
 class LocalRoleListValidator(grok.MultiAdapter, SimpleFieldValidator):
@@ -174,6 +185,7 @@ class LocalRoleConfigurationAdapter(object):
         if old_value == new_dict:
             return
         self.context.fti.localroles[name] = new_dict
+        event.notify(LocalRoleListUpdatedEvent(self.fti, name, old_value, new_dict))
 
     @staticmethod
     def convert_to_dict(value):

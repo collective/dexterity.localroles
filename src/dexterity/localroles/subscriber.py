@@ -13,15 +13,6 @@ def update_security(obj, event):
     obj.reindexObjectSecurity()
 
 
-def local_role_configuration_updated(obj, event):
-    """ Reindex security for objects """
-    portal = api.portal.getSite()
-    logger.info('Objects security update')
-    for brain in portal.portal_catalog(portal_type=obj.fti.__name__):
-        obj = brain.getObject()
-        obj.reindexObjectSecurity()
-
-
 def related_role_removal(obj, state, fti_config):
     if state in fti_config['static_config']:
         dic = fti_config['static_config'][state]
@@ -104,3 +95,83 @@ def related_change_on_moved(obj, event):
     if 'static_config' not in fti_config:
         return
     related_role_addition(obj, get_state(obj), fti_config)
+
+
+def local_role_related_configuration_updated(event):
+    """
+        Local roles configuration modification: we have to compare old and new values.
+        event.old_value is like : {'private': {'raptor': {'rel': "[{'utility':'dexterity.localroles.related_parent',
+                                                          'roles':['Editor']}]", 'roles': ('Reader',)}}}
+    """
+    def compare_lists(old, new):
+        """ Compare lists and return set of common items, added items and removed items """
+        old_set = set(old)
+        new_set = set(new)
+        return old_set & new_set, new_set - old_set, old_set - new_set
+
+    def add_modifications(target, state, modif):
+        if state not in target:
+            target[state] = {}
+        for princ in modif:
+            if princ not in target:
+                target[state][princ] = {'rel': ''}
+            if modif[princ]['rel']:
+                if target[state][princ]['rel'] and target[state][princ]['rel'] != modif[princ]['rel']:
+                    logger.error("Related configuration to add '%s' differs '%s'" %
+                                 (modif[princ]['rel'], target[state][princ]['rel']))
+                target[state][princ]['rel'] = modif[princ]['rel']
+
+    only_reindex = set()
+    rem_rel_roles = {}
+    add_rel_roles = {}
+    # state key can be added or removed
+    com_state_set, add_state_set, rem_state_set = compare_lists(event.old_value.keys(), event.new_value.keys())
+    if rem_state_set:
+        only_reindex |= rem_state_set
+        for st in rem_state_set:
+            add_modifications(rem_rel_roles, st, event.old_value[st])
+    if add_state_set:
+        only_reindex |= add_state_set
+        for st in add_state_set:
+            add_modifications(add_rel_roles, st, event.new_value[st])
+    # principal can be added or removed
+    for st in com_state_set:
+        com_princ_set, add_princ_set, rem_princ_set = compare_lists(event.old_value[st].keys(),
+                                                                    event.new_value[st].keys())
+        if rem_princ_set:
+            only_reindex |= set([st])
+            for pr in rem_princ_set:
+                add_modifications(rem_rel_roles, st, {pr: event.old_value[st][pr]})
+        if add_princ_set:
+            only_reindex |= set([st])
+            for pr in add_princ_set:
+                add_modifications(add_rel_roles, st, {pr: event.new_value[st][pr]})
+        for pr in com_princ_set:
+            # roles can be added or removed
+            com_roles_set, add_roles_set, rem_roles_set = compare_lists(event.old_value[st][pr]['roles'],
+                                                                        event.new_value[st][pr]['roles'])
+            if add_roles_set or rem_roles_set:
+                only_reindex |= set([st])
+            # rel can be added or removed
+            if event.old_value[st][pr]['rel'] != event.new_value[st][pr]['rel']:
+                if event.old_value[st][pr]['rel']:
+                    add_modifications(rem_rel_roles, st, {pr: event.old_value[st][pr]})
+                if event.new_value[st][pr]['rel']:
+                    add_modifications(add_rel_roles, st, {pr: event.new_value[st][pr]})
+
+    portal = api.portal.getSite()
+    if only_reindex:
+        logger.info('Objects security update')
+        for brain in portal.portal_catalog(portal_type=event.fti.__name__, review_state=list(only_reindex)):
+            obj = brain.getObject()
+            obj.reindexObjectSecurity()
+    if rem_rel_roles:
+        logger.info("Removing related roles: %s" % rem_rel_roles)
+        for st in rem_rel_roles:
+            for brain in portal.portal_catalog(portal_type=event.fti.__name__, review_state=st):
+                related_role_removal(brain.getObject(), brain.review_state, {event.field: rem_rel_roles})
+    if add_rel_roles:
+        logger.info('Adding related roles')
+        for st in add_rel_roles:
+            for brain in portal.portal_catalog(portal_type=event.fti.__name__, review_state=st):
+                related_role_addition(brain.getObject(), brain.review_state, {event.field: add_rel_roles})
