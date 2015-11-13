@@ -186,7 +186,7 @@ class LocalRoleConfigurationAdapter(object):
         value_dict = {}
         for row in value:
             state, roles, principal = row['state'], row['roles'], row['value']
-            related = row['related'] is not None and row['related'].strip() or ''
+            related = row['related'] is not None and row['related'].strip() and str(eval(row['related'])) or ''
             if state not in value_dict:
                 value_dict[state] = {}
             value_dict[state][principal] = {'roles': roles, 'rel': related}

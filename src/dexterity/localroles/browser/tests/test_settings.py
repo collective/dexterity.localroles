@@ -71,5 +71,5 @@ class TestSettings(unittest.TestCase):
         dict_values = {'private': {'raptor': {'roles': ('Reader', 'Contributor'), 'rel': ''},
                                    'caveman': {'roles': ('Reader', ), 'rel': ''}},
                        'pending': {'caveman': {'roles': ('Contributor', ), 'rel': ''}}}
-        self.assertEqual(dict_values, cls.convert_to_dict(values))
+        self.assertDictEqual(dict_values, cls.convert_to_dict(values))
         self.assertItemsEqual(values, cls.convert_to_list(dict_values))
