@@ -99,11 +99,12 @@ def related_change_on_moved(obj, event):
     related_role_addition(obj, get_state(obj), fti_config)
 
 
-def local_role_related_configuration_updated(event):
+def configuration_change_analysis(event):
     """
-        Local roles configuration modification: we have to compare old and new values.
-        event.old_value is like : {'private': {'raptor': {'rel': "{'dexterity.localroles.related_parent': ['Editor']}",
-                                                          'roles': ('Reader',)}}}
+        Analyses the configuration changes and returns:
+         * a set of objects for which the catalog security must be updated
+         * a dict for related roles to remove
+         * a dict for related roles to add
     """
     def compare_lists(old, new):
         """ Compare lists and return set of common items, added items and removed items """
@@ -126,6 +127,7 @@ def local_role_related_configuration_updated(event):
     only_reindex = set()
     rem_rel_roles = {}
     add_rel_roles = {}
+
     # state key can be added or removed
     com_state_set, add_state_set, rem_state_set = compare_lists(event.old_value.keys(), event.new_value.keys())
     if rem_state_set:
@@ -161,6 +163,16 @@ def local_role_related_configuration_updated(event):
                 if event.new_value[st][pr]['rel']:
                     add_modifications(add_rel_roles, st, {pr: event.new_value[st][pr]})
 
+    return only_reindex, rem_rel_roles, add_rel_roles
+
+
+def local_role_related_configuration_updated(event):
+    """
+        Local roles configuration modification: we have to compare old and new values.
+        event.old_value is like : {'private': {'raptor': {'rel': "{'dexterity.localroles.related_parent': ['Editor']}",
+                                                          'roles': ('Reader',)}}}
+    """
+    only_reindex, rem_rel_roles, add_rel_roles = configuration_change_analysis(event)
     portal = api.portal.getSite()
     if only_reindex:
         logger.info('Objects security update')
