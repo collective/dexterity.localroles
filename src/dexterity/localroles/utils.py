@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from persistent.mapping import PersistentMapping
-from zope.component import getUtility, queryUtility
+from zope.component import getUtility
 from zope.component.interfaces import ComponentLookupError
 from zope.annotation.interfaces import IAnnotations
 
