@@ -20,9 +20,9 @@ def add_related_roles(obj, uid, principal, roles):
     if not roles:
         return
     if rel_key not in annot:
-        annot[rel_key] = {}
+        annot[rel_key] = PersistentMapping()
     if uid not in annot[rel_key]:
-        annot[rel_key][uid] = {}
+        annot[rel_key][uid] = PersistentMapping()
     if principal not in annot[rel_key][uid]:
         annot[rel_key][uid][principal] = set(roles)
     else:
@@ -76,8 +76,8 @@ def set_related_roles(obj, uid, dic):
     """
     annot = IAnnotations(obj)
     if rel_key not in annot:
-        annot[rel_key] = {}
-    annot[rel_key][uid] = dic
+        annot[rel_key] = PersistentMapping()
+    annot[rel_key][uid] = PersistentMapping(dic)
 
 
 def fti_configuration(obj):

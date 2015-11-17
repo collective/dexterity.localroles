@@ -185,7 +185,7 @@ def local_role_related_configuration_updated(event):
             for brain in portal.portal_catalog(portal_type=event.fti.__name__, review_state=st):
                 related_role_removal(brain.getObject(), brain.review_state, {event.field: rem_rel_roles})
     if add_rel_roles:
-        logger.info('Adding related roles')
+        logger.info('Adding related roles: %s' % add_rel_roles)
         for st in add_rel_roles:
             for brain in portal.portal_catalog(portal_type=event.fti.__name__, review_state=st):
                 related_role_addition(brain.getObject(), brain.review_state, {event.field: add_rel_roles})
