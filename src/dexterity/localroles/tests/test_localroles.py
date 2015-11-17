@@ -1,5 +1,6 @@
 # encoding: utf-8
 
+from persistent.mapping import PersistentMapping
 from plone import api
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_NAME
@@ -32,11 +33,11 @@ class TestLocalRoles(unittest.TestCase):
             u'published': {
                 'hunters': {'roles': ('Reader', )},
                 'wilma': {'roles': ('Editor', )}}}
-        setattr(self.test_fti, 'localroles', {'static_config': config})
+        setattr(self.test_fti, 'localroles', PersistentMapping({'static_config': config}))
 
     def tearDown(self):
         api.content.delete(obj=self.content)
-        setattr(self.test_fti, 'localroles', {})
+        setattr(self.test_fti, 'localroles', PersistentMapping())
         logout()
 
     @property

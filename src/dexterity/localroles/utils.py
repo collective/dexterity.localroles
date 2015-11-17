@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from persistent.mapping import PersistentMapping
 from zope.component import getUtility
 from zope.component.interfaces import ComponentLookupError
 from zope.annotation.interfaces import IAnnotations
@@ -102,7 +103,7 @@ def add_fti_configuration(portal_type, configuration, keyname='static_config', f
         logger.error("The portal type '%s' doesn't exist" % portal_type)
         return "The portal type '%s' doesn't exist" % portal_type
     if not base_hasattr(fti, 'localroles'):
-        setattr(fti, 'localroles', {})
+        setattr(fti, 'localroles', PersistentMapping())
     if keyname in fti.localroles and not force:
         logger.warn("The '%s' configuration on type '%s' is already set" % (keyname, portal_type))
         return "The '%s' configuration on type '%s' is already set" % (keyname, portal_type)

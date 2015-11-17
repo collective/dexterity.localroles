@@ -1,5 +1,6 @@
 # encoding: utf-8
 
+from persistent.mapping import PersistentMapping
 from Products.CMFPlone.utils import base_hasattr
 from collective.z3cform.datagridfield import DataGridField
 from collective.z3cform.datagridfield import DictRow
@@ -173,7 +174,7 @@ class LocalRoleConfigurationAdapter(object):
 
     def __setattr__(self, name, value):
         if not base_hasattr(self.context.fti, 'localroles'):
-            setattr(self.context.fti, 'localroles', {})
+            setattr(self.context.fti, 'localroles', PersistentMapping())
         old_value = self.context.fti.localroles.get(name, {})
         new_dict = self.convert_to_dict(value)
         if old_value == new_dict:
