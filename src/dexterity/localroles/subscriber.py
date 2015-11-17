@@ -157,10 +157,10 @@ def configuration_change_analysis(event):
             if add_roles_set or rem_roles_set:
                 only_reindex |= set([st])
             # rel can be added or removed
-            if event.old_value[st][pr]['rel'] != event.new_value[st][pr]['rel']:
-                if event.old_value[st][pr]['rel']:
+            if event.old_value[st][pr].get('rel', '') != event.new_value[st][pr].get('rel', ''):
+                if event.old_value[st][pr].get('rel', ''):
                     add_modifications(rem_rel_roles, st, {pr: event.old_value[st][pr]})
-                if event.new_value[st][pr]['rel']:
+                if event.new_value[st][pr].get('rel', ''):
                     add_modifications(add_rel_roles, st, {pr: event.new_value[st][pr]})
 
     return only_reindex, rem_rel_roles, add_rel_roles
