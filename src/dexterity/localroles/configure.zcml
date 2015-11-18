@@ -27,12 +27,14 @@
     for="plone.dexterity.interfaces.IDexterityContent"
     provides="borg.localrole.interfaces.ILocalRoleProvider"
     factory=".adapter.LocalRoleAdapter"
+    name="local-role-adapter"
     />
 
   <adapter
     for="Products.CMFCore.interfaces.IContentish"
     provides="borg.localrole.interfaces.ILocalRoleProvider"
     factory=".adapter.RelatedLocalRoleAdapter"
+    name="related-local-role-adapter"
     />
 
   <browser:resourceDirectory
