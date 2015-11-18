@@ -78,12 +78,13 @@ class TestUtils(unittest.TestCase):
     def test_fti_configuration(self):
         self.portal.invokeFactory('Document', 'doc')
         item = self.portal['doc']
-        self.assertEqual(fti_configuration(item), {})
+        self.assertEqual(fti_configuration(item), ({}, None))
         self.portal.invokeFactory('testingtype', 'test')
         item = self.portal['test']
-        self.assertEqual(fti_configuration(item), {})
+        self.assertEqual(fti_configuration(item), ({}, self.portal.portal_types.testingtype))
         add_fti_configuration('testingtype', localroles_config)
-        self.assertEqual(fti_configuration(item)['static_config'], localroles_config)
+        self.assertEqual(fti_configuration(item),
+                         ({'static_config': localroles_config}, self.portal.portal_types.testingtype))
 
     def test_add_fti_configuration(self):
         add_fti_configuration('testingtype', localroles_config)

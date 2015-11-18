@@ -41,7 +41,7 @@ class LocalRoleAdapter(object):
 
     @property
     def config(self):
-        fti_config = fti_configuration(self.context)
+        (fti_config, fti) = fti_configuration(self.context)
         return fti_config.get('static_config', {})
 
 

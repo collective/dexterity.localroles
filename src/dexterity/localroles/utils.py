@@ -85,10 +85,10 @@ def fti_configuration(obj):
     try:
         fti = getUtility(IDexterityFTI, name=obj.portal_type)
     except ComponentLookupError:
-        return {}
+        return ({}, None)
     if not base_hasattr(fti, 'localroles'):
-        return {}
-    return fti.localroles
+        return ({}, fti)
+    return (fti.localroles, fti)
 
 
 def add_fti_configuration(portal_type, configuration, keyname='static_config', force=False):

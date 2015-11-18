@@ -45,7 +45,7 @@ def related_role_addition(obj, state, fti_config):
 
 def related_change_on_transition(obj, event):
     """ Set local roles on related objects after transition """
-    fti_config = fti_configuration(obj)
+    (fti_config, fti) = fti_configuration(obj)
     if 'static_config' not in fti_config:
         return
     if event.old_state.id != event.new_state.id:  # escape creation
@@ -57,7 +57,7 @@ def related_change_on_transition(obj, event):
 
 def related_change_on_removal(obj, event):
     """ Set local roles on related objects after removal """
-    fti_config = fti_configuration(obj)
+    (fti_config, fti) = fti_configuration(obj)
     if 'static_config' not in fti_config:
         return
     # We have to remove the configuration linked to deleted object
@@ -69,7 +69,7 @@ def related_change_on_removal(obj, event):
 
 def related_change_on_addition(obj, event):
     """ Set local roles on related objects after addition """
-    fti_config = fti_configuration(obj)
+    (fti_config, fti) = fti_configuration(obj)
     if 'static_config' not in fti_config:
         return
     related_role_addition(obj, get_state(obj), fti_config)
@@ -81,7 +81,7 @@ def related_change_on_moving(obj, event):
         return
     if event.oldParent and event.newParent and event.oldParent == event.newParent:  # rename
         return
-    fti_config = fti_configuration(obj)
+    (fti_config, fti) = fti_configuration(obj)
     if 'static_config' not in fti_config:
         return
     related_role_removal(obj, get_state(obj), fti_config)
@@ -93,7 +93,7 @@ def related_change_on_moved(obj, event):
         return
     if event.oldParent and event.newParent and event.oldParent == event.newParent:  # rename
         return
-    fti_config = fti_configuration(obj)
+    (fti_config, fti) = fti_configuration(obj)
     if 'static_config' not in fti_config:
         return
     related_role_addition(obj, get_state(obj), fti_config)
