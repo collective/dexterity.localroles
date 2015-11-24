@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.3 (unreleased)
+1.0 (2015-11-24)
 ----------------
 
 - Use only local roles in vocabulary.
