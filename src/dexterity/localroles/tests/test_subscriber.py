@@ -147,8 +147,8 @@ class TestSubscriber(unittest.TestCase):
         allowedRolesAndUsers = ctool.getIndexDataForUID('/'.join(item.getPhysicalPath()))['allowedRolesAndUsers']
         self.assertIn('user:t-rex', allowedRolesAndUsers)
         self.assertIn('user:raptor', allowedRolesAndUsers)
-        self.assertDictEqual(get_related_roles(self.portal, item.UID()), {'t-rex': set(['Editor']),
-                                                                                'raptor': set(['Editor'])})
+        self.assertDictEqual(get_related_roles(self.portal, item.UID()),
+                             {'t-rex': set(['Editor']), 'raptor': set(['Editor'])})
         # Removing principal
         setattr(cls, 'static_config',
                 [{'state': 'pending', 'value': 't-rex', 'roles': ('Reader',),

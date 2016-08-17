@@ -40,8 +40,8 @@ class TestUtils(unittest.TestCase):
         # adding value
         add_related_roles(self.portal, 'fakeuid', 'raptor', ['Reader', 'Editor'])
         add_related_roles(self.portal, 'fakeuid', 't-rex', ['Reader'])
-        self.assertDictEqual(get_related_roles(self.portal, 'fakeuid'), {'raptor': set(['Reader', 'Editor']),
-                                                                               't-rex': set(['Reader'])})
+        self.assertDictEqual(get_related_roles(self.portal, 'fakeuid'),
+                             {'raptor': set(['Reader', 'Editor']), 't-rex': set(['Reader'])})
         self.assertSetEqual(del_related_roles(self.portal, 'fakeuid', 'raptor', ['Reader', 'Contributor']),
                             set(['Reader']))
         self.assertDictEqual(get_related_roles(self.portal, 'fakeuid'),
