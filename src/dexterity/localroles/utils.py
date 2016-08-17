@@ -14,6 +14,16 @@ from . import logger
 rel_key = 'd.lr.related'
 
 
+def del_related_uid(obj, uid):
+    """ Delete uid related roles on obj """
+    annot = IAnnotations(obj)
+    if rel_key not in annot or uid not in annot[rel_key]:
+        return
+    del annot[rel_key][uid]
+    if not annot[rel_key]:
+        del annot[rel_key]
+
+
 def add_related_roles(obj, uid, principal, roles):
     """ Add related roles on obj for uid. """
     annot = IAnnotations(obj)

@@ -4,8 +4,8 @@ Changelog
 1.1 (unreleased)
 ----------------
 
-- Nothing changed yet.
-
+- Added method to delete related uid annotation.
+  [sgeulette]
 
 1.0 (2015-11-24)
 ----------------
