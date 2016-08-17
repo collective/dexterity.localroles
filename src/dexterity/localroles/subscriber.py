@@ -10,6 +10,8 @@ from .utils import add_related_roles, del_related_roles, fti_configuration, get_
 
 
 def update_security(obj, event):
+    # obj.reindexObjectSecurity() seems already called: doActionFor => _invokeWithNotification() =>
+    # _reindexWorkflowVariables() => reindexObjectSecurity()
     obj.reindexObjectSecurity()
 
 

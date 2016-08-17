@@ -4,11 +4,11 @@
     xmlns:browser="http://namespaces.zope.org/browser"
     i18n_domain="dexterity.localroles">
 
-  <subscriber
+  <!--subscriber
     for="plone.dexterity.interfaces.IDexterityContent
          Products.CMFCore.interfaces.IActionSucceededEvent"
     handler=".subscriber.update_security"
-    />
+    /-->
 
   <subscriber
     for="plone.dexterity.interfaces.IDexterityContent

@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-version = '1.1.dev0'
+version = '1.2.dev0'
 
 long_description = (
     open('README.rst').read()
@@ -29,7 +29,7 @@ setup(
         "Programming Language :: Python :: 2.7",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
-    keywords='',
+    keywords='Plone Python',
     author='IMIO',
     author_email='support@imio.be',
     url='https://github.com/imio/',

@@ -9,6 +9,12 @@ from ..testing import DLR_PROFILE_FUNCTIONAL
 from ..utils import add_fti_configuration, get_related_roles
 
 localroles_config = {
+    u'private': {'raptor': {'roles': ('Editor',)},
+                 'cavemans': {'roles': ('Reader',)}},
+    u'pending': {'raptor': {'roles': ('Reviewer',)}},
+}
+
+related_localroles_config = {
     u'private': {'raptor': {'roles': ('Editor',),
                             'rel': "{'dexterity.localroles.related_parent':['Editor']}"},
                  'cavemans': {'roles': ('Reader', )}},
@@ -27,8 +33,28 @@ class TestSubscriber(unittest.TestCase):
         setRoles(self.portal, TEST_USER_ID, ['Manager'])
         login(self.portal, TEST_USER_NAME)
 
-    def test_related_change_on_transition(self):
+    def test_update_security(self):
         add_fti_configuration('testingtype', localroles_config)
+        item = api.content.create(container=self.portal, type='testingtype', id='test')
+        doc = api.content.create(container=item, type='Document', id='doc', title='Document')
+        ctool = self.portal.portal_catalog
+        allowedRolesAndUsers = ctool.getIndexDataForUID('/'.join(item.getPhysicalPath()))['allowedRolesAndUsers']
+        self.assertSetEqual(set(['Manager', 'Site Administrator', 'Reader', 'Editor', 'Contributor', 'user:admin',
+                                 'user:test_user_1_', 'user:raptor', 'user:cavemans']), set(allowedRolesAndUsers))
+        allowedRolesAndUsers = ctool.getIndexDataForUID('/'.join(doc.getPhysicalPath()))['allowedRolesAndUsers']
+        self.assertSetEqual(set(['Manager', 'Site Administrator', 'Reader', 'Editor', 'Contributor', 'user:admin',
+                                 'user:test_user_1_', 'user:raptor', 'user:cavemans']), set(allowedRolesAndUsers))
+        workflow = api.portal.get_tool(name='portal_workflow')
+        workflow.doActionFor(item, 'submit')
+        allowedRolesAndUsers = ctool.getIndexDataForUID('/'.join(item.getPhysicalPath()))['allowedRolesAndUsers']
+        self.assertSetEqual(set(['Manager', 'Site Administrator', 'Reader', 'Editor', 'Contributor', 'Reviewer',
+                                 'user:admin', 'user:test_user_1_', 'user:raptor']), set(allowedRolesAndUsers))
+        allowedRolesAndUsers = ctool.getIndexDataForUID('/'.join(doc.getPhysicalPath()))['allowedRolesAndUsers']
+        self.assertSetEqual(set(['Manager', 'Site Administrator', 'Reader', 'Editor', 'Contributor', 'Reviewer',
+                                 'user:admin', 'user:test_user_1_', 'user:raptor']), set(allowedRolesAndUsers))
+
+    def test_related_change_on_transition(self):
+        add_fti_configuration('testingtype', related_localroles_config)
         self.portal.invokeFactory('testingtype', 'test')
         item = self.portal['test']
         # The parent is set by addition subscriber
@@ -38,7 +64,7 @@ class TestSubscriber(unittest.TestCase):
         self.assertDictEqual(dict(get_related_roles(self.portal, item.UID())), {'raptor': set(['Reviewer'])})
 
     def test_related_change_on_removal(self):
-        add_fti_configuration('testingtype', localroles_config)
+        add_fti_configuration('testingtype', related_localroles_config)
         self.portal.invokeFactory('testingtype', 'test')
         item = self.portal['test']
         # The parent is set by addition subscriber
@@ -49,14 +75,14 @@ class TestSubscriber(unittest.TestCase):
         self.assertDictEqual(get_related_roles(self.portal, item.UID()), {})
 
     def test_related_change_on_addition(self):
-        add_fti_configuration('testingtype', localroles_config)
+        add_fti_configuration('testingtype', related_localroles_config)
         self.portal.invokeFactory('testingtype', 'test')
         item = self.portal['test']
         # The parent is set
         self.assertDictEqual(dict(get_related_roles(self.portal, item.UID())), {'raptor': set(['Editor'])})
 
     def test_related_change_on_move(self):
-        add_fti_configuration('testingtype', localroles_config)
+        add_fti_configuration('testingtype', related_localroles_config)
         self.portal.invokeFactory('testingtype', 'test', title="Title")
         item = self.portal['test']
         # We need to commit here so that _p_jar isn't None and move will work

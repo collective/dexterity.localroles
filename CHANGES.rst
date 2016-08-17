@@ -1,10 +1,16 @@
 Changelog
 =========
 
-1.1 (unreleased)
+1.2 (unreleased)
 ----------------
 
 - Added method to delete related uid annotation.
+  [sgeulette]
+
+1.1 (2016-04-18)
+----------------
+
+- Useless subscriber removed.
   [sgeulette]
 
 1.0 (2015-11-24)
