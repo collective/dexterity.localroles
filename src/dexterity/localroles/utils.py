@@ -61,7 +61,7 @@ def get_related_roles(obj, uid):
     annot = IAnnotations(obj)
     if rel_key not in annot or uid not in annot[rel_key]:
         return {}
-    return annot[rel_key][uid]
+    return dict(annot[rel_key][uid])
 
 
 def get_all_related_roles(obj):

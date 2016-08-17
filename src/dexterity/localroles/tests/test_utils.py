@@ -27,34 +27,34 @@ class TestUtils(unittest.TestCase):
         self.assertDictEqual(get_related_roles(self.portal, 'fakeuid'), {})
         # nothing already stored
         add_related_roles(self.portal, 'fakeuid', 'raptor', ['Reader'])
-        self.assertDictEqual(dict(get_related_roles(self.portal, 'fakeuid')), {'raptor': set(['Reader'])})
+        self.assertDictEqual(get_related_roles(self.portal, 'fakeuid'), {'raptor': set(['Reader'])})
         # adding to existing
         add_related_roles(self.portal, 'fakeuid', 'raptor', ['Reviewer'])
-        self.assertDictEqual(dict(get_related_roles(self.portal, 'fakeuid')), {'raptor': set(['Reader', 'Reviewer'])})
+        self.assertDictEqual(get_related_roles(self.portal, 'fakeuid'), {'raptor': set(['Reader', 'Reviewer'])})
         # adding another
         add_related_roles(self.portal, 'fakeuid', 't-rex', ['Reader'])
-        self.assertDictEqual(dict(get_related_roles(self.portal, 'fakeuid')),
+        self.assertDictEqual(get_related_roles(self.portal, 'fakeuid'),
                              {'raptor': set(['Reader', 'Reviewer']), 't-rex': set(['Reader'])})
 
     def test_del_related_roles(self):
         # adding value
         add_related_roles(self.portal, 'fakeuid', 'raptor', ['Reader', 'Editor'])
         add_related_roles(self.portal, 'fakeuid', 't-rex', ['Reader'])
-        self.assertDictEqual(dict(get_related_roles(self.portal, 'fakeuid')), {'raptor': set(['Reader', 'Editor']),
+        self.assertDictEqual(get_related_roles(self.portal, 'fakeuid'), {'raptor': set(['Reader', 'Editor']),
                                                                                't-rex': set(['Reader'])})
         self.assertSetEqual(del_related_roles(self.portal, 'fakeuid', 'raptor', ['Reader', 'Contributor']),
                             set(['Reader']))
-        self.assertDictEqual(dict(get_related_roles(self.portal, 'fakeuid')),
+        self.assertDictEqual(get_related_roles(self.portal, 'fakeuid'),
                              {'raptor': set(['Editor']), 't-rex': set(['Reader'])})
         self.assertSetEqual(del_related_roles(self.portal, 'fakeuid', 'raptor', ['Editor']), set(['Editor']))
-        self.assertDictEqual(dict(get_related_roles(self.portal, 'fakeuid')),
+        self.assertDictEqual(get_related_roles(self.portal, 'fakeuid'),
                              {'t-rex': set(['Reader'])})
         self.assertSetEqual(del_related_roles(self.portal, 'fakeuid', 't-rex', ['Reader']), set(['Reader']))
-        self.assertDictEqual(dict(get_related_roles(self.portal, 'fakeuid')), {})
+        self.assertDictEqual(get_related_roles(self.portal, 'fakeuid'), {})
 
     def test_get_related_roles(self):
         # no key or no uid stored
-        self.assertDictEqual(dict(get_related_roles(self.portal, 'fakeuid')), {})
+        self.assertDictEqual(get_related_roles(self.portal, 'fakeuid'), {})
 
     def test_get_all_related_roles(self):
         self.assertDictEqual(get_all_related_roles(self.portal), {})
@@ -70,10 +70,10 @@ class TestUtils(unittest.TestCase):
     def test_set_related_roles(self):
         # nothing already stored
         set_related_roles(self.portal, 'fakeuid', {'raptor': set(['Reader'])})
-        self.assertDictEqual(dict(get_related_roles(self.portal, 'fakeuid')), {'raptor': set(['Reader'])})
+        self.assertDictEqual(get_related_roles(self.portal, 'fakeuid'), {'raptor': set(['Reader'])})
         # replacing existing
         set_related_roles(self.portal, 'fakeuid', {'t-rex': set(['Reader'])})
-        self.assertDictEqual(dict(get_related_roles(self.portal, 'fakeuid')), {'t-rex': set(['Reader'])})
+        self.assertDictEqual(get_related_roles(self.portal, 'fakeuid'), {'t-rex': set(['Reader'])})
 
     def test_fti_configuration(self):
         self.portal.invokeFactory('Document', 'doc')
