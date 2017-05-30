@@ -4,6 +4,8 @@ Changelog
 1.2 (unreleased)
 ----------------
 
+- Refactored utils method
+  [sgeulette]
 - Added method to delete related uid annotation.
   [sgeulette]
 
