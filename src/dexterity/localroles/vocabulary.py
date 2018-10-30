@@ -1,20 +1,19 @@
 # encoding: utf-8
 
-from five import grok
-from zope.component import getUtilitiesFor
-from zope.interface import Interface
-from z3c.form.interfaces import ITerms
-from z3c.form.term import ChoiceTermsVocabulary
-from z3c.form.interfaces import IFormLayer
-from z3c.form.interfaces import IWidget
-from zope.i18n import translate
-from zope.schema.interfaces import IContextSourceBinder
-from zope.schema.vocabulary import SimpleVocabulary
-
-from plone.app.workflow.interfaces import ISharingPageRole
-
 from dexterity.localroles import PMF
 from dexterity.localroles.browser.interfaces import IWorkflowState
+from five import grok
+from plone.app.workflow.interfaces import ISharingPageRole
+from Products.CMFPlone.utils import safe_unicode
+from z3c.form.interfaces import IFormLayer
+from z3c.form.interfaces import ITerms
+from z3c.form.interfaces import IWidget
+from z3c.form.term import ChoiceTermsVocabulary
+from zope.component import getUtilitiesFor
+from zope.i18n import translate
+from zope.interface import Interface
+from zope.schema.interfaces import IContextSourceBinder
+from zope.schema.vocabulary import SimpleVocabulary
 
 
 def list_2_vocabulary(elements):
@@ -55,7 +54,7 @@ class StateTerms(ChoiceTermsVocabulary, grok.MultiAdapter):
             return []
         states = []
         for key, state in workflow[0].states.items():
-            title = translate(PMF(state.title), context=self.request)
+            title = translate(PMF(safe_unicode(state.title)), context=self.request)
             states.append((key, title))
         return states
 

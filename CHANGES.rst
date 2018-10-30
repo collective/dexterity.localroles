@@ -4,8 +4,8 @@ Changelog
 1.3 (unreleased)
 ----------------
 
-- Nothing changed yet.
-
+- Use safely state title in unicode.
+  [sgeulette]
 
 1.2 (2017-05-30)
 ----------------
