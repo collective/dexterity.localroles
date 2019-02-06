@@ -4,7 +4,8 @@ Changelog
 1.4 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Tests pass with Plone 5.
+  [thomasdesvenain]
 
 
 1.3 (2018-11-06)
