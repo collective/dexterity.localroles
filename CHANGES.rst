@@ -4,7 +4,8 @@ Changelog
 1.7 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Tests pass with Plone 5.
+  [thomasdesvenain]
 
 
 1.6 (2022-07-01)
