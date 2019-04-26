@@ -9,7 +9,8 @@
           <tal:widgets repeat="widget view/widgets/values">
             <div class="row"
                  tal:define="hidden python:widget.mode == 'hidden'"
-                 tal:omit-tag="hidden">
+                 tal:omit-tag="hidden"
+				 tal:attributes="id python:widget.__name__">
 
                 <div class="field"
                      tal:define="error widget/error"

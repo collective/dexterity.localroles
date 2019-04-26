@@ -4,8 +4,8 @@ Changelog
 1.4 (unreleased)
 ----------------
 
-- Nothing changed yet.
-
+- Added css id in configuration form.
+  [sgeulette]
 
 1.3 (2018-11-06)
 ----------------
