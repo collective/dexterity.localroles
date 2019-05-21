@@ -20,7 +20,7 @@ def related_role_removal(obj, state, fti_config):
         dic = fti_config['static_config'][state]
         uid = obj.UID()
         for princ in dic:
-            if dic[princ].get('rel', ''):
+            if dic[princ].get('rel'):
                 related = eval(dic[princ]['rel'])
                 for utility in related:
                     if not related[utility]:
@@ -35,7 +35,7 @@ def related_role_addition(obj, state, fti_config):
         dic = fti_config['static_config'][state]
         uid = obj.UID()
         for princ in dic:
-            if dic[princ].get('rel', ''):
+            if dic[princ].get('rel'):
                 related = eval(dic[princ]['rel'])
                 for utility in related:
                     if not related[utility]:
@@ -120,7 +120,7 @@ def configuration_change_analysis(event):
         for princ in modif:
             if princ not in target:
                 target[state][princ] = {'rel': ''}
-            if modif[princ]['rel']:
+            if modif[princ].get('rel'):
                 if target[state][princ]['rel'] and target[state][princ]['rel'] != modif[princ]['rel']:
                     logger.error("Related configuration to add '%s' differs '%s'" %
                                  (modif[princ]['rel'], target[state][princ]['rel']))

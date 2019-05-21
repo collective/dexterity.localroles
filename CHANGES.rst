@@ -4,6 +4,8 @@ Changelog
 1.4 (unreleased)
 ----------------
 
+- Safe dict key access
+  [sgeulette]
 - Added css id in configuration form.
   [sgeulette]
 
