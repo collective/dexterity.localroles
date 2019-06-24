@@ -12,7 +12,7 @@ before_script:
   - "sh -e /etc/init.d/xvfb start"
 
 script:
-  - bin/test
+  - bin/test --test=!robot
   - bin/coverage.sh
   - bin/code-analysis
 
