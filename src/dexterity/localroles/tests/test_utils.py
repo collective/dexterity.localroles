@@ -1,10 +1,20 @@
 # -*- coding: utf-8 -*-
-import unittest2 as unittest
-from plone.app.testing import login, TEST_USER_NAME, setRoles, TEST_USER_ID
+from dexterity.localroles.testing import DLR_PROFILE_FUNCTIONAL
+from dexterity.localroles.utils import add_fti_configuration
+from dexterity.localroles.utils import add_related_roles
+from dexterity.localroles.utils import del_related_roles
+from dexterity.localroles.utils import fti_configuration
+from dexterity.localroles.utils import get_all_related_roles
+from dexterity.localroles.utils import get_related_roles
+from dexterity.localroles.utils import set_related_roles
+from dexterity.localroles.utils import update_roles_in_fti
+from plone.app.testing import login
+from plone.app.testing import setRoles
+from plone.app.testing import TEST_USER_ID
+from plone.app.testing import TEST_USER_NAME
 
-from ..testing import DLR_PROFILE_FUNCTIONAL
-from ..utils import (add_related_roles, del_related_roles, get_related_roles, set_related_roles, get_all_related_roles,
-                     fti_configuration, add_fti_configuration)
+import unittest2 as unittest
+
 
 localroles_config = {
     u'private': {'raptor': {'roles': ('Editor', 'Contributor')}, 'cavemans': {'roles': ('Reader', )}},
@@ -94,3 +104,25 @@ class TestUtils(unittest.TestCase):
         add_fti_configuration('testingtype', {}, force=True)
         self.assertEqual(self.portal.portal_types.testingtype.localroles['static_config'], {})
         self.assertEqual(add_fti_configuration('unknown', {}), "The portal type 'unknown' doesn't exist")
+
+    def test_update_roles_in_fti(self):
+        update_roles_in_fti('testingtype', localroles_config)
+        dic = self.portal.portal_types.testingtype.localroles['static_config']
+        self.assertListEqual(dic['private']['raptor']['roles'], ['Editor', 'Contributor'])
+        self.assertListEqual(dic['private']['cavemans']['roles'], ['Reader'])
+        self.assertListEqual(dic['published']['hunters']['roles'], ['Reader'])
+        self.assertListEqual(dic['published']['dina']['roles'], ['Editor'])
+        update_roles_in_fti('testingtype', {'private': {'cavemans': {'roles': ('Reviewer',)}}})
+        self.assertListEqual(dic['private']['raptor']['roles'], ['Editor', 'Contributor'])
+        self.assertListEqual(dic['private']['cavemans']['roles'], ['Reader', 'Reviewer'])
+        self.assertListEqual(dic['published']['hunters']['roles'], ['Reader'])
+        self.assertListEqual(dic['published']['dina']['roles'], ['Editor'])
+        update_roles_in_fti('testingtype', {'private': {'cavemans': {'roles': ('Reviewer',)},
+                                                        'dina': {'roles': ('Reader', 'Reviewer')}},
+                                            'published': {'hunters': {'roles': ('Reviewer',)},
+                                                          'dina': {'roles': ('Reviewer', )}}})
+        self.assertListEqual(dic['private']['raptor']['roles'], ['Editor', 'Contributor'])
+        self.assertListEqual(dic['private']['cavemans']['roles'], ['Reader', 'Reviewer'])
+        self.assertListEqual(dic['private']['dina']['roles'], ['Reader', 'Reviewer'])
+        self.assertListEqual(dic['published']['hunters']['roles'], ['Reader', 'Reviewer'])
+        self.assertListEqual(dic['published']['dina']['roles'], ['Editor', 'Reviewer'])

@@ -102,10 +102,11 @@ def fti_configuration(obj):
 
 
 def add_fti_configuration(portal_type, configuration, keyname='static_config', force=False):
-    """
-        Add in fti a specific localroles configuration.
-        Param configuration is like:
-        {state: {principal: {'roles': [roles], 'rel': "{'utility name':[roles]}"}}}
+    """Add in fti a specific localroles configuration.
+    :param portal_type: name of the portal type
+    :param configuration: dict like {state: {principal: {'roles': [roles], 'rel': "{'utility name':[roles]}"}}}
+    :param keyname: 1st level key in localroles attr (Default='static_config')
+    :param force: boolean to force set (Default=False)
     """
     try:
         fti = getUtility(IDexterityFTI, name=portal_type)
@@ -118,6 +119,40 @@ def add_fti_configuration(portal_type, configuration, keyname='static_config', f
         logger.warn("The '%s' configuration on type '%s' is already set" % (keyname, portal_type))
         return "The '%s' configuration on type '%s' is already set" % (keyname, portal_type)
     fti.localroles[keyname] = configuration
+
+
+def update_roles_in_fti(portal_type, configuration, action='add', keyname='static_config'):
+    """Update a localroles fti configuration by adding the given roles.
+    :param portal_type: name of the portal type
+    :param configuration: dict like {state: {principal: {'roles': [roles], 'rel': "{'utility name':[roles]}"}}}
+    :param keyname: 1st level key in localroles attr (Default='static_config')
+    """
+    # TODO : manage other actions
+    try:
+        fti = getUtility(IDexterityFTI, name=portal_type)
+    except ComponentLookupError:
+        logger.error("The portal type '%s' doesn't exist" % portal_type)
+        return "The portal type '%s' doesn't exist" % portal_type
+    if not base_hasattr(fti, 'localroles'):
+        setattr(fti, 'localroles', PersistentMapping())
+    if keyname not in fti.localroles:
+        fti.localroles[keyname] = {}
+    lrd = fti.localroles[keyname]
+    for state in configuration:
+        if state not in lrd:
+            lrd[state] = {}
+        for principal in configuration[state]:
+            if principal not in lrd[state]:
+                lrd[state][principal] = {'roles': list(configuration[state][principal].get('roles', [])),
+                                         'rel': configuration[state][principal].get('rel', '')}
+                continue
+            # manage only main roles actually
+            if not isinstance(lrd[state][principal]['roles'], list):
+                lrd[state][principal]['roles'] = list(lrd[state][principal]['roles'])
+            for role in configuration[state][principal]['roles']:
+                if role not in lrd[state][principal]['roles']:
+                    lrd[state][principal]['roles'].append(role)
+    fti.localroles._p_changed = True
 
 
 def get_state(obj):

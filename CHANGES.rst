@@ -4,8 +4,8 @@ Changelog
 1.5 (unreleased)
 ----------------
 
-- Nothing changed yet.
-
+- Added `update_roles_in_fti` method to update local roles in a config.
+  [sgeulette]
 
 1.4 (2019-06-23)
 ----------------
