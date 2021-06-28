@@ -133,6 +133,7 @@ def update_roles_in_fti(portal_type, configuration, action='add', keyname='stati
     except ComponentLookupError:
         logger.error("The portal type '%s' doesn't exist" % portal_type)
         return "The portal type '%s' doesn't exist" % portal_type
+    change = False
     if not base_hasattr(fti, 'localroles'):
         setattr(fti, 'localroles', PersistentMapping())
     if keyname not in fti.localroles:
@@ -145,6 +146,7 @@ def update_roles_in_fti(portal_type, configuration, action='add', keyname='stati
             if principal not in lrd[state]:
                 lrd[state][principal] = {'roles': list(configuration[state][principal].get('roles', [])),
                                          'rel': configuration[state][principal].get('rel', '')}
+                change = True
                 continue
             # manage only main roles actually
             if not isinstance(lrd[state][principal]['roles'], list):
@@ -152,7 +154,9 @@ def update_roles_in_fti(portal_type, configuration, action='add', keyname='stati
             for role in configuration[state][principal]['roles']:
                 if role not in lrd[state][principal]['roles']:
                     lrd[state][principal]['roles'].append(role)
-    fti.localroles._p_changed = True
+                    change = True
+    if change:
+        fti.localroles._p_changed = True
 
 
 def get_state(obj):
