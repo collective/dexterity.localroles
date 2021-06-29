@@ -171,7 +171,7 @@ def update_roles_in_fti(portal_type, configuration, action='add', keyname='stati
     return change
 
 
-def update_security_index(portal_types, trace=0):
+def update_security_index(portal_types, trace=10000):
     """Update security index of portal_types"""
     pc = api.portal.get_tool('portal_catalog')
     with api.env.adopt_roles(['Manager']):
