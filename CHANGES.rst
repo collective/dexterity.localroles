@@ -6,6 +6,8 @@ Changelog
 
 - Added `update_roles_in_fti` method to update local roles in a config.
   [sgeulette]
+- Added `update_security_index` method to update security index
+  [sgeulette]
 
 1.4 (2019-06-23)
 ----------------
