@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.5 (unreleased)
+1.5 (2021-08-27)
 ----------------
 
 - Added `update_roles_in_fti` method to update local roles in a config.
