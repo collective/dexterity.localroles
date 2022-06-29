@@ -8,6 +8,8 @@ Changelog
   [sgeulette]
 - Added 'rem' action in `utils.update_roles_in_fti`
   [sgeulette]
+- Added 'portal_type' parameter in `utils.fti_configuration`
+  [sgeulette]
 
 1.5 (2021-08-27)
 ----------------

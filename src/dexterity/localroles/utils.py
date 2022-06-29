@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from copy import deepcopy
-
+from dexterity.localroles import logger
 from dexterity.localroles.browser.settings import LocalRoleListUpdatedEvent
-from . import logger
 from persistent.mapping import PersistentMapping
 from plone import api
+from plone.api.validation import mutually_exclusive_parameters
 from plone.dexterity.interfaces import IDexterityFTI
 from Products.CMFCore.WorkflowCore import WorkflowException
 from Products.CMFPlone.utils import base_hasattr
@@ -93,15 +93,23 @@ def set_related_roles(obj, uid, dic):
     annot[rel_key][uid] = PersistentMapping(dic)
 
 
-def fti_configuration(obj):
-    """ Return the localroles fti configuration """
+@mutually_exclusive_parameters('obj', 'portal_type')
+def fti_configuration(obj=None, portal_type=None):
+    """ Return the localroles fti configuration
+
+    :param obj: dexterity object for which we want the configuration
+    :param portal_type: portal type for which we want the configuration
+    :return: localroles dictionary and fti
+    """
     try:
-        fti = getUtility(IDexterityFTI, name=obj.portal_type)
+        if portal_type is None:
+            portal_type = obj.portal_type
+        fti = getUtility(IDexterityFTI, name=portal_type)
     except ComponentLookupError:
-        return ({}, None)
+        return {}, None
     if not base_hasattr(fti, 'localroles'):
-        return ({}, fti)
-    return (fti.localroles, fti)
+        return {}, fti
+    return fti.localroles, fti
 
 
 def add_fti_configuration(portal_type, configuration, keyname='static_config', force=False):

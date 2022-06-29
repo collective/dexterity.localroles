@@ -97,6 +97,8 @@ class TestUtils(unittest.TestCase):
         add_fti_configuration('testingtype', localroles_config)
         self.assertEqual(fti_configuration(item),
                          ({'static_config': localroles_config}, self.portal.portal_types.testingtype))
+        self.assertEqual(fti_configuration(portal_type='testingtype'),
+                         ({'static_config': localroles_config}, self.portal.portal_types.testingtype))
 
     def test_add_fti_configuration(self):
         add_fti_configuration('testingtype', localroles_config)
