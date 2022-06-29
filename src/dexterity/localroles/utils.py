@@ -126,21 +126,21 @@ def add_fti_configuration(portal_type, configuration, keyname='static_config', f
     event.notify(LocalRoleListUpdatedEvent(fti, keyname, old_value, configuration))
 
 
-def update_roles_in_fti(portal_type, configuration, action='add', keyname='static_config', notify=True):
-    """Update a localroles fti configuration by adding the given roles.
+def update_roles_in_fti(portal_type, config, action='add', keyname='static_config', notify=True):
+    """Update a localroles fti config by adding/removing the given roles.
+
     :param portal_type: name of the portal type
-    :param configuration: dict like {state: {principal: {'roles': [roles], 'rel': "{'utility name':[roles]}"}}}
-    :param action: select action to do (Default='add')
+    :param config: dict like {state: {principal: {'roles': [roles], 'rel': "{'utility name':[roles]}"}}}
+    :param action: select action to do (Default='add', can be 'rem'). See test_utils.py
     :param keyname: 1st level key in localroles attr (Default='static_config')
     :param notify: notify change to recatalog
     :rtype: boolean, to indicate a change
     """
-    # TODO : manage other actions
     try:
         fti = getUtility(IDexterityFTI, name=portal_type)
     except ComponentLookupError:
         logger.error("The portal type '%s' doesn't exist" % portal_type)
-        return "The portal type '%s' doesn't exist" % portal_type
+        return False
     change = False
     if not base_hasattr(fti, 'localroles'):
         setattr(fti, 'localroles', PersistentMapping())
@@ -148,22 +148,46 @@ def update_roles_in_fti(portal_type, configuration, action='add', keyname='stati
         fti.localroles[keyname] = {}
     lrd = fti.localroles[keyname]
     old_value = deepcopy(lrd)
-    for state in configuration:
-        if state not in lrd:
-            lrd[state] = {}
-        for principal in configuration[state]:
-            if principal not in lrd[state]:
-                lrd[state][principal] = {'roles': list(configuration[state][principal].get('roles', [])),
-                                         'rel': configuration[state][principal].get('rel', '')}
-                change = True
-                continue
-            # manage only main roles actually
-            if not isinstance(lrd[state][principal]['roles'], list):
-                lrd[state][principal]['roles'] = list(lrd[state][principal]['roles'])
-            for role in configuration[state][principal]['roles']:
-                if role not in lrd[state][principal]['roles']:
-                    lrd[state][principal]['roles'].append(role)
+    for state in config:
+        if action == 'add':
+            if state not in lrd:
+                lrd[state] = {}
+            for principal in config[state]:
+                if principal not in lrd[state]:
+                    lrd[state][principal] = {'roles': list(config[state][principal].get('roles', [])),
+                                             'rel': config[state][principal].get('rel', '')}
                     change = True
+                    continue
+                # manage main roles
+                if not isinstance(lrd[state][principal]['roles'], list):
+                    lrd[state][principal]['roles'] = list(lrd[state][principal]['roles'])
+                for role in config[state][principal].get('roles', []):
+                    if role not in lrd[state][principal]['roles']:
+                        lrd[state][principal]['roles'].append(role)
+                        change = True
+                # manage related
+                if config[state][principal].get('rel', ''):
+                    lrd[state][principal]['rel'] = config[state][principal]['rel']
+                    change = True
+        elif action == 'rem':
+            if state not in lrd:
+                continue
+            for principal in config[state]:
+                if principal in lrd[state]:
+                    if 'roles' in lrd[state][principal] and 'roles' in config[state][principal]:
+                        lrd[state][principal]['roles'] = list(set(lrd[state][principal]['roles']) -
+                                                             set(config[state][principal]['roles']))
+                        change = True
+                    if 'rel' in config[state][principal] and lrd[state][principal].get('rel', ''):
+                        lrd[state][principal]['rel'] = ''
+                        change = True
+                    if len(lrd[state][principal].get('roles', [])) == 0 and lrd[state][principal].get('rel', '') == '':
+                        # no more config
+                        del lrd[state][principal]
+                        change = True
+            if len(lrd[state].keys()) == 0:
+                del lrd[state]
+                change = True
     if change:
         fti.localroles._p_changed = True
         if notify:

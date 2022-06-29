@@ -4,8 +4,10 @@ Changelog
 1.6 (unreleased)
 ----------------
 
-- Nothing changed yet.
-
+- Added 'rel' (related) handling in `utils.update_roles_in_fti`
+  [sgeulette]
+- Added 'rem' action in `utils.update_roles_in_fti`
+  [sgeulette]
 
 1.5 (2021-08-27)
 ----------------

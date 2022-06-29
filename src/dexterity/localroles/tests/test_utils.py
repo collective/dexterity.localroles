@@ -17,7 +17,9 @@ import unittest2 as unittest
 
 
 localroles_config = {
-    u'private': {'raptor': {'roles': ('Editor', 'Contributor')}, 'cavemans': {'roles': ('Reader', )}},
+    u'private': {'raptor': {'roles': ('Editor', 'Contributor'),
+                            'rel': "{'dexterity.localroles.related_parent': ('Reader',)}"},
+                 'cavemans': {'roles': ('Reader', )}},
     u'published': {'hunters': {'roles': ('Reader',)}, 'dina': {'roles': ('Editor',)}}}
 
 
@@ -106,23 +108,50 @@ class TestUtils(unittest.TestCase):
         self.assertEqual(add_fti_configuration('unknown', {}), "The portal type 'unknown' doesn't exist")
 
     def test_update_roles_in_fti(self):
+        # we add something
         update_roles_in_fti('testingtype', localroles_config)
         dic = self.portal.portal_types.testingtype.localroles['static_config']
         self.assertListEqual(dic['private']['raptor']['roles'], ['Editor', 'Contributor'])
+        self.assertEqual(dic['private']['raptor']['rel'], "{'dexterity.localroles.related_parent': ('Reader',)}")
         self.assertListEqual(dic['private']['cavemans']['roles'], ['Reader'])
+        self.assertEqual(dic['private']['cavemans']['rel'], "")
         self.assertListEqual(dic['published']['hunters']['roles'], ['Reader'])
         self.assertListEqual(dic['published']['dina']['roles'], ['Editor'])
         update_roles_in_fti('testingtype', {'private': {'cavemans': {'roles': ('Reviewer',)}}})
         self.assertListEqual(dic['private']['raptor']['roles'], ['Editor', 'Contributor'])
+        self.assertEqual(dic['private']['raptor']['rel'], "{'dexterity.localroles.related_parent': ('Reader',)}")
         self.assertListEqual(dic['private']['cavemans']['roles'], ['Reader', 'Reviewer'])
+        self.assertEqual(dic['private']['cavemans']['rel'], "")
         self.assertListEqual(dic['published']['hunters']['roles'], ['Reader'])
         self.assertListEqual(dic['published']['dina']['roles'], ['Editor'])
         update_roles_in_fti('testingtype', {'private': {'cavemans': {'roles': ('Reviewer',)},
-                                                        'dina': {'roles': ('Reader', 'Reviewer')}},
+                                                        'dina': {'roles': ('Reader', 'Reviewer')},
+                                                        'raptor': {'rel': "{'a_utility': ('Reader',)}"}},
                                             'published': {'hunters': {'roles': ('Reviewer',)},
                                                           'dina': {'roles': ('Reviewer', )}}})
         self.assertListEqual(dic['private']['raptor']['roles'], ['Editor', 'Contributor'])
+        self.assertEqual(dic['private']['raptor']['rel'], "{'a_utility': ('Reader',)}")
         self.assertListEqual(dic['private']['cavemans']['roles'], ['Reader', 'Reviewer'])
         self.assertListEqual(dic['private']['dina']['roles'], ['Reader', 'Reviewer'])
         self.assertListEqual(dic['published']['hunters']['roles'], ['Reader', 'Reviewer'])
         self.assertListEqual(dic['published']['dina']['roles'], ['Editor', 'Reviewer'])
+        # we remove something
+        update_roles_in_fti('testingtype', {'private': {'cavemans': {'roles': ('Reviewer',)},
+                                                        'dina': {'roles': ('Reader', 'Reviewer')},
+                                                        'raptor': {'rel': "{'a_utility': ('Reader',)}"}},
+                                            'published': {'hunters': {'roles': ('Reviewer',)},
+                                                          'dina': {'roles': ('Reviewer', )}}}, action='rem')
+        self.assertListEqual(dic['private']['raptor']['roles'], ['Editor', 'Contributor'])
+        self.assertEqual(dic['private']['raptor']['rel'], "")
+        self.assertListEqual(dic['private']['cavemans']['roles'], ['Reader', ])
+        self.assertEqual(dic['private']['cavemans']['rel'], "")
+        self.assertNotIn('dina', dic['private'])
+        self.assertListEqual(dic['published']['hunters']['roles'], ['Reader'])
+        self.assertListEqual(dic['published']['dina']['roles'], ['Editor'])
+        update_roles_in_fti('testingtype', {u'private': {'cavemans': {'roles': ('Reader', 'Reviewer')},
+                                                         'raptor': {'roles': ('Editor', 'Contributor')}}}, action='rem')
+        self.assertNotIn('private', dic)
+        update_roles_in_fti('testingtype', {u'published': {'hunters': {'roles': ('Reader',)},
+                                                           'dina': {'roles': ('Editor',)}}}, action='rem')
+        self.assertNotIn('published', dic)
+        self.assertEqual(len(self.portal.portal_types.testingtype.localroles['static_config']), 0)
