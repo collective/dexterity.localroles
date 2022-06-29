@@ -1,12 +1,16 @@
 # encoding: utf-8
 
-from OFS.interfaces import IObjectWillBeAddedEvent, IObjectWillBeRemovedEvent
-from zope.lifecycleevent.interfaces import IObjectAddedEvent, IObjectRemovedEvent
+from dexterity.localroles import logger
+from dexterity.localroles.utility import runRelatedSearch
+from dexterity.localroles.utils import add_related_roles
+from dexterity.localroles.utils import del_related_roles
+from dexterity.localroles.utils import fti_configuration
+from dexterity.localroles.utils import get_state
+from OFS.interfaces import IObjectWillBeAddedEvent
+from OFS.interfaces import IObjectWillBeRemovedEvent
 from plone import api
-
-from . import logger
-from .utility import runRelatedSearch
-from .utils import add_related_roles, del_related_roles, fti_configuration, get_state
+from zope.lifecycleevent.interfaces import IObjectAddedEvent
+from zope.lifecycleevent.interfaces import IObjectRemovedEvent
 
 
 def update_security(obj, event):
