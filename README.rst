@@ -7,12 +7,25 @@ Allow to define local roles settings by dexterity type.
 
 A new configuration page is added as a new tab on a dexterity type configuration.
 
-You can now define for each state which principal will receive some local roles automatically.
+A configuration line has the following fields:
+
+* the state
+* the principal
+* the roles
+* an optional configuration as string, but evaluated as a dict: {'utility name': [roles]}. The utility implements
+  ILocalRolesRelatedSearchUtility and get related objects.
+
+You can then define for each state which principal will receive some local roles automatically on the content,
+and other local roles on related content.
 
 By example:
 
 * on the "pending" state, the "stephen" user will receive the following role: Reviewer.
-* on the "published" state, the 'editors' group will receive the following roles: Editor, Reviewer.
+* on the "published" state, the "editors" group will receive the following roles: Editor, Reviewer.
+
+The utility "dexterity.localroles.related_parent" get the object parent and can be used to give local roles on the content parent.
+
+* on the "pending" state, the "stephen" user will receive on the content parent the role: Reviewer.
 
 Those automaticaly given roles cannot be manually removed by the "sharing" tab (read only, as inherited roles).
 
