@@ -184,7 +184,7 @@ def update_roles_in_fti(portal_type, config, action='add', keyname='static_confi
                 if principal in lrd[state]:
                     if 'roles' in lrd[state][principal] and 'roles' in config[state][principal]:
                         lrd[state][principal]['roles'] = list(set(lrd[state][principal]['roles']) -
-                                                             set(config[state][principal]['roles']))
+                                                              set(config[state][principal]['roles']))
                         change = True
                     if 'rel' in config[state][principal] and lrd[state][principal].get('rel', ''):
                         lrd[state][principal]['rel'] = ''
