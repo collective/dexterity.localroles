@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.6 (unreleased)
+1.6 (2022-07-01)
 ----------------
 
 - Added 'rel' (related) handling in `utils.update_roles_in_fti`
