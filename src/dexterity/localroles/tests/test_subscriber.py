@@ -1,12 +1,17 @@
 # -*- coding: utf-8 -*-
-import transaction
-import unittest2 as unittest
-from plone import api
-from plone.app.testing import login, TEST_USER_NAME, setRoles, TEST_USER_ID
-
 from ..browser.settings import LocalRoleConfigurationAdapter
 from ..testing import DLR_PROFILE_FUNCTIONAL
-from ..utils import add_fti_configuration, get_related_roles
+from ..utils import add_fti_configuration
+from ..utils import get_related_roles
+from plone import api
+from plone.app.testing import login
+from plone.app.testing import setRoles
+from plone.app.testing import TEST_USER_ID
+from plone.app.testing import TEST_USER_NAME
+
+import transaction
+import unittest2 as unittest
+
 
 localroles_config = {
     u'private': {'raptor': {'roles': ('Editor',)},

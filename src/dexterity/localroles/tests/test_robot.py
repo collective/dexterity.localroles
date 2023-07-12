@@ -1,8 +1,8 @@
-import unittest2 as unittest
-
-import robotsuite
 from dexterity.localroles.testing import DLR_ROBOT_TESTING
 from plone.testing import layered
+
+import robotsuite
+import unittest2 as unittest
 
 
 def test_suite():

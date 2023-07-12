@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """Example."""
-from Acquisition import aq_inner, aq_parent
+from .interfaces import ILocalRolesRelatedSearchUtility
+from Acquisition import aq_inner
+from Acquisition import aq_parent
 from zope.component import getUtility
 from zope.component.interfaces import ComponentLookupError
 from zope.interface import implements
-
-from .interfaces import ILocalRolesRelatedSearchUtility
 
 
 class ParentRelatedSearch(object):

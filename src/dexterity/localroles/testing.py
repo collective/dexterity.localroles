@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
-import dexterity.localroles
-import pkg_resources
 from plone import api
 from plone.app.robotframework.testing import REMOTE_LIBRARY_BUNDLE_FIXTURE
 from plone.app.testing import FunctionalTesting
-from plone.app.testing import PloneWithPackageLayer
 from plone.app.testing import ploneSite
-from plone.testing import z2, zca
+from plone.app.testing import PloneWithPackageLayer
+from plone.testing import z2
+from plone.testing import zca
+
+import dexterity.localroles
+import pkg_resources
+
 
 try:
     pkg_resources.get_distribution('plone.app.contenttypes')

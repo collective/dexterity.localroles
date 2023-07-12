@@ -1,10 +1,10 @@
 # encoding: utf-8
 
-from zope.interface import implements
-
 from borg.localrole.interfaces import ILocalRoleProvider
-
-from utils import fti_configuration, get_state, get_all_related_roles
+from utils import fti_configuration
+from utils import get_all_related_roles
+from utils import get_state
+from zope.interface import implements
 
 
 class LocalRoleAdapter(object):

@@ -1,39 +1,46 @@
 # encoding: utf-8
 
-from persistent.mapping import PersistentMapping
-from Products.CMFPlone.utils import base_hasattr
+from ..interfaces import ILocalRolesRelatedSearchUtility
+from .interfaces import ILocalRoleListUpdatedEvent
 from collective.z3cform.datagridfield import DataGridField
 from collective.z3cform.datagridfield import DictRow
 from copy import deepcopy
+from dexterity.localroles import _
+from dexterity.localroles import PMF
+from dexterity.localroles.browser.exceptions import DuplicateEntryError
+from dexterity.localroles.browser.exceptions import RelatedFormatError
+from dexterity.localroles.browser.exceptions import RoleNameError
+from dexterity.localroles.browser.exceptions import UnknownPrincipalError
+from dexterity.localroles.browser.exceptions import UtilityNameError
+from dexterity.localroles.browser.interfaces import ILocalRoleList
+from dexterity.localroles.browser.interfaces import IPrincipal
+from dexterity.localroles.browser.interfaces import IRole
+from dexterity.localroles.browser.interfaces import IWorkflowState
+from dexterity.localroles.browser.overrides import CustomTypeFormLayout
+from dexterity.localroles.vocabulary import plone_role_generator
 from five import grok
+from persistent.mapping import PersistentMapping
 from plone import api
 from plone.app.dexterity.interfaces import ITypeSchemaContext
 from plone.app.workflow.interfaces import ISharingPageRole
+from Products.CMFPlone.utils import base_hasattr
 from z3c.form import field
-from z3c.form import form, validator
+from z3c.form import form
+from z3c.form import validator
 from z3c.form.browser.checkbox import CheckBoxWidget
 from z3c.form.interfaces import IFieldWidget
 from z3c.form.interfaces import IFormLayer
 from z3c.form.interfaces import IValidator
 from z3c.form.validator import SimpleFieldValidator
 from z3c.form.widget import FieldWidget
-from zope import schema, event
+from zope import event
+from zope import schema
 from zope.browserpage.viewpagetemplatefile import ViewPageTemplateFile
-from zope.component import adapts, getUtility, getUtilitiesFor
-from zope.interface import Interface, implements
-
-from dexterity.localroles import _
-from dexterity.localroles import PMF
-from dexterity.localroles.browser.exceptions import (RelatedFormatError, DuplicateEntryError, RoleNameError,
-                                                     UnknownPrincipalError, UtilityNameError)
-from dexterity.localroles.browser.interfaces import IPrincipal
-from dexterity.localroles.browser.interfaces import IRole
-from dexterity.localroles.browser.interfaces import IWorkflowState
-from dexterity.localroles.browser.interfaces import ILocalRoleList
-from dexterity.localroles.browser.overrides import CustomTypeFormLayout
-from dexterity.localroles.vocabulary import plone_role_generator
-from ..interfaces import ILocalRolesRelatedSearchUtility
-from .interfaces import ILocalRoleListUpdatedEvent
+from zope.component import adapts
+from zope.component import getUtilitiesFor
+from zope.component import getUtility
+from zope.interface import implements
+from zope.interface import Interface
 
 
 class WorkflowState(schema.Choice):
@@ -106,7 +113,7 @@ class LocalRoleListValidator(grok.MultiAdapter, SimpleFieldValidator):
                 if hasattr(widget, 'error') and widget.error:
                     raise ValueError(widget.label)
         if value is not None:
-            vset = set([(l['state'], l['value']) for l in value])
+            vset = set([(item['state'], item['value']) for item in value])
             if len(vset) < len(value):
                 raise DuplicateEntryError
 
@@ -125,7 +132,7 @@ class RelatedFormatValidator(validator.SimpleFieldValidator):
             return
         try:
             var = eval(value)
-        except:
+        except Exception:
             raise RelatedFormatError
         if not isinstance(var, dict):
             raise RelatedFormatError
@@ -133,7 +140,7 @@ class RelatedFormatValidator(validator.SimpleFieldValidator):
         for utility in var:
             try:
                 getUtility(ILocalRolesRelatedSearchUtility, utility)
-            except:
+            except Exception:
                 raise UtilityNameError
             if not isinstance(var[utility], (list, tuple)):
                 raise RelatedFormatError
@@ -153,6 +160,7 @@ class ILocalRole(Interface):
 
     related = schema.Text(title=_(u'related role configuration'),
                           required=False)
+
 
 validator.WidgetValidatorDiscriminators(RelatedFormatValidator, field=ILocalRole['related'])
 

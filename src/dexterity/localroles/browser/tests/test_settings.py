@@ -1,11 +1,13 @@
 # encoding: utf-8
 
-from zope.schema.interfaces import IText
-from z3c.form.interfaces import ITextWidget
+from ..exceptions import RelatedFormatError
+from ..exceptions import RoleNameError
+from ..exceptions import UnknownPrincipalError
+from ..exceptions import UtilityNameError
 from dexterity.localroles import testing
-from ..exceptions import RelatedFormatError, RoleNameError
-from ..exceptions import UnknownPrincipalError, UtilityNameError
 from dexterity.localroles.browser import settings
+from z3c.form.interfaces import ITextWidget
+from zope.schema.interfaces import IText
 
 import unittest
 

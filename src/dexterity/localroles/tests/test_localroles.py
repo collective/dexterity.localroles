@@ -1,14 +1,13 @@
 # encoding: utf-8
 
+from dexterity.localroles import testing
 from persistent.mapping import PersistentMapping
 from plone import api
-from plone.app.testing import TEST_USER_ID
-from plone.app.testing import TEST_USER_NAME
-from plone.app.testing import setRoles
 from plone.app.testing import login
 from plone.app.testing import logout
-
-from dexterity.localroles import testing
+from plone.app.testing import setRoles
+from plone.app.testing import TEST_USER_ID
+from plone.app.testing import TEST_USER_NAME
 
 import unittest
 

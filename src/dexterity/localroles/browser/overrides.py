@@ -1,11 +1,10 @@
 # encoding: utf-8
 
-from plone.app.dexterity.browser.layout import TypeFormLayout
-from plone.app.dexterity.browser.behaviors import TypeBehaviorsPage
-from plone.app.dexterity.browser.overview import TypeOverviewPage
-from plone.app.dexterity.browser.fields import TypeFieldsPage
-
 from dexterity.localroles import _
+from plone.app.dexterity.browser.behaviors import TypeBehaviorsPage
+from plone.app.dexterity.browser.fields import TypeFieldsPage
+from plone.app.dexterity.browser.layout import TypeFormLayout
+from plone.app.dexterity.browser.overview import TypeOverviewPage
 
 
 class CustomTypeFormLayout(TypeFormLayout):
