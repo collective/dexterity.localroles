@@ -11,6 +11,8 @@
   <five:registerPackage package="." initialize=".initialize" />
 
   <include package="Products.CMFCore" />
+  # avoid error in 1.3.3 datagridfield version. Can be removed after 1.5.4
+  <include package="z3c.form" file="meta.zcml" />
   <include package="collective.z3cform.datagridfield" />
   <include package="five.grok" />
   <include package="plone.app.dexterity" />
