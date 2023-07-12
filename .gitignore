@@ -4,9 +4,11 @@
 .coverage
 .installed.cfg
 .mr.developer.cfg
+.plone*
 .project
 .pydevproject
 .settings/
+checkversion*
 log.html
 output.xml
 report.html

@@ -55,6 +55,10 @@ buildout: oneof-plone bin/buildout  ## Runs setup and buildout
 	rm -f .installed.cfg .mr.developer.cfg
 	bin/buildout -t 5 -c test-$(plone).cfg ${b_o}
 
+.PHONY: test
+test: oneof-plone bin/buildout  ## run bin/test without robot
+	bin/test -t \!robot
+
 .PHONY: cleanall
 cleanall:  ## Cleans all installed buildout files
 	rm -fr bin include lib local share develop-eggs downloads eggs parts .installed.cfg .mr.developer.cfg .python-version .plone-version pyvenv.cfg
