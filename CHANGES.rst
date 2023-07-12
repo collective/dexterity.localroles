@@ -7,7 +7,6 @@ Changelog
 - Tests pass with Plone 5.
   [thomasdesvenain]
 
-
 1.6 (2022-07-01)
 ----------------
 
