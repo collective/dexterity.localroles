@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from ..testing import DLR_PROFILE_FUNCTIONAL
-from ..utils import add_fti_configuration
+from dexterity.localroles.testing import DLR_PROFILE_FUNCTIONAL
+from dexterity.localroles.utils import add_fti_configuration
 from ecreall.helpers.testing.search import BaseSearchTest
 from plone import api
 from plone.app.testing import login
@@ -10,7 +10,7 @@ from plone.app.testing import TEST_USER_NAME
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.CatalogTool import allowedRolesAndUsers
 
-import unittest2 as unittest
+import unittest
 
 
 localroles_config = {

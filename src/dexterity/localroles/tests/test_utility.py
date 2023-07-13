@@ -9,7 +9,7 @@ from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_NAME
 from zope.component import getUtility
 
-import unittest2 as unittest
+import unittest
 
 
 class TestRelatedSearchUtility(unittest.TestCase):

@@ -135,7 +135,7 @@ def configuration_change_analysis(event):
     add_rel_roles = {}
 
     # state key can be added or removed
-    com_state_set, add_state_set, rem_state_set = compare_lists(event.old_value.keys(), event.new_value.keys())
+    com_state_set, add_state_set, rem_state_set = compare_lists(list(event.old_value.keys()), list(event.new_value.keys()))
     if rem_state_set:
         only_reindex |= rem_state_set
         for st in rem_state_set:
@@ -146,8 +146,8 @@ def configuration_change_analysis(event):
             add_modifications(add_rel_roles, st, event.new_value[st])
     # principal can be added or removed
     for st in com_state_set:
-        com_princ_set, add_princ_set, rem_princ_set = compare_lists(event.old_value[st].keys(),
-                                                                    event.new_value[st].keys())
+        com_princ_set, add_princ_set, rem_princ_set = compare_lists(list(event.old_value[st].keys()),
+                                                                    list(event.new_value[st].keys()))
         if rem_princ_set:
             only_reindex |= set([st])
             for pr in rem_princ_set:

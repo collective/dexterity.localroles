@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from ..browser.settings import LocalRoleConfigurationAdapter
-from ..testing import DLR_PROFILE_FUNCTIONAL
-from ..utils import add_fti_configuration
-from ..utils import get_related_roles
+from dexterity.localroles.browser.settings import LocalRoleConfigurationAdapter
+from dexterity.localroles.testing import DLR_PROFILE_FUNCTIONAL
+from dexterity.localroles.utils import add_fti_configuration
+from dexterity.localroles.utils import get_related_roles
 from plone import api
 from plone.app.testing import login
 from plone.app.testing import setRoles
@@ -10,7 +10,7 @@ from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_NAME
 
 import transaction
-import unittest2 as unittest
+import unittest
 
 
 localroles_config = {

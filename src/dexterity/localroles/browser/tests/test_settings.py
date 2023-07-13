@@ -74,4 +74,5 @@ class TestSettings(unittest.TestCase):
                                    'caveman': {'roles': ('Reader', ), 'rel': ''}},
                        'pending': {'caveman': {'roles': ('Contributor', ), 'rel': ''}}}
         self.assertDictEqual(dict_values, cls.convert_to_dict(values))
-        self.assertItemsEqual(values, cls.convert_to_list(dict_values))
+        self.assertEqual(sorted([sorted(list(dc.items())) for dc in values]),
+                         sorted([sorted(list(dc.items())) for dc in cls.convert_to_list(dict_values)]))
