@@ -1,17 +1,17 @@
 # encoding: utf-8
 
 from borg.localrole.interfaces import ILocalRoleProvider
-from utils import fti_configuration
-from utils import get_all_related_roles
-from utils import get_state
-from zope.interface import implements
+from dexterity.localroles.utils import fti_configuration
+from dexterity.localroles.utils import get_all_related_roles
+from dexterity.localroles.utils import get_state
+from zope.interface import implementer
 
 
+@implementer(ILocalRoleProvider)
 class LocalRoleAdapter(object):
     """
         borg.localrole adapter to set localrole following type and state configuration
     """
-    implements(ILocalRoleProvider)
 
     def __init__(self, context):
         self.context = context
@@ -29,10 +29,10 @@ class LocalRoleAdapter(object):
         """Grant permissions"""
         state_config = self.config.get(self.current_state)
         if not state_config:
-            yield ('', ('', ))
+            yield '', ('', )
             raise StopIteration
         for principal, roles_dic in state_config.items():
-            yield (principal, tuple(roles_dic['roles']))
+            yield principal, tuple(roles_dic['roles'])
 
     @property
     def current_state(self):
@@ -45,11 +45,11 @@ class LocalRoleAdapter(object):
         return fti_config.get('static_config', {})
 
 
+@implementer(ILocalRoleProvider)
 class RelatedLocalRoleAdapter(object):
     """
         borg.localrole adapter to set related localroles following annotation
     """
-    implements(ILocalRoleProvider)
 
     def __init__(self, context):
         self.context = context
@@ -63,7 +63,7 @@ class RelatedLocalRoleAdapter(object):
     def getAllRoles(self):
         """Grant permissions"""
         for principal, roles in self.related_roles.items():
-            yield (principal, tuple(roles))
+            yield principal, tuple(roles)
 
     @property
     def related_roles(self):

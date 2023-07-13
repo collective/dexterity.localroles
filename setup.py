@@ -45,7 +45,6 @@ setup(
         'plone.api',
         'borg.localrole',
         'collective.z3cform.datagridfield',
-        'five.grok',
         'plone.app.dexterity',
         'setuptools',
     ],

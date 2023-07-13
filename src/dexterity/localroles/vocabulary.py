@@ -1,17 +1,14 @@
 # encoding: utf-8
 
 from dexterity.localroles import PMF
-from dexterity.localroles.browser.interfaces import IWorkflowState
-from five import grok
 from plone.app.workflow.interfaces import ISharingPageRole
 from Products.CMFPlone.utils import safe_unicode
-from z3c.form.interfaces import IFormLayer
 from z3c.form.interfaces import ITerms
-from z3c.form.interfaces import IWidget
 from z3c.form.term import ChoiceTermsVocabulary
 from zope.component import getUtilitiesFor
 from zope.i18n import translate
-from zope.interface import Interface
+from zope.interface import implementer
+from zope.interface import provider
 from zope.schema.interfaces import IContextSourceBinder
 from zope.schema.vocabulary import SimpleVocabulary
 
@@ -27,13 +24,8 @@ def list_2_vocabulary(elements):
     return SimpleVocabulary(terms)
 
 
-class StateTerms(ChoiceTermsVocabulary, grok.MultiAdapter):
-    grok.implements(ITerms)
-    grok.adapts(Interface,
-                IFormLayer,
-                Interface,
-                IWorkflowState,
-                IWidget)
+@implementer(ITerms)
+class StateTerms(ChoiceTermsVocabulary):
 
     def __init__(self, context, request, form, field, widget):
         self.context = context
@@ -59,7 +51,7 @@ class StateTerms(ChoiceTermsVocabulary, grok.MultiAdapter):
         return states
 
 
-@grok.provider(IContextSourceBinder)
+@provider(IContextSourceBinder)
 def plone_role_generator(context):
     """ Return local roles vocabulary """
     return list_2_vocabulary(sorted([(i[0], PMF(i[0])) for i in getUtilitiesFor(ISharingPageRole)]))

@@ -1,9 +1,6 @@
 # encoding: utf-8
 
-from ..interfaces import ILocalRolesRelatedSearchUtility
-from .interfaces import ILocalRoleListUpdatedEvent
-from collective.z3cform.datagridfield import DataGridField
-from collective.z3cform.datagridfield import DictRow
+from collective.z3cform.datagridfield.row import DictRow
 from copy import deepcopy
 from dexterity.localroles import _
 from dexterity.localroles import PMF
@@ -13,12 +10,13 @@ from dexterity.localroles.browser.exceptions import RoleNameError
 from dexterity.localroles.browser.exceptions import UnknownPrincipalError
 from dexterity.localroles.browser.exceptions import UtilityNameError
 from dexterity.localroles.browser.interfaces import ILocalRoleList
+from dexterity.localroles.browser.interfaces import ILocalRoleListUpdatedEvent
 from dexterity.localroles.browser.interfaces import IPrincipal
 from dexterity.localroles.browser.interfaces import IRole
 from dexterity.localroles.browser.interfaces import IWorkflowState
 from dexterity.localroles.browser.overrides import CustomTypeFormLayout
+from dexterity.localroles.interfaces import ILocalRolesRelatedSearchUtility
 from dexterity.localroles.vocabulary import plone_role_generator
-from five import grok
 from persistent.mapping import PersistentMapping
 from plone import api
 from plone.app.dexterity.interfaces import ITypeSchemaContext
@@ -29,8 +27,6 @@ from z3c.form import form
 from z3c.form import validator
 from z3c.form.browser.checkbox import CheckBoxWidget
 from z3c.form.interfaces import IFieldWidget
-from z3c.form.interfaces import IFormLayer
-from z3c.form.interfaces import IValidator
 from z3c.form.validator import SimpleFieldValidator
 from z3c.form.widget import FieldWidget
 from zope import event
@@ -39,12 +35,18 @@ from zope.browserpage.viewpagetemplatefile import ViewPageTemplateFile
 from zope.component import adapts
 from zope.component import getUtilitiesFor
 from zope.component import getUtility
-from zope.interface import implements
+from zope.interface import implementer
 from zope.interface import Interface
 
 
+try:
+    from collective.z3cform.datagridfield.datagridfield import DataGridField as DataGridFieldWidget
+except ImportError:
+    from collective.z3cform.datagridfield.datagridfield import DataGridFieldWidget
+
+
+@implementer(IWorkflowState)
 class WorkflowState(schema.Choice):
-    grok.implements(IWorkflowState)
 
     def __init__(self, *args, **kwargs):
         kwargs['vocabulary'] = u''
@@ -54,22 +56,17 @@ class WorkflowState(schema.Choice):
         return super(schema.Choice, self).bind(object)
 
 
+@implementer(IRole)
 class Role(schema.List):
-    grok.implements(IRole)
+    """Role"""
 
 
+@implementer(IPrincipal)
 class Principal(schema.TextLine):
-    grok.implements(IPrincipal)
+    """Principal"""
 
 
-class RoleFieldValidator(grok.MultiAdapter, SimpleFieldValidator):
-    grok.provides(IValidator)
-    grok.adapts(
-        Interface,
-        Interface,
-        Interface,
-        IPrincipal,
-        Interface)
+class RoleFieldValidator(SimpleFieldValidator):
 
     def validate(self, value, force=False):
         if value is not None and force is True:
@@ -78,18 +75,18 @@ class RoleFieldValidator(grok.MultiAdapter, SimpleFieldValidator):
                 raise UnknownPrincipalError
 
 
-@grok.adapter(IRole, IFormLayer)
-@grok.implementer(IFieldWidget)
+@implementer(IFieldWidget)
 def role_widget(field, request):
     return FieldWidget(field, CheckBoxWidget(request))
 
 
+@implementer(ILocalRoleList)
 class LocalRoleList(schema.List):
-    grok.implements(ILocalRoleList)
+    """LocalRole list"""
 
 
+@implementer(ILocalRoleListUpdatedEvent)
 class LocalRoleListUpdatedEvent(object):
-    implements(ILocalRoleListUpdatedEvent)
 
     def __init__(self, fti, field, old_value, new_value):
         self.fti = fti
@@ -98,14 +95,7 @@ class LocalRoleListUpdatedEvent(object):
         self.new_value = new_value
 
 
-class LocalRoleListValidator(grok.MultiAdapter, SimpleFieldValidator):
-    grok.provides(IValidator)
-    grok.adapts(
-        Interface,
-        Interface,
-        Interface,
-        ILocalRoleList,
-        Interface)
+class LocalRoleListValidator(SimpleFieldValidator):
 
     def validate(self, value, force=False):
         for subform in [widget.subform for widget in self.widget.widgets]:
@@ -118,10 +108,9 @@ class LocalRoleListValidator(grok.MultiAdapter, SimpleFieldValidator):
                 raise DuplicateEntryError
 
 
-@grok.adapter(ILocalRoleList, IFormLayer)
-@grok.implementer(IFieldWidget)
+@implementer(IFieldWidget)
 def localrolelist_widget(field, request):
-    return FieldWidget(field, DataGridField(request))
+    return FieldWidget(field, DataGridFieldWidget(request))
 
 
 class RelatedFormatValidator(validator.SimpleFieldValidator):
