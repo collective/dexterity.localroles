@@ -8,8 +8,7 @@ from z3c.form.term import ChoiceTermsVocabulary
 from zope.component import getUtilitiesFor
 from zope.i18n import translate
 from zope.interface import implementer
-from zope.interface import provider
-from zope.schema.interfaces import IContextSourceBinder
+from zope.schema.interfaces import IVocabularyFactory
 from zope.schema.vocabulary import SimpleVocabulary
 
 
@@ -51,7 +50,9 @@ class StateTerms(ChoiceTermsVocabulary):
         return states
 
 
-@provider(IContextSourceBinder)
-def plone_role_generator(context):
+@implementer(IVocabularyFactory)
+class SharingRolesVocabulary(object):
     """ Return local roles vocabulary """
-    return list_2_vocabulary(sorted([(i[0], PMF(i[0])) for i in getUtilitiesFor(ISharingPageRole)]))
+
+    def __call__(self, context):
+        return list_2_vocabulary(sorted([(i[0], PMF(i[0])) for i in getUtilitiesFor(ISharingPageRole)]))

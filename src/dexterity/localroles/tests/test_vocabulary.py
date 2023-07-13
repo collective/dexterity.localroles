@@ -38,7 +38,7 @@ class TestVocabulary(unittest.TestCase):
         state_terms = vocabulary.StateTerms(None, None, form, field, None)
         self.assertEqual([], [t for t in state_terms.terms])
 
-    def test_plone_role_generator(self):
-        voc = vocabulary.plone_role_generator(None)
+    def test_sharing_roles_vocabulary(self):
+        voc = vocabulary.SharingRolesVocabulary()
         roles = [u'Contributor', u'Editor', u'Reader', u'Reviewer']
-        self.assertListEqual(roles, [t.value for t in voc])
+        self.assertListEqual(roles, [t.value for t in voc(None)])

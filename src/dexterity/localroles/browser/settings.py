@@ -16,7 +16,6 @@ from dexterity.localroles.browser.interfaces import IRole
 from dexterity.localroles.browser.interfaces import IWorkflowState
 from dexterity.localroles.browser.overrides import CustomTypeFormLayout
 from dexterity.localroles.interfaces import ILocalRolesRelatedSearchUtility
-from dexterity.localroles.vocabulary import plone_role_generator
 from persistent.mapping import PersistentMapping
 from plone import api
 from plone.app.dexterity.interfaces import ITypeSchemaContext
@@ -144,7 +143,7 @@ class ILocalRole(Interface):
     value = Principal(title=_(u'value'))
 
     roles = Role(title=_(u'roles'),
-                 value_type=schema.Choice(source=plone_role_generator),
+                 value_type=schema.Choice(vocabulary='dexterity.localroles.vocabulary.SharingRolesVocabulary'),
                  required=True)
 
     related = schema.Text(title=_(u'related role configuration'),
