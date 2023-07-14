@@ -97,8 +97,12 @@ class LocalRoleListUpdatedEvent(object):
 class LocalRoleListValidator(SimpleFieldValidator):
 
     def validate(self, value, force=False):
-        for subform in [widget.subform for widget in self.widget.widgets]:
-            for widget in subform.widgets.values():
+        for dgfo_widget in self.widget.widgets:
+            if dgfo_widget.id.endswith("AA") or dgfo_widget.id.endswith("TT"):
+                continue
+            if base_hasattr(dgfo_widget, 'subform'):
+                dgfo_widget = dgfo_widget.subform
+            for widget in dgfo_widget.widgets.values():
                 if hasattr(widget, 'error') and widget.error:
                     raise ValueError(widget.label)
         if value is not None:
@@ -172,6 +176,10 @@ class LocalRoleConfigurationAdapter(object):
         if not base_hasattr(self.context.fti, 'localroles'):
             setattr(self.context.fti, 'localroles', PersistentMapping())
         old_value = self.context.fti.localroles.get(name, {})
+        # for plone 6 with state as tuple
+        for dic in value:
+            if isinstance(dic['state'], tuple):
+                dic['state'] = dic['state'][0]
         new_dict = self.convert_to_dict(value)
         if old_value == new_dict:
             return

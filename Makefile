@@ -63,7 +63,7 @@ test: oneof-plone bin/buildout  ## run bin/test without robot
 
 .PHONY: cleanall
 cleanall:  ## Cleans all installed buildout files
-	rm -fr bin include lib local share develop-eggs downloads eggs parts .installed.cfg .mr.developer.cfg .python-version .plone-version pyvenv.cfg
+	rm -fr bin include lib local share develop-eggs downloads eggs parts .installed.cfg .mr.developer.cfg .python-version pyvenv.cfg
 
 .PHONY: backup
 backup:  ## Backups db files

@@ -33,7 +33,10 @@ class StateTerms(ChoiceTermsVocabulary):
         self.field = field
         self.widget = widget
 
-        portal_type = self.form.parentForm.context
+        if hasattr(self.form, 'parentForm'):
+            portal_type = self.form.parentForm.context
+        else:  # this is the case in plone6 during data conversion
+            portal_type = self.form.context.__name__
         states = self.get_workflow_states(portal_type)
         self.terms = list_2_vocabulary(states)
         field.vocabulary = self.terms
