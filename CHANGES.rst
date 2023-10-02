@@ -1,8 +1,8 @@
 Changelog
 =========
 
-1.7 (unreleased)
-----------------
+2.0.0 (unreleased)
+------------------
 
 - Plone 4.3 and 6.0 compliant
   [sgeulette]

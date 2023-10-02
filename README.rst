@@ -34,7 +34,8 @@ This package is a base for dexterity.localrolesfield that adds a field to define
 Versions
 ========
 
-* Branch 1.x is for Plone 4 only
+* Version 2.x is compliant Plone 4, Plone 6
+* version 1.x is for Plone 4 only
 
 Installation
 ============
