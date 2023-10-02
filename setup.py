@@ -55,7 +55,7 @@ setup(
         'plone.app.testing',
         'ecreall.helpers.testing',
         'robotsuite',
-        'unittest2',
+        'unittest',
     ]},
     entry_points="""
     # -*- Entry points: -*-
