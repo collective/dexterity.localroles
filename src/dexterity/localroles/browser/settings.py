@@ -1,43 +1,51 @@
 # encoding: utf-8
 
-from persistent.mapping import PersistentMapping
-from Products.CMFPlone.utils import base_hasattr
-from collective.z3cform.datagridfield import DataGridField
-from collective.z3cform.datagridfield import DictRow
+from collective.z3cform.datagridfield.row import DictRow
 from copy import deepcopy
-from five import grok
-from plone import api
-from plone.app.dexterity.interfaces import ITypeSchemaContext
-from plone.app.workflow.interfaces import ISharingPageRole
-from z3c.form import field
-from z3c.form import form, validator
-from z3c.form.browser.checkbox import CheckBoxWidget
-from z3c.form.interfaces import IFieldWidget
-from z3c.form.interfaces import IFormLayer
-from z3c.form.interfaces import IValidator
-from z3c.form.validator import SimpleFieldValidator
-from z3c.form.widget import FieldWidget
-from zope import schema, event
-from zope.browserpage.viewpagetemplatefile import ViewPageTemplateFile
-from zope.component import adapts, getUtility, getUtilitiesFor
-from zope.interface import Interface, implements
-
 from dexterity.localroles import _
 from dexterity.localroles import PMF
-from dexterity.localroles.browser.exceptions import (RelatedFormatError, DuplicateEntryError, RoleNameError,
-                                                     UnknownPrincipalError, UtilityNameError)
+from dexterity.localroles.browser.exceptions import DuplicateEntryError
+from dexterity.localroles.browser.exceptions import RelatedFormatError
+from dexterity.localroles.browser.exceptions import RoleNameError
+from dexterity.localroles.browser.exceptions import UnknownPrincipalError
+from dexterity.localroles.browser.exceptions import UtilityNameError
+from dexterity.localroles.browser.interfaces import ILocalRoleList
+from dexterity.localroles.browser.interfaces import ILocalRoleListUpdatedEvent
 from dexterity.localroles.browser.interfaces import IPrincipal
 from dexterity.localroles.browser.interfaces import IRole
 from dexterity.localroles.browser.interfaces import IWorkflowState
-from dexterity.localroles.browser.interfaces import ILocalRoleList
 from dexterity.localroles.browser.overrides import CustomTypeFormLayout
-from dexterity.localroles.vocabulary import plone_role_generator
-from ..interfaces import ILocalRolesRelatedSearchUtility
-from .interfaces import ILocalRoleListUpdatedEvent
+from dexterity.localroles.interfaces import ILocalRolesRelatedSearchUtility
+from persistent.mapping import PersistentMapping
+from plone import api
+from plone.app.dexterity.interfaces import ITypeSchemaContext
+from plone.app.workflow.interfaces import ISharingPageRole
+from Products.CMFPlone.utils import base_hasattr
+from z3c.form import field
+from z3c.form import form
+from z3c.form import validator
+from z3c.form.browser.checkbox import CheckBoxWidget
+from z3c.form.interfaces import IFieldWidget
+from z3c.form.validator import SimpleFieldValidator
+from z3c.form.widget import FieldWidget
+from zope import event
+from zope import schema
+from zope.browserpage.viewpagetemplatefile import ViewPageTemplateFile
+from zope.component import adapts
+from zope.component import getUtilitiesFor
+from zope.component import getUtility
+from zope.interface import implementer
+from zope.interface import Interface
 
 
+try:
+    from collective.z3cform.datagridfield.datagridfield import DataGridField as DataGridFieldWidget
+except ImportError:
+    from collective.z3cform.datagridfield.datagridfield import DataGridFieldWidget
+
+
+@implementer(IWorkflowState)
 class WorkflowState(schema.Choice):
-    grok.implements(IWorkflowState)
 
     def __init__(self, *args, **kwargs):
         kwargs['vocabulary'] = u''
@@ -47,22 +55,17 @@ class WorkflowState(schema.Choice):
         return super(schema.Choice, self).bind(object)
 
 
+@implementer(IRole)
 class Role(schema.List):
-    grok.implements(IRole)
+    """Role"""
 
 
+@implementer(IPrincipal)
 class Principal(schema.TextLine):
-    grok.implements(IPrincipal)
+    """Principal"""
 
 
-class RoleFieldValidator(grok.MultiAdapter, SimpleFieldValidator):
-    grok.provides(IValidator)
-    grok.adapts(
-        Interface,
-        Interface,
-        Interface,
-        IPrincipal,
-        Interface)
+class RoleFieldValidator(SimpleFieldValidator):
 
     def validate(self, value, force=False):
         if value is not None and force is True:
@@ -71,18 +74,18 @@ class RoleFieldValidator(grok.MultiAdapter, SimpleFieldValidator):
                 raise UnknownPrincipalError
 
 
-@grok.adapter(IRole, IFormLayer)
-@grok.implementer(IFieldWidget)
+@implementer(IFieldWidget)
 def role_widget(field, request):
     return FieldWidget(field, CheckBoxWidget(request))
 
 
+@implementer(ILocalRoleList)
 class LocalRoleList(schema.List):
-    grok.implements(ILocalRoleList)
+    """LocalRole list"""
 
 
+@implementer(ILocalRoleListUpdatedEvent)
 class LocalRoleListUpdatedEvent(object):
-    implements(ILocalRoleListUpdatedEvent)
 
     def __init__(self, fti, field, old_value, new_value):
         self.fti = fti
@@ -91,30 +94,26 @@ class LocalRoleListUpdatedEvent(object):
         self.new_value = new_value
 
 
-class LocalRoleListValidator(grok.MultiAdapter, SimpleFieldValidator):
-    grok.provides(IValidator)
-    grok.adapts(
-        Interface,
-        Interface,
-        Interface,
-        ILocalRoleList,
-        Interface)
+class LocalRoleListValidator(SimpleFieldValidator):
 
     def validate(self, value, force=False):
-        for subform in [widget.subform for widget in self.widget.widgets]:
-            for widget in subform.widgets.values():
+        for dgfo_widget in self.widget.widgets:
+            if dgfo_widget.id.endswith("AA") or dgfo_widget.id.endswith("TT"):
+                continue
+            if base_hasattr(dgfo_widget, 'subform'):
+                dgfo_widget = dgfo_widget.subform
+            for widget in dgfo_widget.widgets.values():
                 if hasattr(widget, 'error') and widget.error:
                     raise ValueError(widget.label)
         if value is not None:
-            vset = set([(l['state'], l['value']) for l in value])
+            vset = set([(item['state'], item['value']) for item in value])
             if len(vset) < len(value):
                 raise DuplicateEntryError
 
 
-@grok.adapter(ILocalRoleList, IFormLayer)
-@grok.implementer(IFieldWidget)
+@implementer(IFieldWidget)
 def localrolelist_widget(field, request):
-    return FieldWidget(field, DataGridField(request))
+    return FieldWidget(field, DataGridFieldWidget(request))
 
 
 class RelatedFormatValidator(validator.SimpleFieldValidator):
@@ -125,7 +124,7 @@ class RelatedFormatValidator(validator.SimpleFieldValidator):
             return
         try:
             var = eval(value)
-        except:
+        except Exception:
             raise RelatedFormatError
         if not isinstance(var, dict):
             raise RelatedFormatError
@@ -133,7 +132,7 @@ class RelatedFormatValidator(validator.SimpleFieldValidator):
         for utility in var:
             try:
                 getUtility(ILocalRolesRelatedSearchUtility, utility)
-            except:
+            except Exception:
                 raise UtilityNameError
             if not isinstance(var[utility], (list, tuple)):
                 raise RelatedFormatError
@@ -148,11 +147,12 @@ class ILocalRole(Interface):
     value = Principal(title=_(u'value'))
 
     roles = Role(title=_(u'roles'),
-                 value_type=schema.Choice(source=plone_role_generator),
+                 value_type=schema.Choice(vocabulary='dexterity.localroles.vocabulary.SharingRolesVocabulary'),
                  required=True)
 
     related = schema.Text(title=_(u'related role configuration'),
                           required=False)
+
 
 validator.WidgetValidatorDiscriminators(RelatedFormatValidator, field=ILocalRole['related'])
 
@@ -176,6 +176,10 @@ class LocalRoleConfigurationAdapter(object):
         if not base_hasattr(self.context.fti, 'localroles'):
             setattr(self.context.fti, 'localroles', PersistentMapping())
         old_value = self.context.fti.localroles.get(name, {})
+        # for plone 6 with state as tuple
+        for dic in value:
+            if isinstance(dic['state'], tuple):
+                dic['state'] = dic['state'][0]
         new_dict = self.convert_to_dict(value)
         if old_value == new_dict:
             return

@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
-import unittest2 as unittest
-from zope.component import getUtility
-from plone.app.testing import login, TEST_USER_NAME, setRoles, TEST_USER_ID
-
-from ..utility import ParentRelatedSearch, runRelatedSearch
 from ..interfaces import ILocalRolesRelatedSearchUtility
 from ..testing import DLR_PROFILE_FUNCTIONAL
+from ..utility import ParentRelatedSearch
+from ..utility import runRelatedSearch
+from plone.app.testing import login
+from plone.app.testing import setRoles
+from plone.app.testing import TEST_USER_ID
+from plone.app.testing import TEST_USER_NAME
+from zope.component import getUtility
+
+import unittest
 
 
 class TestRelatedSearchUtility(unittest.TestCase):

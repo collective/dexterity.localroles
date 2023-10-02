@@ -1,13 +1,17 @@
 # -*- coding: utf-8 -*-
-import unittest2 as unittest
-
-from Products.CMFCore.utils import getToolByName
-from plone import api
-from plone.app.testing import login, TEST_USER_NAME, setRoles, TEST_USER_ID
+from dexterity.localroles.testing import DLR_PROFILE_FUNCTIONAL
+from dexterity.localroles.utils import add_fti_configuration
 from ecreall.helpers.testing.search import BaseSearchTest
+from plone import api
+from plone.app.testing import login
+from plone.app.testing import setRoles
+from plone.app.testing import TEST_USER_ID
+from plone.app.testing import TEST_USER_NAME
+from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.CatalogTool import allowedRolesAndUsers
 
-from ..testing import DLR_PROFILE_FUNCTIONAL
-from ..utils import add_fti_configuration
+import unittest
+
 
 localroles_config = {
     u'private': {'raptor': {'roles': ('Editor', 'Contributor'),
@@ -77,25 +81,24 @@ class TestAdapter(unittest.TestCase, BaseSearchTest):
         item = self.portal['test']
         self.assertCanFind(item)
         ctool = self.portal.portal_catalog
-        allowedRolesAndUsers = ctool.getIndexDataForUID('/'.join(item.getPhysicalPath()))['allowedRolesAndUsers']
-        self.assertIn('user:cavemans', allowedRolesAndUsers)
-        self.assertNotIn('user:hunters', allowedRolesAndUsers)
-        self.assertNotIn('user:fred', allowedRolesAndUsers)
-        self.assertIn('user:raptor', allowedRolesAndUsers)
-        self.assertNotIn('user:t-rex', allowedRolesAndUsers)
-        self.assertNotIn('user:basic-user', allowedRolesAndUsers)
+        allowed_roles_and_users = ctool.getIndexDataForUID('/'.join(item.getPhysicalPath()))['allowedRolesAndUsers']
+        self.assertIn('user:cavemans', allowed_roles_and_users)
+        self.assertNotIn('user:hunters', allowed_roles_and_users)
+        self.assertNotIn('user:fred', allowed_roles_and_users)
+        self.assertIn('user:raptor', allowed_roles_and_users)
+        self.assertNotIn('user:t-rex', allowed_roles_and_users)
+        self.assertNotIn('user:basic-user', allowed_roles_and_users)
         workflow = getToolByName(self.portal, 'portal_workflow')
         workflow.doActionFor(item, 'publish')
-        allowedRolesAndUsers = ctool.getIndexDataForUID('/'.join(item.getPhysicalPath()))['allowedRolesAndUsers']
-        self.assertEqual(allowedRolesAndUsers, ['Anonymous'])
+        self.assertEqual(allowedRolesAndUsers(item)(), ['Anonymous'])
         workflow.doActionFor(item, 'retract')
-        allowedRolesAndUsers = ctool.getIndexDataForUID('/'.join(item.getPhysicalPath()))['allowedRolesAndUsers']
-        self.assertIn('user:cavemans', allowedRolesAndUsers)
-        self.assertNotIn('user:hunters', allowedRolesAndUsers)
-        self.assertNotIn('user:fred', allowedRolesAndUsers)
-        self.assertIn('user:raptor', allowedRolesAndUsers)
-        self.assertNotIn('user:t-rex', allowedRolesAndUsers)
-        self.assertNotIn('user:basic-user', allowedRolesAndUsers)
+        allowed_roles_and_users = allowedRolesAndUsers(item)()
+        self.assertIn('user:cavemans', allowed_roles_and_users)
+        self.assertNotIn('user:hunters', allowed_roles_and_users)
+        self.assertNotIn('user:fred', allowed_roles_and_users)
+        self.assertIn('user:raptor', allowed_roles_and_users)
+        self.assertNotIn('user:t-rex', allowed_roles_and_users)
+        self.assertNotIn('user:basic-user', allowed_roles_and_users)
 
     def test_related_localroles_change_on_statechange(self):
         self.portal.invokeFactory('Folder', 'folder')

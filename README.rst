@@ -31,6 +31,12 @@ Those automaticaly given roles cannot be manually removed by the "sharing" tab (
 
 This package is a base for dexterity.localrolesfield that adds a field to define the principal.
 
+Versions
+========
+
+* Version 2.x is compliant Plone 4, Plone 6
+* version 1.x is for Plone 4 only
+
 Installation
 ============
 

@@ -1,11 +1,13 @@
 # encoding: utf-8
 
-from zope.schema.interfaces import IText
-from z3c.form.interfaces import ITextWidget
+from ..exceptions import RelatedFormatError
+from ..exceptions import RoleNameError
+from ..exceptions import UnknownPrincipalError
+from ..exceptions import UtilityNameError
 from dexterity.localroles import testing
-from ..exceptions import RelatedFormatError, RoleNameError
-from ..exceptions import UnknownPrincipalError, UtilityNameError
 from dexterity.localroles.browser import settings
+from z3c.form.interfaces import ITextWidget
+from zope.schema.interfaces import IText
 
 import unittest
 
@@ -72,4 +74,5 @@ class TestSettings(unittest.TestCase):
                                    'caveman': {'roles': ('Reader', ), 'rel': ''}},
                        'pending': {'caveman': {'roles': ('Contributor', ), 'rel': ''}}}
         self.assertDictEqual(dict_values, cls.convert_to_dict(values))
-        self.assertItemsEqual(values, cls.convert_to_list(dict_values))
+        self.assertEqual(sorted([sorted(list(dc.items())) for dc in values]),
+                         sorted([sorted(list(dc.items())) for dc in cls.convert_to_list(dict_values)]))

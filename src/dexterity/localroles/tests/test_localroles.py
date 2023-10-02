@@ -1,14 +1,13 @@
 # encoding: utf-8
 
+from dexterity.localroles import testing
 from persistent.mapping import PersistentMapping
 from plone import api
-from plone.app.testing import TEST_USER_ID
-from plone.app.testing import TEST_USER_NAME
-from plone.app.testing import setRoles
 from plone.app.testing import login
 from plone.app.testing import logout
-
-from dexterity.localroles import testing
+from plone.app.testing import setRoles
+from plone.app.testing import TEST_USER_ID
+from plone.app.testing import TEST_USER_NAME
 
 import unittest
 
@@ -53,7 +52,7 @@ class TestLocalRoles(unittest.TestCase):
             roles = api.group.get_roles(groupname=group, obj=self.item)
             base_roles = ['Authenticated']
         test_roles.extend(base_roles)
-        self.assertItemsEqual(test_roles, roles)
+        self.assertEqual(sorted(test_roles), sorted(roles))
 
     def test_roles_after_creation(self):
         self.assertEqual('private', api.content.get_state(obj=self.item))

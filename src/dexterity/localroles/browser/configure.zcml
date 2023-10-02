@@ -1,11 +1,8 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
-    xmlns:grok="http://namespaces.zope.org/grok"
     xmlns:browser="http://namespaces.zope.org/browser"
     xmlns:i18n="http://namespaces.zope.org/i18n"
     i18n_domain="dexterity.localroles">
-
-  <grok:grok package=".settings" />
 
   <browser:page
       name="localroles"
@@ -36,5 +33,37 @@
 
   <adapter factory=".settings.RelatedFormatValidator"
            name="dexterity.localroles.RelatedFormatValidator" />
+
+  <adapter
+      for="zope.interface.interface.Interface
+           zope.interface.interface.Interface
+           zope.interface.interface.Interface
+           dexterity.localroles.browser.interfaces.IPrincipal
+           zope.interface.interface.Interface"
+      provides="z3c.form.interfaces.IValidator"
+      factory=".settings.RoleFieldValidator"
+      />
+
+   <adapter
+      for="dexterity.localroles.browser.interfaces.IRole
+           z3c.form.interfaces.IFormLayer"
+      factory=".settings.role_widget"
+      />
+
+  <adapter
+      for="zope.interface.interface.Interface
+           zope.interface.interface.Interface
+           zope.interface.interface.Interface
+           dexterity.localroles.browser.interfaces.ILocalRoleList
+           zope.interface.interface.Interface"
+      provides="z3c.form.interfaces.IValidator"
+      factory=".settings.LocalRoleListValidator"
+      />
+
+   <adapter
+      for="dexterity.localroles.browser.interfaces.ILocalRoleList
+           z3c.form.interfaces.IFormLayer"
+      factory=".settings.localrolelist_widget"
+      />
 
 </configure>

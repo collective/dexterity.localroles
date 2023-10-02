@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-version = '1.7.dev0'
+version = '2.0.0.dev0'
 
 long_description = (
     open('README.rst').read()
@@ -24,9 +24,12 @@ setup(
         "Environment :: Web Environment",
         "Framework :: Plone",
         "Framework :: Plone :: 4.3",
+        "Framework :: Plone :: 5.1",
+        "Framework :: Plone :: 6.0",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
         "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3.10",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
     keywords='Plone Python',
@@ -44,7 +47,6 @@ setup(
         'plone.api',
         'borg.localrole',
         'collective.z3cform.datagridfield',
-        'five.grok',
         'plone.app.dexterity',
         'setuptools',
     ],

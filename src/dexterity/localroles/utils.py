@@ -11,8 +11,12 @@ from Products.CMFPlone.utils import base_hasattr
 from zope import event
 from zope.annotation.interfaces import IAnnotations
 from zope.component import getUtility
-from zope.component.interfaces import ComponentLookupError
 
+
+try:
+    from zope.component.interfaces import ComponentLookupError  # noqa
+except ImportError:
+    from zope.interface.interfaces import ComponentLookupError
 
 rel_key = 'd.lr.related'
 
@@ -193,7 +197,7 @@ def update_roles_in_fti(portal_type, config, action='add', keyname='static_confi
                         # no more config
                         del lrd[state][principal]
                         change = True
-            if len(lrd[state].keys()) == 0:
+            if len(list(lrd[state].keys())) == 0:
                 del lrd[state]
                 change = True
     if change:

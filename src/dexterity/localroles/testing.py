@@ -1,12 +1,22 @@
 # -*- coding: utf-8 -*-
-from plone.testing import z2, zca
-from plone.app.testing import PloneWithPackageLayer
+from plone import api
+from plone.app.robotframework.testing import REMOTE_LIBRARY_BUNDLE_FIXTURE
 from plone.app.testing import FunctionalTesting
 from plone.app.testing import ploneSite
-from plone.app.robotframework.testing import REMOTE_LIBRARY_BUNDLE_FIXTURE
-from plone import api
-import dexterity.localroles
+from plone.app.testing import PloneWithPackageLayer
+from plone.testing import z2
+from plone.testing import zca
 
+import dexterity.localroles
+import pkg_resources
+
+
+try:
+    pkg_resources.get_distribution('plone.app.contenttypes')
+except pkg_resources.DistributionNotFound:
+    HAS_PA_CONTENTTYPES = False
+else:
+    HAS_PA_CONTENTTYPES = True
 
 DLR_ZCML = zca.ZCMLSandbox(filename="testing.zcml",
                            package=dexterity.localroles,
@@ -15,7 +25,19 @@ DLR_ZCML = zca.ZCMLSandbox(filename="testing.zcml",
 DLR_Z2 = z2.IntegrationTesting(bases=(z2.STARTUP, DLR_ZCML),
                                name='DLR_Z2')
 
-DLR = PloneWithPackageLayer(
+
+class DLRLayer(PloneWithPackageLayer):
+
+    def setUpPloneSite(self, portal):
+        """Set up Plone."""
+        super(DLRLayer, self).setUpPloneSite(portal)
+
+        # Plone 5 support
+        if HAS_PA_CONTENTTYPES:
+            self.applyProfile(portal, 'plone.app.contenttypes:default')
+
+
+DLR = DLRLayer(
     zcml_filename="testing.zcml",
     zcml_package=dexterity.localroles,
     additional_z2_products=(),
@@ -42,7 +64,7 @@ class DLRFunctionalTesting(FunctionalTesting):
 
 
 DLR_PROFILE_FUNCTIONAL = DLRFunctionalTesting(
-    bases=(DLR, ), name="DLR_PROFILE_FUNCTIONAL")
+    bases=(DLR,), name="DLR_PROFILE_FUNCTIONAL")
 
 DLR_ROBOT_TESTING = DLRFunctionalTesting(
     bases=(

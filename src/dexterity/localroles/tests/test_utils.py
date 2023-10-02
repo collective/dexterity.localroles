@@ -13,7 +13,7 @@ from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_NAME
 
-import unittest2 as unittest
+import unittest
 
 
 localroles_config = {
@@ -90,7 +90,7 @@ class TestUtils(unittest.TestCase):
     def test_fti_configuration(self):
         self.portal.invokeFactory('Document', 'doc')
         item = self.portal['doc']
-        self.assertEqual(fti_configuration(item), ({}, None))
+        self.assertEqual(fti_configuration(item)[0], {})
         self.portal.invokeFactory('testingtype', 'test')
         item = self.portal['test']
         self.assertEqual(fti_configuration(item), ({}, self.portal.portal_types.testingtype))

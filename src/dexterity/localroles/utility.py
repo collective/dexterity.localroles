@@ -1,17 +1,21 @@
 # -*- coding: utf-8 -*-
 """Example."""
-from Acquisition import aq_inner, aq_parent
-from zope.component import getUtility
-from zope.component.interfaces import ComponentLookupError
-from zope.interface import implements
-
 from .interfaces import ILocalRolesRelatedSearchUtility
+from Acquisition import aq_inner
+from Acquisition import aq_parent
+from zope.component import getUtility
+from zope.interface import implementer
 
 
+try:
+    from zope.component.interfaces import ComponentLookupError  # noqa
+except ImportError:
+    from zope.interface.interfaces import ComponentLookupError
+
+
+@implementer(ILocalRolesRelatedSearchUtility)
 class ParentRelatedSearch(object):
     """ Example related search. """
-
-    implements(ILocalRolesRelatedSearchUtility)
 
     def get_objects(self, obj):
         """ Return the parent. """

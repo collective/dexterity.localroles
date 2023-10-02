@@ -1,12 +1,17 @@
 # -*- coding: utf-8 -*-
-import transaction
-import unittest2 as unittest
+from dexterity.localroles.browser.settings import LocalRoleConfigurationAdapter
+from dexterity.localroles.testing import DLR_PROFILE_FUNCTIONAL
+from dexterity.localroles.utils import add_fti_configuration
+from dexterity.localroles.utils import get_related_roles
 from plone import api
-from plone.app.testing import login, TEST_USER_NAME, setRoles, TEST_USER_ID
+from plone.app.testing import login
+from plone.app.testing import setRoles
+from plone.app.testing import TEST_USER_ID
+from plone.app.testing import TEST_USER_NAME
 
-from ..browser.settings import LocalRoleConfigurationAdapter
-from ..testing import DLR_PROFILE_FUNCTIONAL
-from ..utils import add_fti_configuration, get_related_roles
+import transaction
+import unittest
+
 
 localroles_config = {
     u'private': {'raptor': {'roles': ('Editor',)},

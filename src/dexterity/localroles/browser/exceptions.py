@@ -1,8 +1,7 @@
 # encoding: utf-8
 
-from zope.schema.interfaces import ValidationError
-
 from dexterity.localroles import _
+from zope.schema.interfaces import ValidationError
 
 
 class UnknownPrincipalError(ValidationError):

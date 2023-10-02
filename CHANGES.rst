@@ -1,11 +1,11 @@
 Changelog
 =========
 
-1.7 (unreleased)
-----------------
+2.0.0 (unreleased)
+------------------
 
-- Nothing changed yet.
-
+- Plone 4.3 and 6.0 compliant
+  [sgeulette]
 
 1.6 (2022-07-01)
 ----------------
