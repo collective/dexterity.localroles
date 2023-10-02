@@ -4,8 +4,8 @@ Changelog
 1.7 (unreleased)
 ----------------
 
-- Tests pass with Plone 5.
-  [thomasdesvenain]
+- Plone 4.3 and 6.0 compliant
+  [sgeulette]
 
 1.6 (2022-07-01)
 ----------------
