@@ -18,10 +18,18 @@
   <include package="plone.schemaeditor" />
 
   <genericsetup:registerProfile
-      zcml:condition="have plone-4"
+      zcml:condition="not-have plone-5"
       name="default"
       title="dexterity.localroles default profile"
       directory="profiles/plone4"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+  <genericsetup:registerProfile
+      zcml:condition="have plone-60"
+      name="default"
+      title="dexterity.localroles default profile"
+      directory="profiles/plone6"
       provides="Products.GenericSetup.interfaces.EXTENSION"
       />
 

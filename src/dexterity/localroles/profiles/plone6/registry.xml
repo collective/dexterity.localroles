@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<registry>
+  <records interface="Products.CMFPlone.interfaces.IBundleRegistry"
+           prefix="plone.bundles/dexteritylocalroles">
+    <value key="enabled">True</value>
+    <value key="jscompilation"></value>
+    <value key="csscompilation">++resource++dexterity.localroles/settings.css</value>
+    <value key="expression" />
+    <value key="depends" />
+    <value key="load_async">False</value>
+    <value key="load_defer">False</value>
+  </records>
+</registry>
