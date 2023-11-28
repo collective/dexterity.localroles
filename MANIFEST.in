@@ -1,6 +1,8 @@
 include *.py
 include *.cfg
 include *.rst
+include *.txt
+include Makefile
 include .coveragerc
 include .travis.yml
 recursive-include docs *.GPL
