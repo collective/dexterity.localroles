@@ -1,4 +1,6 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages
+from setuptools import setup
+
 
 version = '2.0.0a1.dev0'
 
@@ -26,10 +28,12 @@ setup(
         "Framework :: Plone :: 4.3",
         "Framework :: Plone :: 5.1",
         "Framework :: Plone :: 6.0",
+        "Framework :: Plone :: 6.1",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
         "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.13",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
     keywords='Plone Python',

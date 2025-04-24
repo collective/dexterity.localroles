@@ -20,6 +20,7 @@ develop-eggs/
 parts/
 var/
 buildout-cache/
+CACHEDIR.TAG
 include/
 lib/
 local/
