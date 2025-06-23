@@ -46,9 +46,8 @@ except ImportError:
 
 @implementer(IWorkflowState)
 class WorkflowState(schema.Choice):
-
     def __init__(self, *args, **kwargs):
-        kwargs['vocabulary'] = u''
+        kwargs["vocabulary"] = u""
         super(WorkflowState, self).__init__(*args, **kwargs)
 
     def bind(self, object):
@@ -66,11 +65,9 @@ class Principal(schema.TextLine):
 
 
 class RoleFieldValidator(SimpleFieldValidator):
-
     def validate(self, value, force=False):
         if value is not None and force is True:
-            if api.user.get(username=value) is None and \
-               api.group.get(groupname=value) is None:
+            if api.user.get(username=value) is None and api.group.get(groupname=value) is None:
                 raise UnknownPrincipalError
 
 
@@ -86,7 +83,6 @@ class LocalRoleList(schema.List):
 
 @implementer(ILocalRoleListUpdatedEvent)
 class LocalRoleListUpdatedEvent(object):
-
     def __init__(self, fti, field, old_value, new_value):
         self.fti = fti
         self.field = field
@@ -95,18 +91,17 @@ class LocalRoleListUpdatedEvent(object):
 
 
 class LocalRoleListValidator(SimpleFieldValidator):
-
     def validate(self, value, force=False):
         for dgfo_widget in self.widget.widgets:
             if dgfo_widget.id.endswith("AA") or dgfo_widget.id.endswith("TT"):
                 continue
-            if base_hasattr(dgfo_widget, 'subform'):
+            if base_hasattr(dgfo_widget, "subform"):
                 dgfo_widget = dgfo_widget.subform
             for widget in dgfo_widget.widgets.values():
-                if hasattr(widget, 'error') and widget.error:
+                if hasattr(widget, "error") and widget.error:
                     raise ValueError(widget.label)
         if value is not None:
-            vset = set([(item['state'], item['value']) for item in value])
+            vset = set([(item["state"], item["value"]) for item in value])
             if len(vset) < len(value):
                 raise DuplicateEntryError
 
@@ -142,44 +137,47 @@ class RelatedFormatValidator(validator.SimpleFieldValidator):
 
 
 class ILocalRole(Interface):
-    state = WorkflowState(title=_(u'state'), required=True)
+    state = WorkflowState(title=_(u"state"), required=True)
 
-    value = Principal(title=_(u'value'))
+    value = Principal(title=_(u"value"))
 
-    roles = Role(title=_(u'roles'),
-                 value_type=schema.Choice(vocabulary='dexterity.localroles.vocabulary.SharingRolesVocabulary'),
-                 required=True)
+    roles = Role(
+        title=_(u"roles"),
+        value_type=schema.Choice(vocabulary="dexterity.localroles.vocabulary.SharingRolesVocabulary"),
+        required=True,
+    )
 
-    related = schema.Text(title=_(u'related role configuration'),
-                          required=False)
+    related = schema.Text(title=_(u"related role configuration"), required=False)
 
 
-validator.WidgetValidatorDiscriminators(RelatedFormatValidator, field=ILocalRole['related'])
+validator.WidgetValidatorDiscriminators(RelatedFormatValidator, field=ILocalRole["related"])
 
 
 class LocalRoleConfigurationAdapter(object):
     adapts(ITypeSchemaContext)
 
     def __init__(self, context):
-        self.__dict__['context'] = context
-        self.__dict__['fti'] = self.context.fti
+        self.__dict__["context"] = context
+        self.__dict__["fti"] = self.context.fti
 
     def __getattr__(self, name):
-        if not base_hasattr(self.context.fti, 'localroles') \
-                or name not in self.context.fti.localroles \
-                or not isinstance(self.context.fti.localroles[name], dict):
+        if (
+            not base_hasattr(self.context.fti, "localroles")
+            or name not in self.context.fti.localroles
+            or not isinstance(self.context.fti.localroles[name], dict)
+        ):
             raise AttributeError
         value = self.context.fti.localroles[name]
         return self.convert_to_list(value)
 
     def __setattr__(self, name, value):
-        if not base_hasattr(self.context.fti, 'localroles'):
-            setattr(self.context.fti, 'localroles', PersistentMapping())
+        if not base_hasattr(self.context.fti, "localroles"):
+            setattr(self.context.fti, "localroles", PersistentMapping())
         old_value = self.context.fti.localroles.get(name, {})
         # for plone 6 with state as tuple
         for dic in value:
-            if isinstance(dic['state'], tuple):
-                dic['state'] = dic['state'][0]
+            if isinstance(dic["state"], tuple):
+                dic["state"] = dic["state"][0]
         new_dict = self.convert_to_dict(value)
         if old_value == new_dict:
             return
@@ -190,11 +188,11 @@ class LocalRoleConfigurationAdapter(object):
     def convert_to_dict(value):
         value_dict = {}
         for row in value:
-            state, roles, principal = row['state'], row['roles'], row['value']
-            related = row['related'] is not None and row['related'].strip() and str(eval(row['related'])) or ''
+            state, roles, principal = row["state"], row["roles"], row["value"]
+            related = row["related"] is not None and row["related"].strip() and str(eval(row["related"])) or ""
             if state not in value_dict:
                 value_dict[state] = {}
-            value_dict[state][principal] = {'roles': roles, 'rel': related}
+            value_dict[state][principal] = {"roles": roles, "rel": related}
         return value_dict
 
     @staticmethod
@@ -202,18 +200,24 @@ class LocalRoleConfigurationAdapter(object):
         value_list = []
         for state_key, state_dic in sorted(value.items()):
             for principal, roles_dic in sorted(state_dic.items()):
-                value_list.append({'state': state_key, 'roles': roles_dic['roles'],
-                                   'value': principal, 'related': roles_dic.get('rel', '')})
+                value_list.append(
+                    {
+                        "state": state_key,
+                        "roles": roles_dic["roles"],
+                        "value": principal,
+                        "related": roles_dic.get("rel", ""),
+                    }
+                )
         return value_list
 
 
 class LocalRoleConfigurationForm(form.EditForm):
-    template = ViewPageTemplateFile('templates/role-config.pt')
-    label = _(u'Local Role configuration')
-    successMessage = _(u'Local role configurations successfully updated.')
-    noChangesMessage = _(u'No changes were made.')
+    template = ViewPageTemplateFile("templates/role-config.pt")
+    label = _(u"Local Role configuration")
+    successMessage = _(u"Local role configurations successfully updated.")
+    noChangesMessage = _(u"No changes were made.")
     buttons = deepcopy(form.EditForm.buttons)
-    buttons['apply'].title = PMF(u'Save')
+    buttons["apply"].title = PMF(u"Save")
 
     def update(self):
         super(LocalRoleConfigurationForm, self).update()
@@ -228,10 +232,11 @@ class LocalRoleConfigurationForm(form.EditForm):
     def fields(self):
         fields = [
             LocalRoleList(
-                __name__='static_config',
-                title=_(u'Local role configuration'),
-                description=u'',
-                value_type=DictRow(title=u"fieldconfig", schema=ILocalRole))
+                __name__="static_config",
+                title=_(u"Local role configuration"),
+                description=u"",
+                value_type=DictRow(title=u"fieldconfig", schema=ILocalRole),
+            )
         ]
         fields = sorted(fields, key=lambda x: x.title)
         fields = field.Fields(*fields)
@@ -241,4 +246,4 @@ class LocalRoleConfigurationForm(form.EditForm):
 
 class LocalRoleConfigurationPage(CustomTypeFormLayout):
     form = LocalRoleConfigurationForm
-    label = _(u'Local roles')
+    label = _(u"Local roles")

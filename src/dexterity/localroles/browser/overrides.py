@@ -8,11 +8,10 @@ from plone.app.dexterity.browser.overview import TypeOverviewPage
 
 
 class CustomTypeFormLayout(TypeFormLayout):
-
     @property
     def tabs(self):
         current_tabs = super(CustomTypeFormLayout, self).tabs
-        return current_tabs + ((_(u'Local roles'), '@@localroles'), )
+        return current_tabs + ((_(u"Local roles"), "@@localroles"),)
 
 
 class CustomTypeBehaviorsPage(TypeBehaviorsPage, CustomTypeFormLayout):

@@ -5,11 +5,11 @@ from zope.schema.interfaces import ValidationError
 
 
 class UnknownPrincipalError(ValidationError):
-    __doc__ = _(u'Unknown principal')
+    __doc__ = _(u"Unknown principal")
 
 
 class DuplicateEntryError(ValidationError):
-    __doc__ = _(u'There is duplicate entries')
+    __doc__ = _(u"There is duplicate entries")
 
 
 class RelatedFormatError(ValidationError):

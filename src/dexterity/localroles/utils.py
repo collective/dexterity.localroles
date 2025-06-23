@@ -18,11 +18,11 @@ try:
 except ImportError:
     from zope.interface.interfaces import ComponentLookupError
 
-rel_key = 'd.lr.related'
+rel_key = "d.lr.related"
 
 
 def del_related_uid(obj, uid):
-    """ Delete uid related roles on obj """
+    """Delete uid related roles on obj"""
     annot = IAnnotations(obj)
     if rel_key not in annot or uid not in annot[rel_key]:
         return
@@ -32,7 +32,7 @@ def del_related_uid(obj, uid):
 
 
 def add_related_roles(obj, uid, principal, roles):
-    """ Add related roles on obj for uid. """
+    """Add related roles on obj for uid."""
     annot = IAnnotations(obj)
     if not roles:
         return
@@ -47,7 +47,7 @@ def add_related_roles(obj, uid, principal, roles):
 
 
 def del_related_roles(obj, uid, principal, roles):
-    """ Delete uid related roles on obj """
+    """Delete uid related roles on obj"""
     annot = IAnnotations(obj)
     if rel_key not in annot or uid not in annot[rel_key] or principal not in annot[rel_key][uid]:
         return set()
@@ -64,7 +64,7 @@ def del_related_roles(obj, uid, principal, roles):
 
 
 def get_related_roles(obj, uid):
-    """ Get related roles on obj for uid """
+    """Get related roles on obj for uid"""
     annot = IAnnotations(obj)
     if rel_key not in annot or uid not in annot[rel_key]:
         return {}
@@ -72,7 +72,7 @@ def get_related_roles(obj, uid):
 
 
 def get_all_related_roles(obj):
-    """ Get related roles on obj """
+    """Get related roles on obj"""
     annot = IAnnotations(obj)
     if rel_key not in annot:
         return {}
@@ -88,8 +88,8 @@ def get_all_related_roles(obj):
 
 def set_related_roles(obj, uid, dic):
     """
-        Set related roles on obj for uid.
-        Param dic is {'principal': set([roles])}
+    Set related roles on obj for uid.
+    Param dic is {'principal': set([roles])}
     """
     annot = IAnnotations(obj)
     if rel_key not in annot:
@@ -97,9 +97,9 @@ def set_related_roles(obj, uid, dic):
     annot[rel_key][uid] = PersistentMapping(dic)
 
 
-@mutually_exclusive_parameters('obj', 'portal_type')
+@mutually_exclusive_parameters("obj", "portal_type")
 def fti_configuration(obj=None, portal_type=None):
-    """ Return the localroles fti configuration
+    """Return the localroles fti configuration
 
     :param obj: dexterity object for which we want the configuration
     :param portal_type: portal type for which we want the configuration
@@ -111,12 +111,12 @@ def fti_configuration(obj=None, portal_type=None):
         fti = getUtility(IDexterityFTI, name=portal_type)
     except ComponentLookupError:
         return {}, None
-    if not base_hasattr(fti, 'localroles'):
-        setattr(fti, 'localroles', PersistentMapping())
+    if not base_hasattr(fti, "localroles"):
+        setattr(fti, "localroles", PersistentMapping())
     return fti.localroles, fti
 
 
-def add_fti_configuration(portal_type, configuration, keyname='static_config', force=False):
+def add_fti_configuration(portal_type, configuration, keyname="static_config", force=False):
     """Add in fti a specific localroles configuration.
     :param portal_type: name of the portal type
     :param configuration: dict like {state: {principal: {'roles': [roles], 'rel': "{'utility name':[roles]}"}}}
@@ -128,8 +128,8 @@ def add_fti_configuration(portal_type, configuration, keyname='static_config', f
     except ComponentLookupError:
         logger.error("The portal type '%s' doesn't exist" % portal_type)
         return "The portal type '%s' doesn't exist" % portal_type
-    if not base_hasattr(fti, 'localroles'):
-        setattr(fti, 'localroles', PersistentMapping())
+    if not base_hasattr(fti, "localroles"):
+        setattr(fti, "localroles", PersistentMapping())
     old_value = fti.localroles.get(keyname, {})
     if keyname in fti.localroles and not force:
         logger.warn("The '%s' configuration on type '%s' is already set" % (keyname, portal_type))
@@ -138,7 +138,7 @@ def add_fti_configuration(portal_type, configuration, keyname='static_config', f
     event.notify(LocalRoleListUpdatedEvent(fti, keyname, old_value, configuration))
 
 
-def update_roles_in_fti(portal_type, config, action='add', keyname='static_config', notify=True):
+def update_roles_in_fti(portal_type, config, action="add", keyname="static_config", notify=True):
     """Update a localroles fti config by adding/removing the given roles.
 
     :param portal_type: name of the portal type
@@ -154,46 +154,49 @@ def update_roles_in_fti(portal_type, config, action='add', keyname='static_confi
         logger.error("The portal type '%s' doesn't exist" % portal_type)
         return False
     change = False
-    if not base_hasattr(fti, 'localroles'):
-        setattr(fti, 'localroles', PersistentMapping())
+    if not base_hasattr(fti, "localroles"):
+        setattr(fti, "localroles", PersistentMapping())
     if keyname not in fti.localroles:
         fti.localroles[keyname] = {}
     lrd = fti.localroles[keyname]
     old_value = deepcopy(lrd)
     for state in config:
-        if action == 'add':
+        if action == "add":
             if state not in lrd:
                 lrd[state] = {}
             for principal in config[state]:
                 if principal not in lrd[state]:
-                    lrd[state][principal] = {'roles': list(config[state][principal].get('roles', [])),
-                                             'rel': config[state][principal].get('rel', '')}
+                    lrd[state][principal] = {
+                        "roles": list(config[state][principal].get("roles", [])),
+                        "rel": config[state][principal].get("rel", ""),
+                    }
                     change = True
                     continue
                 # manage main roles
-                if not isinstance(lrd[state][principal]['roles'], list):
-                    lrd[state][principal]['roles'] = list(lrd[state][principal]['roles'])
-                for role in config[state][principal].get('roles', []):
-                    if role not in lrd[state][principal]['roles']:
-                        lrd[state][principal]['roles'].append(role)
+                if not isinstance(lrd[state][principal]["roles"], list):
+                    lrd[state][principal]["roles"] = list(lrd[state][principal]["roles"])
+                for role in config[state][principal].get("roles", []):
+                    if role not in lrd[state][principal]["roles"]:
+                        lrd[state][principal]["roles"].append(role)
                         change = True
                 # manage related
-                if config[state][principal].get('rel', ''):
-                    lrd[state][principal]['rel'] = config[state][principal]['rel']
+                if config[state][principal].get("rel", ""):
+                    lrd[state][principal]["rel"] = config[state][principal]["rel"]
                     change = True
-        elif action == 'rem':
+        elif action == "rem":
             if state not in lrd:
                 continue
             for principal in config[state]:
                 if principal in lrd[state]:
-                    if 'roles' in lrd[state][principal] and 'roles' in config[state][principal]:
-                        lrd[state][principal]['roles'] = list(set(lrd[state][principal]['roles']) -
-                                                              set(config[state][principal]['roles']))
+                    if "roles" in lrd[state][principal] and "roles" in config[state][principal]:
+                        lrd[state][principal]["roles"] = list(
+                            set(lrd[state][principal]["roles"]) - set(config[state][principal]["roles"])
+                        )
                         change = True
-                    if 'rel' in config[state][principal] and lrd[state][principal].get('rel', ''):
-                        lrd[state][principal]['rel'] = ''
+                    if "rel" in config[state][principal] and lrd[state][principal].get("rel", ""):
+                        lrd[state][principal]["rel"] = ""
                         change = True
-                    if len(lrd[state][principal].get('roles', [])) == 0 and lrd[state][principal].get('rel', '') == '':
+                    if len(lrd[state][principal].get("roles", [])) == 0 and lrd[state][principal].get("rel", "") == "":
                         # no more config
                         del lrd[state][principal]
                         change = True
@@ -209,18 +212,18 @@ def update_roles_in_fti(portal_type, config, action='add', keyname='static_confi
 
 def update_security_index(portal_types, trace=10000):
     """Update security index of portal_types"""
-    pc = api.portal.get_tool('portal_catalog')
-    with api.env.adopt_roles(['Manager']):
+    pc = api.portal.get_tool("portal_catalog")
+    with api.env.adopt_roles(["Manager"]):
         brains = pc.searchResults(portal_type=portal_types)
         for i, brain in enumerate(brains, 1):
             obj = brain.getObject()
             if trace and i % trace == 0:
-                logger.info('On brain {}'.format(i))
+                logger.info("On brain {}".format(i))
             obj.reindexObjectSecurity()
 
 
 def get_state(obj):
-    """ Return the state of the current object """
+    """Return the state of the current object"""
     try:
         return api.content.get_state(obj=obj)
     except (WorkflowException, api.portal.CannotGetPortalError):

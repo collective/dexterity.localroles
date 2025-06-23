@@ -22,7 +22,7 @@ class ILocalRoleList(Interface):
 
 class ILocalRoleListUpdatedEvent(Interface):
     """
-        A LocalRoleList field has been modified
+    A LocalRoleList field has been modified
     """
 
     fti = Attribute("The Dexterity FTI")

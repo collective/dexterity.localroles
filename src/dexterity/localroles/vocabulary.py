@@ -13,19 +13,16 @@ from zope.schema.vocabulary import SimpleVocabulary
 
 
 def list_2_vocabulary(elements):
-    """ Return vocabulary from list of tuples """
+    """Return vocabulary from list of tuples"""
     terms = []
     for item in elements:
-        term = SimpleVocabulary.createTerm(item[0],
-                                           item[0],
-                                           item[1])
+        term = SimpleVocabulary.createTerm(item[0], item[0], item[1])
         terms.append(term)
     return SimpleVocabulary(terms)
 
 
 @implementer(ITerms)
 class StateTerms(ChoiceTermsVocabulary):
-
     def __init__(self, context, request, form, field, widget):
         self.context = context
         self.request = request
@@ -33,7 +30,7 @@ class StateTerms(ChoiceTermsVocabulary):
         self.field = field
         self.widget = widget
 
-        if hasattr(self.form, 'parentForm'):
+        if hasattr(self.form, "parentForm"):
             portal_type = self.form.parentForm.context
         else:  # this is the case in plone6 during data conversion
             portal_type = self.form.context.__name__
@@ -55,7 +52,7 @@ class StateTerms(ChoiceTermsVocabulary):
 
 @implementer(IVocabularyFactory)
 class SharingRolesVocabulary(object):
-    """ Return local roles vocabulary """
+    """Return local roles vocabulary"""
 
     def __call__(self, context):
         return list_2_vocabulary(sorted([(i[0], PMF(i[0])) for i in getUtilitiesFor(ISharingPageRole)]))

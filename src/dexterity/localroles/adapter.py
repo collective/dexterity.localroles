@@ -10,7 +10,7 @@ from zope.interface import implementer
 @implementer(ILocalRoleProvider)
 class LocalRoleAdapter(object):
     """
-        borg.localrole adapter to set localrole following type and state configuration
+    borg.localrole adapter to set localrole following type and state configuration
     """
 
     def __init__(self, context):
@@ -23,16 +23,16 @@ class LocalRoleAdapter(object):
             return []
         if not state_config.get(principal, []):
             return ()
-        return tuple(state_config.get(principal)['roles'])
+        return tuple(state_config.get(principal)["roles"])
 
     def getAllRoles(self):
         """Grant permissions"""
         state_config = self.config.get(self.current_state)
         if not state_config:
-            yield '', ('', )
+            yield "", ("",)
             return
         for principal, roles_dic in state_config.items():
-            yield principal, tuple(roles_dic['roles'])
+            yield principal, tuple(roles_dic["roles"])
 
     @property
     def current_state(self):
@@ -42,13 +42,13 @@ class LocalRoleAdapter(object):
     @property
     def config(self):
         (fti_config, fti) = fti_configuration(self.context)
-        return fti_config.get('static_config', {})
+        return fti_config.get("static_config", {})
 
 
 @implementer(ILocalRoleProvider)
 class RelatedLocalRoleAdapter(object):
     """
-        borg.localrole adapter to set related localroles following annotation
+    borg.localrole adapter to set related localroles following annotation
     """
 
     def __init__(self, context):
@@ -67,5 +67,5 @@ class RelatedLocalRoleAdapter(object):
 
     @property
     def related_roles(self):
-        """Return a dict with principals and roles """
+        """Return a dict with principals and roles"""
         return get_all_related_roles(self.context)

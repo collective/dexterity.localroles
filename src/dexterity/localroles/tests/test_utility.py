@@ -19,23 +19,22 @@ class TestRelatedSearchUtility(unittest.TestCase):
 
     def setUp(self):
         super(TestRelatedSearchUtility, self).setUp()
-        self.portal = self.layer['portal']
-        setRoles(self.portal, TEST_USER_ID, ['Manager'])
+        self.portal = self.layer["portal"]
+        setRoles(self.portal, TEST_USER_ID, ["Manager"])
         login(self.portal, TEST_USER_NAME)
 
     def test_get_objects(self):
-        self.portal.invokeFactory('testingtype', 'test')
-        item = self.portal.get('test')
-        utility = getUtility(ILocalRolesRelatedSearchUtility, 'dexterity.localroles.related_parent_with_portal')
+        self.portal.invokeFactory("testingtype", "test")
+        item = self.portal.get("test")
+        utility = getUtility(ILocalRolesRelatedSearchUtility, "dexterity.localroles.related_parent_with_portal")
         self.assertIsInstance(utility, ParentRelatedSearchWithPortal)
         self.assertEqual(utility.get_objects(item), [self.portal])
-        utility = getUtility(ILocalRolesRelatedSearchUtility, 'dexterity.localroles.related_parent')
+        utility = getUtility(ILocalRolesRelatedSearchUtility, "dexterity.localroles.related_parent")
         self.assertIsInstance(utility, ParentRelatedSearch)
         self.assertEqual(utility.get_objects(item), [])
 
     def test_runRelatedSearch(self):
-        self.portal.invokeFactory('testingtype', 'test')
-        item = self.portal.get('test')
-        self.assertEqual(runRelatedSearch('error', item), [])
-        self.assertEqual(runRelatedSearch('dexterity.localroles.related_parent_with_portal', item),
-                         [self.portal])
+        self.portal.invokeFactory("testingtype", "test")
+        item = self.portal.get("test")
+        self.assertEqual(runRelatedSearch("error", item), [])
+        self.assertEqual(runRelatedSearch("dexterity.localroles.related_parent_with_portal", item), [self.portal])
