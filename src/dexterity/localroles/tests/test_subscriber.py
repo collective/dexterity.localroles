@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from dexterity.localroles import HAS_PLONE_6
 from dexterity.localroles.browser.settings import LocalRoleConfigurationAdapter
 from dexterity.localroles.testing import DLR_PROFILE_FUNCTIONAL
 from dexterity.localroles.utils import add_fti_configuration
@@ -13,6 +14,9 @@ import transaction
 import unittest
 
 
+if HAS_PLONE_6:
+    from Products.CMFCore.indexing import processQueue
+
 localroles_config = {
     u'private': {'raptor': {'roles': ('Editor',)},
                  'cavemans': {'roles': ('Reader',)}},
@@ -21,10 +25,10 @@ localroles_config = {
 
 related_localroles_config = {
     u'private': {'raptor': {'roles': ('Editor',),
-                            'rel': "{'dexterity.localroles.related_parent':['Editor']}"},
+                            'rel': "{'dexterity.localroles.related_parent_with_portal':['Editor']}"},
                  'cavemans': {'roles': ('Reader', )}},
     u'published': {'raptor': {'roles': ('Reviewer',),
-                              'rel': "{'dexterity.localroles.related_parent':['Reviewer']}"}},
+                              'rel': "{'dexterity.localroles.related_parent_with_portal':['Reviewer']}"}},
 }
 
 
@@ -117,55 +121,67 @@ class TestSubscriber(unittest.TestCase):
         fti = self.layer['portal'].portal_types.get('testingtype')
         dum = dummy(fti)
         cls = LocalRoleConfigurationAdapter(dum)
-        self.portal.invokeFactory('testingtype', 'test')
-        item = self.portal['test']
+        self.portal.invokeFactory('Folder', 'folder')
+        self.folder = self.portal['folder']
+        self.folder.invokeFactory('testingtype', 'test')
+        item = self.folder['test']
         api.content.transition(obj=item, transition='submit')
-        self.portal.invokeFactory('testingtype', 'test1')
-        item1 = self.portal['test1']
+        self.folder.invokeFactory('testingtype', 'test1')
+        item1 = self.folder['test1']
         # Nothing is set !
         allowedRolesAndUsers = ctool.getIndexDataForUID('/'.join(item1.getPhysicalPath()))['allowedRolesAndUsers']
         self.assertNotIn('user:raptor', allowedRolesAndUsers)
         self.assertDictEqual(get_related_roles(self.portal, item1.UID()), {})
+        self.assertDictEqual(get_related_roles(self.folder, item1.UID()), {})
         # Adding a state
         setattr(cls, 'static_config',
                 [{'state': 'private', 'value': 'raptor', 'roles': ('Reader',),
                   'related': "{'dexterity.localroles.related_parent':['Editor']}"}])
         allowedRolesAndUsers = ctool.getIndexDataForUID('/'.join(item1.getPhysicalPath()))['allowedRolesAndUsers']
         self.assertIn('user:raptor', allowedRolesAndUsers)
-        self.assertDictEqual(get_related_roles(self.portal, item1.UID()), {'raptor': set(['Editor'])})
+        self.assertDictEqual(get_related_roles(self.portal, item1.UID()), {})
+        self.assertDictEqual(get_related_roles(self.folder, item.UID()), {})
+        self.assertDictEqual(get_related_roles(self.folder, item1.UID()), {'raptor': set(['Editor'])})
         # Removing a state
         setattr(cls, 'static_config',
                 [{'state': 'pending', 'value': 't-rex', 'roles': ('Reader',),
                   'related': "{'dexterity.localroles.related_parent':['Editor']}"}])
         allowedRolesAndUsers = ctool.getIndexDataForUID('/'.join(item1.getPhysicalPath()))['allowedRolesAndUsers']
         self.assertNotIn('user:raptor', allowedRolesAndUsers)
-        self.assertDictEqual(get_related_roles(self.portal, item1.UID()), {})
+        self.assertDictEqual(get_related_roles(self.folder, item1.UID()), {})
         allowedRolesAndUsers = ctool.getIndexDataForUID('/'.join(item.getPhysicalPath()))['allowedRolesAndUsers']
         self.assertIn('user:t-rex', allowedRolesAndUsers)
-        self.assertDictEqual(get_related_roles(self.portal, item.UID()), {'t-rex': set(['Editor'])})
+        self.assertDictEqual(get_related_roles(self.folder, item.UID()), {'t-rex': set(['Editor'])})
         # Adding principal
         setattr(cls, 'static_config',
                 [{'state': 'pending', 'value': 't-rex', 'roles': ('Reader',),
                   'related': "{'dexterity.localroles.related_parent':['Editor']}"},
                  {'state': 'pending', 'value': 'raptor', 'roles': ('Reader',),
                   'related': "{'dexterity.localroles.related_parent':['Editor']}"}])
+        if HAS_PLONE_6:
+            processQueue()
         allowedRolesAndUsers = ctool.getIndexDataForUID('/'.join(item.getPhysicalPath()))['allowedRolesAndUsers']
         self.assertIn('user:t-rex', allowedRolesAndUsers)
         self.assertIn('user:raptor', allowedRolesAndUsers)
-        self.assertDictEqual(get_related_roles(self.portal, item.UID()),
+        self.assertDictEqual(get_related_roles(self.folder, item.UID()),
                              {'t-rex': set(['Editor']), 'raptor': set(['Editor'])})
         # Removing principal
+        setattr(self.portal, '__pdb__', True)
         setattr(cls, 'static_config',
                 [{'state': 'pending', 'value': 't-rex', 'roles': ('Reader',),
                   'related': "{'dexterity.localroles.related_parent':['Editor']}"}])
+        if HAS_PLONE_6:
+            processQueue()
         allowedRolesAndUsers = ctool.getIndexDataForUID('/'.join(item.getPhysicalPath()))['allowedRolesAndUsers']
         self.assertIn('user:t-rex', allowedRolesAndUsers)
         self.assertNotIn('user:raptor', allowedRolesAndUsers)
-        self.assertDictEqual(get_related_roles(self.portal, item.UID()), {'t-rex': set(['Editor'])})
+        self.assertDictEqual(get_related_roles(self.folder, item.UID()), {'t-rex': set(['Editor'])})
         # Removing roles, Adding and removing rel
         setattr(cls, 'static_config',
                 [{'state': 'pending', 'value': 't-rex', 'roles': (),
                   'related': "{'dexterity.localroles.related_parent':['Reader']}"}])
+        if HAS_PLONE_6:
+            processQueue()
         allowedRolesAndUsers = ctool.getIndexDataForUID('/'.join(item.getPhysicalPath()))['allowedRolesAndUsers']
-        self.assertNotIn('user:t-rex', allowedRolesAndUsers)
-        self.assertDictEqual(get_related_roles(self.portal, item.UID()), {'t-rex': set(['Reader'])})
+        self.assertIn('user:t-rex', allowedRolesAndUsers)
+        self.assertDictEqual(get_related_roles(self.folder, item.UID()), {'t-rex': set(['Reader'])})

@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
-from ..interfaces import ILocalRolesRelatedSearchUtility
-from ..testing import DLR_PROFILE_FUNCTIONAL
-from ..utility import ParentRelatedSearch
-from ..utility import runRelatedSearch
+from dexterity.localroles.interfaces import ILocalRolesRelatedSearchUtility
+from dexterity.localroles.testing import DLR_PROFILE_FUNCTIONAL
+from dexterity.localroles.utility import ParentRelatedSearch
+from dexterity.localroles.utility import ParentRelatedSearchWithPortal
+from dexterity.localroles.utility import runRelatedSearch
 from plone.app.testing import login
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
@@ -25,13 +26,16 @@ class TestRelatedSearchUtility(unittest.TestCase):
     def test_get_objects(self):
         self.portal.invokeFactory('testingtype', 'test')
         item = self.portal.get('test')
+        utility = getUtility(ILocalRolesRelatedSearchUtility, 'dexterity.localroles.related_parent_with_portal')
+        self.assertIsInstance(utility, ParentRelatedSearchWithPortal)
+        self.assertEqual(utility.get_objects(item), [self.portal])
         utility = getUtility(ILocalRolesRelatedSearchUtility, 'dexterity.localroles.related_parent')
         self.assertIsInstance(utility, ParentRelatedSearch)
-        self.assertEqual(utility.get_objects(item), [self.portal])
+        self.assertEqual(utility.get_objects(item), [])
 
     def test_runRelatedSearch(self):
         self.portal.invokeFactory('testingtype', 'test')
         item = self.portal.get('test')
         self.assertEqual(runRelatedSearch('error', item), [])
-        self.assertEqual(runRelatedSearch('dexterity.localroles.related_parent', item),
+        self.assertEqual(runRelatedSearch('dexterity.localroles.related_parent_with_portal', item),
                          [self.portal])

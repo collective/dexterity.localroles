@@ -15,15 +15,27 @@ except ImportError:
 
 @implementer(ILocalRolesRelatedSearchUtility)
 class ParentRelatedSearch(object):
-    """ Example related search. """
+    """Parent related search, with exeption on portal."""
 
     def get_objects(self, obj):
-        """ Return the parent. """
+        """Return the parent, excepted the portal."""
+        parent = aq_parent(aq_inner(obj))
+        if parent.portal_type == "Plone Site":
+            return []
+        return [parent]
+
+
+@implementer(ILocalRolesRelatedSearchUtility)
+class ParentRelatedSearchWithPortal(object):
+    """Parent related search."""
+
+    def get_objects(self, obj):
+        """Return the parent."""
         return [aq_parent(aq_inner(obj))]
 
 
 def runRelatedSearch(utility, obj):
-    """ Run the related search and return the result """
+    """Run the related search and return the result"""
     try:
         util = getUtility(ILocalRolesRelatedSearchUtility, utility)
     except ComponentLookupError:

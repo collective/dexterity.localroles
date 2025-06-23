@@ -67,6 +67,12 @@
     />
 
   <utility
+    name="dexterity.localroles.related_parent_with_portal"
+    provides=".interfaces.ILocalRolesRelatedSearchUtility"
+    factory=".utility.ParentRelatedSearchWithPortal"
+    />
+
+  <utility
     name="dexterity.localroles.vocabulary.SharingRolesVocabulary"
     factory="dexterity.localroles.vocabulary.SharingRolesVocabulary"
     />
