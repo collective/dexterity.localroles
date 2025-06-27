@@ -8,7 +8,8 @@
       name="localroles"
       for="plone.app.dexterity.interfaces.ITypeSchemaContext"
       class=".settings.LocalRoleConfigurationPage"
-      permission="plone.schemaeditor.ManageSchemata" />
+      permission="plone.schemaeditor.ManageSchemata"
+      layer="dexterity.localroles.interfaces.IDexterityLocalRoles" />
 
   <browser:page
       name="behaviors"
