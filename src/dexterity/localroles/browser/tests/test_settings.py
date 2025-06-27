@@ -7,6 +7,7 @@ from ..exceptions import UtilityNameError
 from dexterity.localroles import testing
 from dexterity.localroles.browser import settings
 from z3c.form.interfaces import ITextWidget
+from zope.interface.exceptions import Invalid
 from zope.schema.interfaces import IText
 
 import unittest
@@ -79,3 +80,19 @@ class TestSettings(unittest.TestCase):
             sorted([sorted(list(dc.items())) for dc in values]),
             sorted([sorted(list(dc.items())) for dc in cls.convert_to_list(dict_values)]),
         )
+
+    def test_constraints(self):
+        class DummyLocalRole:
+            state = None
+            value = None
+            roles = None
+            related = ""
+
+        # Test "related" field is_valid_json constraint
+        related_field = settings.ILocalRole['related']
+        good = DummyLocalRole()
+        good.related = '{"dexterity.localroles.related_parent":["Reader"]}'
+        self.assertIsNone(related_field.validate(good.related))
+        bad = DummyLocalRole()
+        bad.related = 'print("script injection")'
+        self.assertRaises(Invalid, related_field.validate, bad.related)

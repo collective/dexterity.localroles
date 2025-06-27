@@ -8,6 +8,9 @@ Changelog
   [chris-adam, sgeulette]
 - Added `dexterity.localroles.related_parent_with_portal` utility to include Plone Site in related parent search.
   [sgeulette]
+- Added constraint on local role 'related' field to restrict value to JSON.
+  [chris-adam]
+
 
 2.0.0a (2023-11-28)
 -------------------

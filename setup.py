@@ -19,13 +19,10 @@ setup(
     classifiers=[
         "Environment :: Web Environment",
         "Framework :: Plone",
-        "Framework :: Plone :: 4.3",
-        "Framework :: Plone :: 5.1",
         "Framework :: Plone :: 6.0",
         "Framework :: Plone :: 6.1",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.13",
         "Topic :: Software Development :: Libraries :: Python Modules",
@@ -56,6 +53,7 @@ setup(
         "collective.z3cform.datagridfield",
         "plone.app.dexterity",
         "setuptools",
+        "imio.helpers",
     ],
     extras_require={
         "test": [
