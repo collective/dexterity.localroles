@@ -1,5 +1,6 @@
 # encoding: utf-8
 
+from ast import literal_eval
 from dexterity.localroles import logger
 from dexterity.localroles.utility import runRelatedSearch
 from dexterity.localroles.utils import add_related_roles
@@ -25,7 +26,7 @@ def related_role_removal(obj, state, fti_config):
         uid = obj.UID()
         for princ in dic:
             if dic[princ].get("rel"):
-                related = eval(dic[princ]["rel"])
+                related = literal_eval(dic[princ]["rel"])
                 for utility in related:
                     if not related[utility]:
                         continue
@@ -40,7 +41,7 @@ def related_role_addition(obj, state, fti_config):
         uid = obj.UID()
         for princ in dic:
             if dic[princ].get("rel"):
-                related = eval(dic[princ]["rel"])
+                related = literal_eval(dic[princ]["rel"])
                 for utility in related:
                     if not related[utility]:
                         continue

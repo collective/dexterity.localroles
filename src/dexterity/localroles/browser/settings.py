@@ -1,5 +1,6 @@
 # encoding: utf-8
 
+from ast import literal_eval
 from collective.z3cform.datagridfield.row import DictRow
 from copy import deepcopy
 from dexterity.localroles import _
@@ -121,7 +122,7 @@ class RelatedFormatValidator(validator.SimpleFieldValidator):
         if not value or not value.strip():
             return
         try:
-            var = eval(value)
+            var = literal_eval(value)
         except Exception:
             raise RelatedFormatError
         if not isinstance(var, dict):
@@ -194,7 +195,7 @@ class LocalRoleConfigurationAdapter(object):
         value_dict = {}
         for row in value or []:
             state, roles, principal = row["state"], row["roles"], row["value"]
-            related = row["related"] is not None and row["related"].strip() and json.dumps(eval(row["related"])) or ""
+            related = row["related"] is not None and row["related"].strip() and json.dumps(literal_eval(row["related"])) or ""
             if state not in value_dict:
                 value_dict[state] = {}
             value_dict[state][principal] = {"roles": roles, "rel": related}
