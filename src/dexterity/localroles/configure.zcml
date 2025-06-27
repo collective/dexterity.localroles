@@ -80,5 +80,6 @@
   <include package=".browser"/>
   <include package=".upgrades"/>
   <include file="subscribers.zcml" />
+  <include file="profiles.zcml" />
 
 </configure>
