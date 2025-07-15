@@ -26,10 +26,15 @@ class TestRelatedSearchUtility(unittest.TestCase):
     def test_get_objects(self):
         self.portal.invokeFactory("testingtype", "test")
         item = self.portal.get("test")
-        utility = getUtility(ILocalRolesRelatedSearchUtility, "dexterity.localroles.related_parent_with_portal")
+        utility = getUtility(
+            ILocalRolesRelatedSearchUtility,
+            "dexterity.localroles.related_parent_with_portal",
+        )
         self.assertIsInstance(utility, ParentRelatedSearchWithPortal)
         self.assertEqual(utility.get_objects(item), [self.portal])
-        utility = getUtility(ILocalRolesRelatedSearchUtility, "dexterity.localroles.related_parent")
+        utility = getUtility(
+            ILocalRolesRelatedSearchUtility, "dexterity.localroles.related_parent"
+        )
         self.assertIsInstance(utility, ParentRelatedSearch)
         self.assertEqual(utility.get_objects(item), [])
 
@@ -37,4 +42,7 @@ class TestRelatedSearchUtility(unittest.TestCase):
         self.portal.invokeFactory("testingtype", "test")
         item = self.portal.get("test")
         self.assertEqual(runRelatedSearch("error", item), [])
-        self.assertEqual(runRelatedSearch("dexterity.localroles.related_parent_with_portal", item), [self.portal])
+        self.assertEqual(
+            runRelatedSearch("dexterity.localroles.related_parent_with_portal", item),
+            [self.portal],
+        )

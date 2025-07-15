@@ -14,7 +14,9 @@ def v2(context):
     for (name, fti) in getUtilitiesFor(IDexterityFTI):
         if not base_hasattr(fti, "localroleconfig"):
             continue
-        logger.info("FTI '%s' => Copying static_config: '%s'" % (name, fti.localroleconfig))
+        logger.info(
+            "FTI '%s' => Copying static_config: '%s'" % (name, fti.localroleconfig)
+        )
         if not base_hasattr(fti, "localroles"):
             setattr(fti, "localroles", PersistentMapping())
         fti.localroles["static_config"] = {}

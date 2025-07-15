@@ -22,13 +22,24 @@ class TestLocalRoles(unittest.TestCase):
         self.portal.invokeFactory("testingtype", "test")
         self.item = self.portal.get("test")
         self.content = api.content.create(
-            container=self.portal, type="testingtype", id="testlocalroles", title="TestLocalRoles"
+            container=self.portal,
+            type="testingtype",
+            id="testlocalroles",
+            title="TestLocalRoles",
         )
         config = {
-            u"private": {"raptor": {"roles": ("Editor", "Contributor")}, "cavemans": {"roles": ("Reader",)}},
-            u"published": {"hunters": {"roles": ("Reader",)}, "wilma": {"roles": ("Editor",)}},
+            u"private": {
+                "raptor": {"roles": ("Editor", "Contributor")},
+                "cavemans": {"roles": ("Reader",)},
+            },
+            u"published": {
+                "hunters": {"roles": ("Reader",)},
+                "wilma": {"roles": ("Editor",)},
+            },
         }
-        setattr(self.test_fti, "localroles", PersistentMapping({"static_config": config}))
+        setattr(
+            self.test_fti, "localroles", PersistentMapping({"static_config": config})
+        )
 
     def tearDown(self):
         api.content.delete(obj=self.content)

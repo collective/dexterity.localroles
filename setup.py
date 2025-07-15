@@ -6,7 +6,12 @@ version = "2.0.0a1.dev0"
 
 long_description = (
     open("README.rst").read() + "\n" + "Contributors\n"
-    "============\n" + "\n" + open("CONTRIBUTORS.rst").read() + "\n" + open("CHANGES.rst").read() + "\n"
+    "============\n"
+    + "\n"
+    + open("CONTRIBUTORS.rst").read()
+    + "\n"
+    + open("CHANGES.rst").read()
+    + "\n"
 )
 
 setup(

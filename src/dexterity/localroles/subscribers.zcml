@@ -1,8 +1,9 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
-    xmlns:five="http://namespaces.zope.org/five"
     xmlns:browser="http://namespaces.zope.org/browser"
-    i18n_domain="dexterity.localroles">
+    xmlns:five="http://namespaces.zope.org/five"
+    i18n_domain="dexterity.localroles"
+    >
 
   <!--subscriber
     for="plone.dexterity.interfaces.IDexterityContent
@@ -11,37 +12,38 @@
     /-->
 
   <subscriber
-    for="plone.dexterity.interfaces.IDexterityContent
-         Products.DCWorkflow.interfaces.IAfterTransitionEvent"
-    handler=".subscriber.related_change_on_transition"
-    />
+      for="plone.dexterity.interfaces.IDexterityContent
+           Products.DCWorkflow.interfaces.IAfterTransitionEvent"
+      handler=".subscriber.related_change_on_transition"
+      />
 
   <subscriber
-    for="plone.dexterity.interfaces.IDexterityContent
-         zope.lifecycleevent.interfaces.IObjectRemovedEvent"
-    handler=".subscriber.related_change_on_removal"
-    />
+      for="plone.dexterity.interfaces.IDexterityContent
+           zope.lifecycleevent.interfaces.IObjectRemovedEvent"
+      handler=".subscriber.related_change_on_removal"
+      />
 
   <subscriber
-    for="plone.dexterity.interfaces.IDexterityContent
-         zope.lifecycleevent.interfaces.IObjectAddedEvent"
-    handler=".subscriber.related_change_on_addition"
-    />
+      for="plone.dexterity.interfaces.IDexterityContent
+           zope.lifecycleevent.interfaces.IObjectAddedEvent"
+      handler=".subscriber.related_change_on_addition"
+      />
 
   <subscriber
-    for="plone.dexterity.interfaces.IDexterityContent
-         OFS.interfaces.IObjectWillBeMovedEvent"
-    handler=".subscriber.related_change_on_moving"
-    />
+      for="plone.dexterity.interfaces.IDexterityContent
+           OFS.interfaces.IObjectWillBeMovedEvent"
+      handler=".subscriber.related_change_on_moving"
+      />
 
   <subscriber
-    for="plone.dexterity.interfaces.IDexterityContent
-         zope.lifecycleevent.interfaces.IObjectMovedEvent"
-    handler=".subscriber.related_change_on_moved"
-    />
+      for="plone.dexterity.interfaces.IDexterityContent
+           zope.lifecycleevent.interfaces.IObjectMovedEvent"
+      handler=".subscriber.related_change_on_moved"
+      />
 
   <subscriber
-    for="dexterity.localroles.browser.interfaces.ILocalRoleListUpdatedEvent"
-    handler=".subscriber.local_role_related_configuration_updated" />
+      for="dexterity.localroles.browser.interfaces.ILocalRoleListUpdatedEvent"
+      handler=".subscriber.local_role_related_configuration_updated"
+      />
 
 </configure>

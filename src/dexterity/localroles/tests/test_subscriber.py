@@ -24,11 +24,17 @@ localroles_config = {
 
 related_localroles_config = {
     u"private": {
-        "raptor": {"roles": ("Editor",), "rel": "{'dexterity.localroles.related_parent_with_portal':['Editor']}"},
+        "raptor": {
+            "roles": ("Editor",),
+            "rel": "{'dexterity.localroles.related_parent_with_portal':['Editor']}",
+        },
         "cavemans": {"roles": ("Reader",)},
     },
     u"published": {
-        "raptor": {"roles": ("Reviewer",), "rel": "{'dexterity.localroles.related_parent_with_portal':['Reviewer']}"}
+        "raptor": {
+            "roles": ("Reviewer",),
+            "rel": "{'dexterity.localroles.related_parent_with_portal':['Reviewer']}",
+        }
     },
 }
 
@@ -46,9 +52,13 @@ class TestSubscriber(unittest.TestCase):
     def test_update_security(self):
         add_fti_configuration("testingtype", localroles_config)
         item = api.content.create(container=self.portal, type="testingtype", id="test")
-        doc = api.content.create(container=item, type="Document", id="doc", title="Document")
+        doc = api.content.create(
+            container=item, type="Document", id="doc", title="Document"
+        )
         ctool = self.portal.portal_catalog
-        allowedRolesAndUsers = ctool.getIndexDataForUID("/".join(item.getPhysicalPath()))["allowedRolesAndUsers"]
+        allowedRolesAndUsers = ctool.getIndexDataForUID(
+            "/".join(item.getPhysicalPath())
+        )["allowedRolesAndUsers"]
         self.assertSetEqual(
             set(
                 [
@@ -65,7 +75,9 @@ class TestSubscriber(unittest.TestCase):
             ),
             set(allowedRolesAndUsers),
         )
-        allowedRolesAndUsers = ctool.getIndexDataForUID("/".join(doc.getPhysicalPath()))["allowedRolesAndUsers"]
+        allowedRolesAndUsers = ctool.getIndexDataForUID(
+            "/".join(doc.getPhysicalPath())
+        )["allowedRolesAndUsers"]
         self.assertSetEqual(
             set(
                 [
@@ -84,7 +96,9 @@ class TestSubscriber(unittest.TestCase):
         )
         workflow = api.portal.get_tool(name="portal_workflow")
         workflow.doActionFor(item, "submit")
-        allowedRolesAndUsers = ctool.getIndexDataForUID("/".join(item.getPhysicalPath()))["allowedRolesAndUsers"]
+        allowedRolesAndUsers = ctool.getIndexDataForUID(
+            "/".join(item.getPhysicalPath())
+        )["allowedRolesAndUsers"]
         self.assertSetEqual(
             set(
                 [
@@ -101,7 +115,9 @@ class TestSubscriber(unittest.TestCase):
             ),
             set(allowedRolesAndUsers),
         )
-        allowedRolesAndUsers = ctool.getIndexDataForUID("/".join(doc.getPhysicalPath()))["allowedRolesAndUsers"]
+        allowedRolesAndUsers = ctool.getIndexDataForUID(
+            "/".join(doc.getPhysicalPath())
+        )["allowedRolesAndUsers"]
         self.assertSetEqual(
             set(
                 [
@@ -124,17 +140,23 @@ class TestSubscriber(unittest.TestCase):
         self.portal.invokeFactory("testingtype", "test")
         item = self.portal["test"]
         # The parent is set by addition subscriber
-        self.assertDictEqual(get_related_roles(self.portal, item.UID()), {"raptor": set(["Editor"])})
+        self.assertDictEqual(
+            get_related_roles(self.portal, item.UID()), {"raptor": set(["Editor"])}
+        )
         api.content.transition(obj=item, transition="publish")
         # The parent is changed
-        self.assertDictEqual(get_related_roles(self.portal, item.UID()), {"raptor": set(["Reviewer"])})
+        self.assertDictEqual(
+            get_related_roles(self.portal, item.UID()), {"raptor": set(["Reviewer"])}
+        )
 
     def test_related_change_on_removal(self):
         add_fti_configuration("testingtype", related_localroles_config)
         self.portal.invokeFactory("testingtype", "test")
         item = self.portal["test"]
         # The parent is set by addition subscriber
-        self.assertDictEqual(get_related_roles(self.portal, item.UID()), {"raptor": set(["Editor"])})
+        self.assertDictEqual(
+            get_related_roles(self.portal, item.UID()), {"raptor": set(["Editor"])}
+        )
         api.content.transition(obj=item, transition="publish")
         api.content.delete(obj=item)
         # The parent is changed
@@ -145,7 +167,9 @@ class TestSubscriber(unittest.TestCase):
         self.portal.invokeFactory("testingtype", "test")
         item = self.portal["test"]
         # The parent is set
-        self.assertDictEqual(get_related_roles(self.portal, item.UID()), {"raptor": set(["Editor"])})
+        self.assertDictEqual(
+            get_related_roles(self.portal, item.UID()), {"raptor": set(["Editor"])}
+        )
 
     def test_related_change_on_move(self):
         add_fti_configuration("testingtype", related_localroles_config)
@@ -154,7 +178,9 @@ class TestSubscriber(unittest.TestCase):
         # We need to commit here so that _p_jar isn't None and move will work
         transaction.savepoint(optimistic=True)
         # The parent is set by addition subscriber
-        self.assertDictEqual(get_related_roles(self.portal, item.UID()), {"raptor": set(["Editor"])})
+        self.assertDictEqual(
+            get_related_roles(self.portal, item.UID()), {"raptor": set(["Editor"])}
+        )
         # We create a folder
         self.portal.invokeFactory("Folder", "folder")
         folder = self.portal["folder"]
@@ -164,7 +190,9 @@ class TestSubscriber(unittest.TestCase):
         # The old parent is changed
         self.assertDictEqual(get_related_roles(self.portal, item.UID()), {})
         # The new parent is changed
-        self.assertDictEqual(get_related_roles(folder, item.UID()), {"raptor": set(["Editor"])})
+        self.assertDictEqual(
+            get_related_roles(folder, item.UID()), {"raptor": set(["Editor"])}
+        )
         item = folder["test"]
         api.content.rename(obj=item, new_id="test1")
 
@@ -186,7 +214,9 @@ class TestSubscriber(unittest.TestCase):
         self.folder.invokeFactory("testingtype", "test1")
         item1 = self.folder["test1"]
         # Nothing is set !
-        allowedRolesAndUsers = ctool.getIndexDataForUID("/".join(item1.getPhysicalPath()))["allowedRolesAndUsers"]
+        allowedRolesAndUsers = ctool.getIndexDataForUID(
+            "/".join(item1.getPhysicalPath())
+        )["allowedRolesAndUsers"]
         self.assertNotIn("user:raptor", allowedRolesAndUsers)
         self.assertDictEqual(get_related_roles(self.portal, item1.UID()), {})
         self.assertDictEqual(get_related_roles(self.folder, item1.UID()), {})
@@ -203,11 +233,15 @@ class TestSubscriber(unittest.TestCase):
                 }
             ],
         )
-        allowedRolesAndUsers = ctool.getIndexDataForUID("/".join(item1.getPhysicalPath()))["allowedRolesAndUsers"]
+        allowedRolesAndUsers = ctool.getIndexDataForUID(
+            "/".join(item1.getPhysicalPath())
+        )["allowedRolesAndUsers"]
         self.assertIn("user:raptor", allowedRolesAndUsers)
         self.assertDictEqual(get_related_roles(self.portal, item1.UID()), {})
         self.assertDictEqual(get_related_roles(self.folder, item.UID()), {})
-        self.assertDictEqual(get_related_roles(self.folder, item1.UID()), {"raptor": set(["Editor"])})
+        self.assertDictEqual(
+            get_related_roles(self.folder, item1.UID()), {"raptor": set(["Editor"])}
+        )
         # Removing a state
         setattr(
             cls,
@@ -221,12 +255,18 @@ class TestSubscriber(unittest.TestCase):
                 }
             ],
         )
-        allowedRolesAndUsers = ctool.getIndexDataForUID("/".join(item1.getPhysicalPath()))["allowedRolesAndUsers"]
+        allowedRolesAndUsers = ctool.getIndexDataForUID(
+            "/".join(item1.getPhysicalPath())
+        )["allowedRolesAndUsers"]
         self.assertNotIn("user:raptor", allowedRolesAndUsers)
         self.assertDictEqual(get_related_roles(self.folder, item1.UID()), {})
-        allowedRolesAndUsers = ctool.getIndexDataForUID("/".join(item.getPhysicalPath()))["allowedRolesAndUsers"]
+        allowedRolesAndUsers = ctool.getIndexDataForUID(
+            "/".join(item.getPhysicalPath())
+        )["allowedRolesAndUsers"]
         self.assertIn("user:t-rex", allowedRolesAndUsers)
-        self.assertDictEqual(get_related_roles(self.folder, item.UID()), {"t-rex": set(["Editor"])})
+        self.assertDictEqual(
+            get_related_roles(self.folder, item.UID()), {"t-rex": set(["Editor"])}
+        )
         # Adding principal
         setattr(
             cls,
@@ -248,11 +288,14 @@ class TestSubscriber(unittest.TestCase):
         )
         if HAS_PLONE_6:
             processQueue()
-        allowedRolesAndUsers = ctool.getIndexDataForUID("/".join(item.getPhysicalPath()))["allowedRolesAndUsers"]
+        allowedRolesAndUsers = ctool.getIndexDataForUID(
+            "/".join(item.getPhysicalPath())
+        )["allowedRolesAndUsers"]
         self.assertIn("user:t-rex", allowedRolesAndUsers)
         self.assertIn("user:raptor", allowedRolesAndUsers)
         self.assertDictEqual(
-            get_related_roles(self.folder, item.UID()), {"t-rex": set(["Editor"]), "raptor": set(["Editor"])}
+            get_related_roles(self.folder, item.UID()),
+            {"t-rex": set(["Editor"]), "raptor": set(["Editor"])},
         )
         # Removing principal
         setattr(self.portal, "__pdb__", True)
@@ -270,10 +313,14 @@ class TestSubscriber(unittest.TestCase):
         )
         if HAS_PLONE_6:
             processQueue()
-        allowedRolesAndUsers = ctool.getIndexDataForUID("/".join(item.getPhysicalPath()))["allowedRolesAndUsers"]
+        allowedRolesAndUsers = ctool.getIndexDataForUID(
+            "/".join(item.getPhysicalPath())
+        )["allowedRolesAndUsers"]
         self.assertIn("user:t-rex", allowedRolesAndUsers)
         self.assertNotIn("user:raptor", allowedRolesAndUsers)
-        self.assertDictEqual(get_related_roles(self.folder, item.UID()), {"t-rex": set(["Editor"])})
+        self.assertDictEqual(
+            get_related_roles(self.folder, item.UID()), {"t-rex": set(["Editor"])}
+        )
         # Removing roles, Adding and removing rel
         setattr(
             cls,
@@ -289,6 +336,10 @@ class TestSubscriber(unittest.TestCase):
         )
         if HAS_PLONE_6:
             processQueue()
-        allowedRolesAndUsers = ctool.getIndexDataForUID("/".join(item.getPhysicalPath()))["allowedRolesAndUsers"]
+        allowedRolesAndUsers = ctool.getIndexDataForUID(
+            "/".join(item.getPhysicalPath())
+        )["allowedRolesAndUsers"]
         self.assertIn("user:t-rex", allowedRolesAndUsers)
-        self.assertDictEqual(get_related_roles(self.folder, item.UID()), {"t-rex": set(["Reader"])})
+        self.assertDictEqual(
+            get_related_roles(self.folder, item.UID()), {"t-rex": set(["Reader"])}
+        )

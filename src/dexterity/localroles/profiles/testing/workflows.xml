@@ -1,8 +1,10 @@
-<?xml version="1.0"?>
-<object name="portal_workflow" meta_type="Plone Workflow Tool">
- <bindings>
-  <type type_id="testingtype">
-   <bound-workflow workflow_id="simple_publication_workflow"/>
-  </type>
- </bindings>
+<?xml version="1.0" encoding="utf-8"?>
+<object meta_type="Plone Workflow Tool"
+        name="portal_workflow"
+>
+  <bindings>
+    <type type_id="testingtype">
+      <bound-workflow workflow_id="simple_publication_workflow" />
+    </type>
+  </bindings>
 </object>

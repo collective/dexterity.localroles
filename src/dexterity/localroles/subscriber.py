@@ -83,9 +83,15 @@ def related_change_on_addition(obj, event):
 
 def related_change_on_moving(obj, event):
     """Set local roles on related objects before moving"""
-    if IObjectWillBeAddedEvent.providedBy(event) or IObjectWillBeRemovedEvent.providedBy(event):  # not move
+    if IObjectWillBeAddedEvent.providedBy(
+        event
+    ) or IObjectWillBeRemovedEvent.providedBy(
+        event
+    ):  # not move
         return
-    if event.oldParent and event.newParent and event.oldParent == event.newParent:  # rename
+    if (
+        event.oldParent and event.newParent and event.oldParent == event.newParent
+    ):  # rename
         return
     (fti_config, fti) = fti_configuration(obj)
     if "static_config" not in fti_config:
@@ -95,9 +101,13 @@ def related_change_on_moving(obj, event):
 
 def related_change_on_moved(obj, event):
     """Set local roles on related objects after moving"""
-    if IObjectAddedEvent.providedBy(event) or IObjectRemovedEvent.providedBy(event):  # not move
+    if IObjectAddedEvent.providedBy(event) or IObjectRemovedEvent.providedBy(
+        event
+    ):  # not move
         return
-    if event.oldParent and event.newParent and event.oldParent == event.newParent:  # rename
+    if (
+        event.oldParent and event.newParent and event.oldParent == event.newParent
+    ):  # rename
         return
     (fti_config, fti) = fti_configuration(obj)
     if "static_config" not in fti_config:
@@ -126,7 +136,10 @@ def configuration_change_analysis(event):
             if princ not in target:
                 target[state][princ] = {"rel": ""}
             if modif[princ].get("rel"):
-                if target[state][princ]["rel"] and target[state][princ]["rel"] != modif[princ]["rel"]:
+                if (
+                    target[state][princ]["rel"]
+                    and target[state][princ]["rel"] != modif[princ]["rel"]
+                ):
                     logger.error(
                         "Related configuration to add '%s' differs '%s'"
                         % (modif[princ]["rel"], target[state][princ]["rel"])
@@ -170,7 +183,9 @@ def configuration_change_analysis(event):
             if add_roles_set or rem_roles_set:
                 only_reindex |= set([st])
             # rel can be added or removed
-            if event.old_value[st][pr].get("rel", "") != event.new_value[st][pr].get("rel", ""):
+            if event.old_value[st][pr].get("rel", "") != event.new_value[st][pr].get(
+                "rel", ""
+            ):
                 if event.old_value[st][pr].get("rel", ""):
                     add_modifications(rem_rel_roles, st, {pr: event.old_value[st][pr]})
                 if event.new_value[st][pr].get("rel", ""):
@@ -189,16 +204,26 @@ def local_role_related_configuration_updated(event):
     portal = api.portal.getSite()
     if only_reindex:
         logger.info("Objects security update")
-        for brain in portal.portal_catalog(portal_type=event.fti.__name__, review_state=list(only_reindex)):
+        for brain in portal.portal_catalog(
+            portal_type=event.fti.__name__, review_state=list(only_reindex)
+        ):
             obj = brain.getObject()
             obj.reindexObjectSecurity()
     if rem_rel_roles:
         logger.info("Removing related roles: %s" % rem_rel_roles)
         for st in rem_rel_roles:
-            for brain in portal.portal_catalog(portal_type=event.fti.__name__, review_state=st):
-                related_role_removal(brain.getObject(), brain.review_state, {event.field: rem_rel_roles})
+            for brain in portal.portal_catalog(
+                portal_type=event.fti.__name__, review_state=st
+            ):
+                related_role_removal(
+                    brain.getObject(), brain.review_state, {event.field: rem_rel_roles}
+                )
     if add_rel_roles:
         logger.info("Adding related roles: %s" % add_rel_roles)
         for st in add_rel_roles:
-            for brain in portal.portal_catalog(portal_type=event.fti.__name__, review_state=st):
-                related_role_addition(brain.getObject(), brain.review_state, {event.field: add_rel_roles})
+            for brain in portal.portal_catalog(
+                portal_type=event.fti.__name__, review_state=st
+            ):
+                related_role_addition(
+                    brain.getObject(), brain.review_state, {event.field: add_rel_roles}
+                )

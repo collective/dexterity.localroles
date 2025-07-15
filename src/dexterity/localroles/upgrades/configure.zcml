@@ -1,15 +1,17 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
-    i18n_domain="dexterity.localroles">
+    i18n_domain="dexterity.localroles"
+    >
 
   <genericsetup:upgradeStep
       title="Migration profile for dexterity.localroles 2"
       description="Upgrade from 1 to 2"
+      profile="dexterity.localroles:default"
       source="1"
       destination="2"
       handler=".upgrades.v2"
-      profile="dexterity.localroles:default" />
+      />
 
 
 </configure>

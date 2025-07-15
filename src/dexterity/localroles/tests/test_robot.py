@@ -9,7 +9,9 @@ def test_suite():
     suite = unittest.TestSuite()
     suite.addTests(
         [
-            layered(robotsuite.RobotTestSuite("settings.robot"), layer=DLR_ROBOT_TESTING),
+            layered(
+                robotsuite.RobotTestSuite("settings.robot"), layer=DLR_ROBOT_TESTING
+            ),
         ]
     )
     return suite

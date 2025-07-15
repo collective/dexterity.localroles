@@ -55,4 +55,6 @@ class SharingRolesVocabulary(object):
     """Return local roles vocabulary"""
 
     def __call__(self, context):
-        return list_2_vocabulary(sorted([(i[0], PMF(i[0])) for i in getUtilitiesFor(ISharingPageRole)]))
+        return list_2_vocabulary(
+            sorted([(i[0], PMF(i[0])) for i in getUtilitiesFor(ISharingPageRole)])
+        )

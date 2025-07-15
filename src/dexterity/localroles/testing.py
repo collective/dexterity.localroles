@@ -18,7 +18,9 @@ except pkg_resources.DistributionNotFound:
 else:
     HAS_PA_CONTENTTYPES = True
 
-DLR_ZCML = zca.ZCMLSandbox(filename="testing.zcml", package=dexterity.localroles, name="DLR_ZCML")
+DLR_ZCML = zca.ZCMLSandbox(
+    filename="testing.zcml", package=dexterity.localroles, name="DLR_ZCML"
+)
 
 DLR_Z2 = z2.IntegrationTesting(bases=(z2.STARTUP, DLR_ZCML), name="DLR_Z2")
 
@@ -59,7 +61,9 @@ class DLRFunctionalTesting(FunctionalTesting):
                 api.user.create(username="basic-user", email="flint@stone.be")
 
 
-DLR_PROFILE_FUNCTIONAL = DLRFunctionalTesting(bases=(DLR,), name="DLR_PROFILE_FUNCTIONAL")
+DLR_PROFILE_FUNCTIONAL = DLRFunctionalTesting(
+    bases=(DLR,), name="DLR_PROFILE_FUNCTIONAL"
+)
 
 DLR_ROBOT_TESTING = DLRFunctionalTesting(
     bases=(

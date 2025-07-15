@@ -49,7 +49,11 @@ def add_related_roles(obj, uid, principal, roles):
 def del_related_roles(obj, uid, principal, roles):
     """Delete uid related roles on obj"""
     annot = IAnnotations(obj)
-    if rel_key not in annot or uid not in annot[rel_key] or principal not in annot[rel_key][uid]:
+    if (
+        rel_key not in annot
+        or uid not in annot[rel_key]
+        or principal not in annot[rel_key][uid]
+    ):
         return set()
     ret = annot[rel_key][uid][principal] & set(roles)
     annot[rel_key][uid][principal] -= set(roles)
@@ -116,7 +120,9 @@ def fti_configuration(obj=None, portal_type=None):
     return fti.localroles, fti
 
 
-def add_fti_configuration(portal_type, configuration, keyname="static_config", force=False):
+def add_fti_configuration(
+    portal_type, configuration, keyname="static_config", force=False
+):
     """Add in fti a specific localroles configuration.
     :param portal_type: name of the portal type
     :param configuration: dict like {state: {principal: {'roles': [roles], 'rel': "{'utility name':[roles]}"}}}
@@ -132,13 +138,21 @@ def add_fti_configuration(portal_type, configuration, keyname="static_config", f
         setattr(fti, "localroles", PersistentMapping())
     old_value = fti.localroles.get(keyname, {})
     if keyname in fti.localroles and not force:
-        logger.warn("The '%s' configuration on type '%s' is already set" % (keyname, portal_type))
-        return "The '%s' configuration on type '%s' is already set" % (keyname, portal_type)
+        logger.warn(
+            "The '%s' configuration on type '%s' is already set"
+            % (keyname, portal_type)
+        )
+        return "The '%s' configuration on type '%s' is already set" % (
+            keyname,
+            portal_type,
+        )
     fti.localroles[keyname] = configuration
     event.notify(LocalRoleListUpdatedEvent(fti, keyname, old_value, configuration))
 
 
-def update_roles_in_fti(portal_type, config, action="add", keyname="static_config", notify=True):
+def update_roles_in_fti(
+    portal_type, config, action="add", keyname="static_config", notify=True
+):
     """Update a localroles fti config by adding/removing the given roles.
 
     :param portal_type: name of the portal type
@@ -174,7 +188,9 @@ def update_roles_in_fti(portal_type, config, action="add", keyname="static_confi
                     continue
                 # manage main roles
                 if not isinstance(lrd[state][principal]["roles"], list):
-                    lrd[state][principal]["roles"] = list(lrd[state][principal]["roles"])
+                    lrd[state][principal]["roles"] = list(
+                        lrd[state][principal]["roles"]
+                    )
                 for role in config[state][principal].get("roles", []):
                     if role not in lrd[state][principal]["roles"]:
                         lrd[state][principal]["roles"].append(role)
@@ -188,15 +204,24 @@ def update_roles_in_fti(portal_type, config, action="add", keyname="static_confi
                 continue
             for principal in config[state]:
                 if principal in lrd[state]:
-                    if "roles" in lrd[state][principal] and "roles" in config[state][principal]:
+                    if (
+                        "roles" in lrd[state][principal]
+                        and "roles" in config[state][principal]
+                    ):
                         lrd[state][principal]["roles"] = list(
-                            set(lrd[state][principal]["roles"]) - set(config[state][principal]["roles"])
+                            set(lrd[state][principal]["roles"])
+                            - set(config[state][principal]["roles"])
                         )
                         change = True
-                    if "rel" in config[state][principal] and lrd[state][principal].get("rel", ""):
+                    if "rel" in config[state][principal] and lrd[state][principal].get(
+                        "rel", ""
+                    ):
                         lrd[state][principal]["rel"] = ""
                         change = True
-                    if len(lrd[state][principal].get("roles", [])) == 0 and lrd[state][principal].get("rel", "") == "":
+                    if (
+                        len(lrd[state][principal].get("roles", [])) == 0
+                        and lrd[state][principal].get("rel", "") == ""
+                    ):
                         # no more config
                         del lrd[state][principal]
                         change = True

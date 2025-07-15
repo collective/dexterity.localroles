@@ -67,7 +67,10 @@ class Principal(schema.TextLine):
 class RoleFieldValidator(SimpleFieldValidator):
     def validate(self, value, force=False):
         if value is not None and force is True:
-            if api.user.get(username=value) is None and api.group.get(groupname=value) is None:
+            if (
+                api.user.get(username=value) is None
+                and api.group.get(groupname=value) is None
+            ):
                 raise UnknownPrincipalError
 
 
@@ -143,14 +146,18 @@ class ILocalRole(Interface):
 
     roles = Role(
         title=_(u"roles"),
-        value_type=schema.Choice(vocabulary="dexterity.localroles.vocabulary.SharingRolesVocabulary"),
+        value_type=schema.Choice(
+            vocabulary="dexterity.localroles.vocabulary.SharingRolesVocabulary"
+        ),
         required=True,
     )
 
     related = schema.Text(title=_(u"related role configuration"), required=False)
 
 
-validator.WidgetValidatorDiscriminators(RelatedFormatValidator, field=ILocalRole["related"])
+validator.WidgetValidatorDiscriminators(
+    RelatedFormatValidator, field=ILocalRole["related"]
+)
 
 
 class LocalRoleConfigurationAdapter(object):
@@ -189,7 +196,12 @@ class LocalRoleConfigurationAdapter(object):
         value_dict = {}
         for row in value:
             state, roles, principal = row["state"], row["roles"], row["value"]
-            related = row["related"] is not None and row["related"].strip() and str(eval(row["related"])) or ""
+            related = (
+                row["related"] is not None
+                and row["related"].strip()
+                and str(eval(row["related"]))
+                or ""
+            )
             if state not in value_dict:
                 value_dict[state] = {}
             value_dict[state][principal] = {"roles": roles, "rel": related}

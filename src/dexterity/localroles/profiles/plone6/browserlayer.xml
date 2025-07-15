@@ -1,4 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <layers>
-  <layer name="dexterity.localroles"
-         interface="dexterity.localroles.interfaces.IDexterityLocalRoles" />
+  <layer interface="dexterity.localroles.interfaces.IDexterityLocalRoles"
+         name="dexterity.localroles"
+  />
 </layers>
