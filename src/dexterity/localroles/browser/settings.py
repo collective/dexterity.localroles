@@ -16,6 +16,7 @@ from dexterity.localroles.browser.interfaces import IRole
 from dexterity.localroles.browser.interfaces import IWorkflowState
 from dexterity.localroles.browser.overrides import CustomTypeFormLayout
 from dexterity.localroles.interfaces import ILocalRolesRelatedSearchUtility
+from imio.helpers.utils import is_valid_json
 from persistent.mapping import PersistentMapping
 from plone import api
 from plone.app.dexterity.interfaces import ITypeSchemaContext
@@ -36,6 +37,8 @@ from zope.component import getUtilitiesFor
 from zope.component import getUtility
 from zope.interface import implementer
 from zope.interface import Interface
+
+import json
 
 
 try:
@@ -121,7 +124,7 @@ class RelatedFormatValidator(validator.SimpleFieldValidator):
         if not value or not value.strip():
             return
         try:
-            var = eval(value)
+            var = json.loads(value)
         except Exception:
             raise RelatedFormatError
         if not isinstance(var, dict):
@@ -152,7 +155,9 @@ class ILocalRole(Interface):
         required=True,
     )
 
-    related = schema.Text(title=_(u"related role configuration"), required=False)
+    related = schema.Text(
+        title=_(u"related role configuration"), required=False, constraint=is_valid_json
+    )
 
 
 validator.WidgetValidatorDiscriminators(
@@ -182,7 +187,7 @@ class LocalRoleConfigurationAdapter(object):
             setattr(self.context.fti, "localroles", PersistentMapping())
         old_value = self.context.fti.localroles.get(name, {})
         # for plone 6 with state as tuple
-        for dic in value:
+        for dic in value or []:
             if isinstance(dic["state"], tuple):
                 dic["state"] = dic["state"][0]
         new_dict = self.convert_to_dict(value)
@@ -194,12 +199,12 @@ class LocalRoleConfigurationAdapter(object):
     @staticmethod
     def convert_to_dict(value):
         value_dict = {}
-        for row in value:
+        for row in value or []:
             state, roles, principal = row["state"], row["roles"], row["value"]
             related = (
                 row["related"] is not None
                 and row["related"].strip()
-                and str(eval(row["related"]))
+                and row["related"]
                 or ""
             )
             if state not in value_dict:

@@ -7,6 +7,7 @@ from ..exceptions import UtilityNameError
 from dexterity.localroles import testing
 from dexterity.localroles.browser import settings
 from z3c.form.interfaces import ITextWidget
+from zope.interface.exceptions import Invalid
 from zope.schema.interfaces import IText
 
 import unittest
@@ -37,27 +38,27 @@ class TestSettings(unittest.TestCase):
         self.assertRaises(
             UtilityNameError,
             validator.validate,
-            "{'dexterity.localroles.related_parentt':[]}",
+            '{"dexterity.localroles.related_parentt":[]}',
         )
         # test value format
         self.assertRaises(
             RelatedFormatError,
             validator.validate,
-            "{'dexterity.localroles.related_parent':''}",
+            '{"dexterity.localroles.related_parent":""}',
         )
         # empty role list is ok
         self.assertIsNone(
-            validator.validate("{'dexterity.localroles.related_parent':[]}")
+            validator.validate('{"dexterity.localroles.related_parent":[]}')
         )
         # test roles
         self.assertRaises(
             RoleNameError,
             validator.validate,
-            "{'dexterity.localroles.related_parent':['ReaderR']}",
+            '{"dexterity.localroles.related_parent":["ReaderR"]}',
         )
         # all is ok
         self.assertIsNone(
-            validator.validate("{'dexterity.localroles.related_parent':['Reader']}")
+            validator.validate('{"dexterity.localroles.related_parent":["Reader"]}')
         )
 
     def test_localroleconfigurationadapter(self):
@@ -130,3 +131,19 @@ class TestSettings(unittest.TestCase):
                 [sorted(list(dc.items())) for dc in cls.convert_to_list(dict_values)]
             ),
         )
+
+    def test_constraints(self):
+        class DummyLocalRole:
+            state = None
+            value = None
+            roles = None
+            related = ""
+
+        # Test "related" field is_valid_json constraint
+        related_field = settings.ILocalRole["related"]
+        good = DummyLocalRole()
+        good.related = u'{"dexterity.localroles.related_parent":["Reader"]}'
+        self.assertIsNone(related_field.validate(good.related))
+        bad = DummyLocalRole()
+        bad.related = u'print("script injection")'
+        self.assertRaises(Invalid, related_field.validate, bad.related)

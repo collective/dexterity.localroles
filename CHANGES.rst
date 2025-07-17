@@ -10,6 +10,8 @@ Changelog
   [sgeulette]
 - Added Plone 6 uninstall profile.
   [chris-adam]
+- Improved security of 'related' field by restricting its value to JSON.
+  [chris-adam]
 
 2.0.0a (2023-11-28)
 -------------------

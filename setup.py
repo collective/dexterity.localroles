@@ -61,6 +61,7 @@ setup(
         "collective.z3cform.datagridfield",
         "plone.app.dexterity",
         "setuptools",
+        "imio.helpers",
     ],
     extras_require={
         "test": [

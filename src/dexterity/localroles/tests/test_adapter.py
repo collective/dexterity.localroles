@@ -17,14 +17,14 @@ localroles_config = {
     u"private": {
         "raptor": {
             "roles": ("Editor", "Contributor"),
-            "rel": "{'dexterity.localroles.related_parent':['Editor']}",
+            "rel": '{"dexterity.localroles.related_parent":["Editor"]}',
         },
         "cavemans": {"roles": ("Reader",)},
     },
     u"published": {
         "hunters": {
             "roles": ("Reader",),
-            "rel": "{'dexterity.localroles.related_parent':['Reader']}",
+            "rel": '{"dexterity.localroles.related_parent":["Reader"]}',
         },
         "wilma": {"roles": ("Editor",)},
     },
