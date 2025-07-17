@@ -1,5 +1,15 @@
 .. contents::
 
+.. image:: https://github.com/collective/dexterity.localroles/actions/workflows/main.yml/badge.svg?branch=master
+    :target: https://github.com/collective/dexterity.localroles/actions/workflows/main.yml
+
+.. image:: https://coveralls.io/repos/github/collective/dexterity.localroles/badge.svg
+    :target: https://coveralls.io/github/collective/dexterity.localroles
+
+.. image:: http://img.shields.io/pypi/v/dexterity.localroles.svg
+   :alt: PyPI badge
+   :target: https://pypi.org/project/dexterity.localroles
+
 Introduction
 ============
 
@@ -50,14 +60,3 @@ Credits
 Have an idea? Found a bug? Let us know by `opening a ticket`_.
 
 .. _`opening a ticket`: https://github.com/collective/dexterity.localroles/issues
-
-
-Tests
-=====
-
-This package is tested using Travis CI. The current status of the add-on is :
-
-.. image:: https://api.travis-ci.org/collective/dexterity.localroles.png
-    :target: https://travis-ci.org/collective/dexterity.localroles
-.. image:: https://coveralls.io/repos/collective/dexterity.localroles/badge.svg?branch=master&service=github
-  :target: https://coveralls.io/github/collective/dexterity.localroles?branch=master
