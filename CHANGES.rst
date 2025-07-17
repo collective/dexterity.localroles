@@ -8,6 +8,8 @@ Changelog
   [chris-adam, sgeulette]
 - Added `dexterity.localroles.related_parent_with_portal` utility to include Plone Site in related parent search.
   [sgeulette]
+- Added Plone 6 uninstall profile.
+  [chris-adam]
 
 2.0.0a (2023-11-28)
 -------------------
