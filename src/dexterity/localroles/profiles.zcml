@@ -1,0 +1,31 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    >
+
+  <genericsetup:registerProfile
+      name="default"
+      title="dexterity.localroles default profile"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      directory="profiles/plone4"
+      zcml:condition="not-have plone-5"
+      />
+
+  <genericsetup:registerProfile
+      name="default"
+      title="dexterity.localroles default profile"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      directory="profiles/plone6"
+      zcml:condition="have plone-60"
+      />
+
+  <genericsetup:registerProfile
+      name="uninstall"
+      title="dexterity.localroles"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      directory="profiles/uninstall"
+      zcml:condition="have plone-60"
+      />
+
+</configure>

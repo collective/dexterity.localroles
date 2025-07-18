@@ -12,6 +12,8 @@ from plone import api
 from zope.lifecycleevent.interfaces import IObjectAddedEvent
 from zope.lifecycleevent.interfaces import IObjectRemovedEvent
 
+import json
+
 
 def update_security(obj, event):
     # obj.reindexObjectSecurity() seems already called: doActionFor => _invokeWithNotification() =>
@@ -25,7 +27,7 @@ def related_role_removal(obj, state, fti_config):
         uid = obj.UID()
         for princ in dic:
             if dic[princ].get("rel"):
-                related = eval(dic[princ]["rel"])
+                related = json.loads(dic[princ]["rel"])
                 for utility in related:
                     if not related[utility]:
                         continue
@@ -40,7 +42,7 @@ def related_role_addition(obj, state, fti_config):
         uid = obj.UID()
         for princ in dic:
             if dic[princ].get("rel"):
-                related = eval(dic[princ]["rel"])
+                related = json.loads(dic[princ]["rel"])
                 for utility in related:
                     if not related[utility]:
                         continue

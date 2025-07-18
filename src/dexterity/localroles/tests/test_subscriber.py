@@ -26,14 +26,14 @@ related_localroles_config = {
     u"private": {
         "raptor": {
             "roles": ("Editor",),
-            "rel": "{'dexterity.localroles.related_parent_with_portal':['Editor']}",
+            "rel": '{"dexterity.localroles.related_parent_with_portal":["Editor"]}',
         },
         "cavemans": {"roles": ("Reader",)},
     },
     u"published": {
         "raptor": {
             "roles": ("Reviewer",),
-            "rel": "{'dexterity.localroles.related_parent_with_portal':['Reviewer']}",
+            "rel": '{"dexterity.localroles.related_parent_with_portal":["Reviewer"]}',
         }
     },
 }
@@ -229,7 +229,7 @@ class TestSubscriber(unittest.TestCase):
                     "state": "private",
                     "value": "raptor",
                     "roles": ("Reader",),
-                    "related": "{'dexterity.localroles.related_parent':['Editor']}",
+                    "related": '{"dexterity.localroles.related_parent":["Editor"]}',
                 }
             ],
         )
@@ -251,7 +251,7 @@ class TestSubscriber(unittest.TestCase):
                     "state": "pending",
                     "value": "t-rex",
                     "roles": ("Reader",),
-                    "related": "{'dexterity.localroles.related_parent':['Editor']}",
+                    "related": '{"dexterity.localroles.related_parent":["Editor"]}',
                 }
             ],
         )
@@ -276,13 +276,13 @@ class TestSubscriber(unittest.TestCase):
                     "state": "pending",
                     "value": "t-rex",
                     "roles": ("Reader",),
-                    "related": "{'dexterity.localroles.related_parent':['Editor']}",
+                    "related": '{"dexterity.localroles.related_parent":["Editor"]}',
                 },
                 {
                     "state": "pending",
                     "value": "raptor",
                     "roles": ("Reader",),
-                    "related": "{'dexterity.localroles.related_parent':['Editor']}",
+                    "related": '{"dexterity.localroles.related_parent":["Editor"]}',
                 },
             ],
         )
@@ -307,7 +307,7 @@ class TestSubscriber(unittest.TestCase):
                     "state": "pending",
                     "value": "t-rex",
                     "roles": ("Reader",),
-                    "related": "{'dexterity.localroles.related_parent':['Editor']}",
+                    "related": '{"dexterity.localroles.related_parent":["Editor"]}',
                 }
             ],
         )
@@ -330,7 +330,7 @@ class TestSubscriber(unittest.TestCase):
                     "state": "pending",
                     "value": "t-rex",
                     "roles": (),
-                    "related": "{'dexterity.localroles.related_parent':['Reader']}",
+                    "related": '{"dexterity.localroles.related_parent":["Reader"]}',
                 }
             ],
         )
