@@ -6,6 +6,10 @@ Changelog
 
 - Added `utils.register_affected_portal_type`and `utils.get_affected_portal_types` to get and store portal types concerned by local roles changes.
   [sgeulette]
+- Do not update security if request contains DEFER_SECURITY_UPDATE value (skips reindexObjectSecurity).
+  [sgeulette]
+- Corrected tests setup
+  [sgeulette]
 
 2.0.0b0 (2026-01-15)
 --------------------

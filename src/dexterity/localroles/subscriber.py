@@ -6,6 +6,7 @@ from dexterity.localroles.utils import add_related_roles
 from dexterity.localroles.utils import del_related_roles
 from dexterity.localroles.utils import fti_configuration
 from dexterity.localroles.utils import get_state
+from dexterity.localroles.utils import register_affected_portal_type
 from OFS.interfaces import IObjectWillBeAddedEvent
 from OFS.interfaces import IObjectWillBeRemovedEvent
 from plone import api
@@ -25,6 +26,7 @@ def related_role_removal(obj, state, fti_config):
     if state in fti_config["static_config"]:
         dic = fti_config["static_config"][state]
         uid = obj.UID()
+        defer_security_update = obj.REQUEST.get("DEFER_SECURITY_UPDATE", False)
         for princ in dic:
             if dic[princ].get("rel"):
                 related = json.loads(dic[princ]["rel"])
@@ -33,13 +35,16 @@ def related_role_removal(obj, state, fti_config):
                         continue
                     for rel in runRelatedSearch(utility, obj):
                         if del_related_roles(rel, uid, princ, related[utility]):
-                            rel.reindexObjectSecurity()
+                            register_affected_portal_type(obj.REQUEST, rel.portal_type)
+                            if not defer_security_update:
+                                rel.reindexObjectSecurity()
 
 
 def related_role_addition(obj, state, fti_config):
     if state in fti_config["static_config"]:
         dic = fti_config["static_config"][state]
         uid = obj.UID()
+        defer_security_update = obj.REQUEST.get("DEFER_SECURITY_UPDATE", False)
         for princ in dic:
             if dic[princ].get("rel"):
                 related = json.loads(dic[princ]["rel"])
@@ -48,7 +53,9 @@ def related_role_addition(obj, state, fti_config):
                         continue
                     for rel in runRelatedSearch(utility, obj):
                         add_related_roles(rel, uid, princ, related[utility])
-                        rel.reindexObjectSecurity()
+                        register_affected_portal_type(obj.REQUEST, rel.portal_type)
+                        if not defer_security_update:
+                            rel.reindexObjectSecurity()
 
 
 def related_change_on_transition(obj, event):
@@ -204,6 +211,8 @@ def local_role_related_configuration_updated(event):
     """
     only_reindex, rem_rel_roles, add_rel_roles = configuration_change_analysis(event)
     portal = api.portal.getSite()
+    if only_reindex or rem_rel_roles or add_rel_roles:
+        register_affected_portal_type(portal.REQUEST, event.fti.__name__)
     if only_reindex:
         logger.info("Objects security update")
         for brain in portal.portal_catalog(
