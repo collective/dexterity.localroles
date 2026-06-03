@@ -19,6 +19,26 @@ except ImportError:
     from zope.interface.interfaces import ComponentLookupError
 
 rel_key = "d.lr.related"
+affected_types_key = "d.lr.affected_portal_types"
+
+
+def register_affected_portal_type(request, portal_type):
+    """Accumule un portal_type unique concerné par une MAJ de rôles locaux, dans la request."""
+    if request is None or not portal_type:
+        return
+    types = request.get(affected_types_key)
+    if not isinstance(types, set):
+        types = set()
+        request.set(affected_types_key, types)
+    types.add(portal_type)
+
+
+def get_affected_portal_types(request, clear=False):
+    """Retourne (et vide optionnellement) l'ensemble des portal_type enregistrés dans la request."""
+    types = set(request.get(affected_types_key) or ())
+    if clear:
+        request.set(affected_types_key, set())
+    return types
 
 
 def del_related_uid(obj, uid):

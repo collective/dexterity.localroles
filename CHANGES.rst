@@ -4,8 +4,8 @@ Changelog
 2.0.0b1 (unreleased)
 --------------------
 
-- Nothing changed yet.
-
+- Added `utils.register_affected_portal_type`and `utils.get_affected_portal_types` to get and store portal types concerned by local roles changes.
+  [sgeulette]
 
 2.0.0b0 (2026-01-15)
 --------------------
