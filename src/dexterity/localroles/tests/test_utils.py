@@ -207,7 +207,7 @@ class TestUtils(unittest.TestCase):
                 "private": {
                     "cavemans": {"roles": ("Reviewer",)},
                     "dina": {"roles": ("Reader", "Reviewer")},
-                    "raptor": {"rel": "{'a_utility': ['Reader']}"},
+                    "raptor": {"rel": '{"a_utility": ["Reader"]}'},
                 },
                 "published": {
                     "hunters": {"roles": ("Reviewer",)},
@@ -218,7 +218,7 @@ class TestUtils(unittest.TestCase):
         self.assertListEqual(
             dic["private"]["raptor"]["roles"], ["Editor", "Contributor"]
         )
-        self.assertEqual(dic["private"]["raptor"]["rel"], "{'a_utility': ['Reader']}")
+        self.assertEqual(dic["private"]["raptor"]["rel"], '{"a_utility": ["Reader"]}')
         self.assertListEqual(
             dic["private"]["cavemans"]["roles"], ["Reader", "Reviewer"]
         )
@@ -234,7 +234,7 @@ class TestUtils(unittest.TestCase):
                 "private": {
                     "cavemans": {"roles": ("Reviewer",)},
                     "dina": {"roles": ("Reader", "Reviewer")},
-                    "raptor": {"rel": "{'a_utility': ['Reader']}"},
+                    "raptor": {"rel": '{"a_utility": ["Reader"]}'},
                 },
                 "published": {
                     "hunters": {"roles": ("Reviewer",)},

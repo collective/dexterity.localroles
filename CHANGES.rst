@@ -10,6 +10,8 @@ Changelog
   [sgeulette]
 - Corrected tests setup
   [sgeulette]
+- Corrected json format in related field
+  [sgeulette]
 
 2.0.0b0 (2026-01-15)
 --------------------
