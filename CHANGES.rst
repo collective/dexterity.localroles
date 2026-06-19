@@ -1,7 +1,7 @@
 Changelog
 =========
 
-2.0.0b1 (unreleased)
+2.0.0b1 (2026-06-19)
 --------------------
 
 - Added `utils.register_affected_portal_type`and `utils.get_affected_portal_types` to get and store portal types concerned by local roles changes.
