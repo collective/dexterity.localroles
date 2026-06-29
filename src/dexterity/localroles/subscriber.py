@@ -13,7 +13,7 @@ from plone import api
 from zope.lifecycleevent.interfaces import IObjectAddedEvent
 from zope.lifecycleevent.interfaces import IObjectRemovedEvent
 
-import json
+import ast
 
 
 def update_security(obj, event):
@@ -29,7 +29,7 @@ def related_role_removal(obj, state, fti_config):
         defer_security_update = obj.REQUEST.get("DEFER_SECURITY_UPDATE", False)
         for princ in dic:
             if dic[princ].get("rel"):
-                related = json.loads(dic[princ]["rel"])
+                related = ast.literal_eval(dic[princ]["rel"])
                 for utility in related:
                     if not related[utility]:
                         continue
@@ -47,7 +47,7 @@ def related_role_addition(obj, state, fti_config):
         defer_security_update = obj.REQUEST.get("DEFER_SECURITY_UPDATE", False)
         for princ in dic:
             if dic[princ].get("rel"):
-                related = json.loads(dic[princ]["rel"])
+                related = ast.literal_eval(dic[princ]["rel"])
                 for utility in related:
                     if not related[utility]:
                         continue
