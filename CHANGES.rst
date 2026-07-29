@@ -4,8 +4,8 @@ Changelog
 2.0.0b2 (unreleased)
 --------------------
 
-- Nothing changed yet.
-
+- Replaced `json.loads` with `ast.literal_eval` (DMS-1218).
+  [chris-adam]
 
 2.0.0b1 (2026-06-19)
 --------------------

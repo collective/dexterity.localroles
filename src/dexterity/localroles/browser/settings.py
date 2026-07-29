@@ -38,7 +38,7 @@ from zope.component import getUtility
 from zope.interface import implementer
 from zope.interface import Interface
 
-import json
+import ast
 
 
 try:
@@ -124,7 +124,7 @@ class RelatedFormatValidator(validator.SimpleFieldValidator):
         if not value or not value.strip():
             return
         try:
-            var = json.loads(value)
+            var = ast.literal_eval(value)
         except Exception:
             raise RelatedFormatError
         if not isinstance(var, dict):

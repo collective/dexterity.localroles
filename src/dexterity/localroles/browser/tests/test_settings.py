@@ -60,6 +60,9 @@ class TestSettings(unittest.TestCase):
         self.assertIsNone(
             validator.validate('{"dexterity.localroles.related_parent":["Reader"]}')
         )
+        self.assertIsNone(
+            validator.validate("{'dexterity.localroles.related_parent': ['Reader']}")
+        )
 
     def test_localroleconfigurationadapter(self):
         class dummy(object):
