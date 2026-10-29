@@ -134,6 +134,8 @@ class TestUtils(unittest.TestCase):
         self.assertEqual(
             fti_configuration(item), ({}, self.portal.portal_types.testingtype)
         )
+        # reading doesn't write on the fti (plone.protect write on read)
+        self.assertFalse(hasattr(self.portal.portal_types.testingtype.aq_base, "localroles"))
         add_fti_configuration("testingtype", localroles_config)
         self.assertEqual(
             fti_configuration(item),
