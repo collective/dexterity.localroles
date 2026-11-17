@@ -9,6 +9,8 @@ Changelog
   [chris-adam]
 - Checked `plone.app.contenttypes` in the test layers with `importlib.metadata`, `pkg_resources` is gone with setuptools 82+.
   [chris-adam]
+- Used pkgutil-style namespace packages, so PEP 420 packages of the same namespace are not hidden.
+  [chris-adam]
 
 
 2.0.0b2 (2026-08-14)
