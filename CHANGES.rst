@@ -7,6 +7,8 @@ Changelog
 - `fti_configuration` no longer sets an empty `localroles` on the fti when reading it: plone.protect
   redirected the GET to `@@confirm-action` on Plone 5.2+.
   [chris-adam]
+- Checked `plone.app.contenttypes` in the test layers with `importlib.metadata`, `pkg_resources` is gone with setuptools 82+.
+  [chris-adam]
 
 
 2.0.0b2 (2026-08-14)

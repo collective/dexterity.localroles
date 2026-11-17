@@ -8,12 +8,18 @@ from plone.testing import z2
 from plone.testing import zca
 
 import dexterity.localroles
-import pkg_resources
 
 
 try:
-    pkg_resources.get_distribution("plone.app.contenttypes")
-except pkg_resources.DistributionNotFound:
+    from importlib.metadata import distribution
+    from importlib.metadata import PackageNotFoundError
+except ImportError:  # Python 2
+    from pkg_resources import DistributionNotFound as PackageNotFoundError
+    from pkg_resources import get_distribution as distribution
+
+try:
+    distribution("plone.app.contenttypes")
+except PackageNotFoundError:
     HAS_PA_CONTENTTYPES = False
 else:
     HAS_PA_CONTENTTYPES = True
