@@ -136,7 +136,7 @@ def fti_configuration(obj=None, portal_type=None):
     except ComponentLookupError:
         return {}, None
     if not base_hasattr(fti, "localroles"):
-        setattr(fti, "localroles", PersistentMapping())
+        return {}, fti
     return fti.localroles, fti
 
 
